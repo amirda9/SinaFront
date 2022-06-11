@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nginx
+    restart: always
+    volumes:
+      - ./dist:/usr/share/nginx/html
+    ports:
+      - 80:80
