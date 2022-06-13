@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-AU">
+<head>
+    <title>Login Form</title>
+    <meta name="keywords" content="Sleek & Modern Login Form"/>
+	<meta name="referrer" content="origin">
+    <meta http-equiv="content-type" content="application/xhtml; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/login/style.css"/>
+    <link rel="stylesheet" href="./js/toastr/toastr.min.css">
+    <script
+            src="jquery-3.5.1.min.js"
+            integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+            crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/swagger-client@3.13.1/dist/swagger-client.browser.min.js"></script>
+    <!--[if lt IE 8.]>
+    <link rel="stylesheet" type="text/css" href="css/login/style-ie.css"/>
+    <![endif]-->
+    <!--[if lt IE 7.]>
+    <link rel="stylesheet" type="text/css" href="css/login/style-ie6.css"/>
+    <![endif]-->
+</head>
+
+<body>
+
+<!-- Main Body Starts Here -->
+<div id="main_body">
+
+    <!-- Form Title Starts Here -->
+    <div class="form_title">
+        <img src="images/login/form_title.gif" alt="Sleek &amp; Modern Login Form"/>
+    </div>
+    <!-- Form Title Ends Here -->
+
+    <!-- Form Starts Here -->
+    <div class="form_box">
+
+        <form id="loginform" method="post" action="#">
+            <!-- User Name -->
+            <p class="form_text">
+                *User Name
+            </p>
+
+            <p class="form_input_BG"><input type="text" name="username" id="name" value=""/></p>
+            <!-- User Name -->
+
+            <!-- Clear -->
+            <p class="clear">&nbsp;
+            </p>
+            <!-- Clear -->
+
+            <!-- Password -->
+            <p class="form_text" style="margin-left:8px;">
+                *Password
+            </p>
+
+            <p class="form_input_BG"><input type="password" name="password" id="pwd" value=""/></p>
+            <!-- Password -->
+
+            <!-- Clear -->
+            <p class="clear">&nbsp;
+            </p>
+            <!-- Clear -->
+
+            <!--<p class="form_check_box">-->
+            <!--Remember me <input type="checkbox" name="chk" id="chk" checked="checked" value=""/>-->
+            <!--</p>-->
+
+
+            <button class="btn btn-dark" type="submit" style="margin-left: 20%">Login
+            </button>
+            <!--<input onclick="" title="login Now" style="margin-left:96px;" type="image" src="images/login/login_btn.png" name="login" id="login" />-->
+
+
+        </form>
+
+    </div>
+    <!-- Form Ends Here -->
+
+</div>
+<!-- Main Body Ends Here -->
+<script src="login-logic.js"></script>
+<script src="./js/toastr/toastr.min.js"></script>
+<script src="./js/toastr/toastr-options.js"></script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+.button {
+    /*width: 150px; !* set a width so it doesnt change upon hover *!*/
+    /*border: 0px solid #004B84;*/
+    /*background: red;*/
+    /*padding: 3px 21px;*/
+    /*-webkit-border-radius: 16px;*/
+    /*-moz-border-radius: 16px;*/
+    /*border-radius: 16px;*/
+    /*color: #ffffff;*/
+    /*font-size: 12px;*/
+    text-decoration: none;
+    vertical-align: middle;
+    text-shadow: 0 0 3px #FF0000;
+    z-index: 5000;
+    font-size: large;
+    padding: 1px;
+    transform-origin: 0% 0;
+    /*border-color: #000000;*/
+    background-color:transparent;
+    border-color:transparent;
+    color: black;
+    font-weight: 600;
+    /*letter-spacing: 2px;*/
+}
+
+.button:hover span {
+    display:none
+}
+
+.button:hover:before {
+    content:"Sign Out!";
+}
+
+
+.clusters-manual-closebtn {
+    position: absolute;
+    top: -21px;
+    left: 1px;
+    font-size: large;
+    background-color: transparent;
+    color: black;
+    box-shadow: 0px 0px 0px transparent;
+    border: 0px solid transparent;
+    text-shadow: 1px 1px 2px red;
+    border-radius: 15px;
+    text-align: center;
+}

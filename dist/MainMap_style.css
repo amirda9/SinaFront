@@ -1,0 +1,174 @@
+#mapid {
+    height: 90%;
+}
+
+html, body {
+    height: 90%;
+    margin: 0;
+    padding: 0;
+}
+
+.legend {
+    display: block; 
+	padding-left: 10px; 
+	padding-right: 10px; 
+	border: 3px solid green; 
+	background-color:tomato;;
+}
+
+/* #displayArea {background:#fff; border:1px solid #ccc;padding:5px;float:left;width:auto;display:none;position:absolute;top:0} */
+
+.focusArea {
+    cursor: pointer;
+}
+
+/*
+map util styles
+*/
+
+#topology-panel {
+    background-color:white;
+    padding: 2rem 1rem;
+    box-shadow: 
+         inset 0 -3em 3em rgba(0,0,0,0.1), 
+               /* 0 0  0 2px rgb(255,255,255), */
+               0.3em 0.3em 1em rgba(0,0,0,0.3);
+}
+
+.mainmap-util-closebtn {
+    position: absolute;
+    top: -20px;
+    right: -5px;
+    font-size: 18px;
+    background-color: white;
+    color: black;
+    /* box-shadow: 0px 0px 0px 5px rgba(209, 206, 206, 0.2); */
+    border-radius: 50px;
+    text-align: center;
+    padding: 6px 15px;
+}
+
+.mainmap-util-btn {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    margin-right: 6px;
+    font: 75 12pt "Bahnschrift Condensed";
+    /* border: 1px solid black; */
+    /* min-width: 80px; */
+    /* border: none; */
+    background-color: white;
+    box-shadow: 0px 0px 0px transparent;
+    border: 1px solid gray;
+    width: 90px;
+    border-radius: 5px;
+    padding: 7px 10px;
+    text-shadow: 0px 0px 0px transparent;
+    /* border-color:gray; */
+    /* border-radius: 25px; */
+}
+
+.mainmap-util-btn:hover {
+    background-color: #6088C6;
+}
+
+.mainmap-util-btn:flat {
+    border: none;
+    /* no border for a flat push button */
+}
+
+.mainmap-util-btn:default {
+    border-color: navy;
+    /* make the default button prominent */
+}
+
+.mainmap-util-input {
+    border: 1px solid gray;
+    /* border-radius: 10px; */
+    /* padding: 0 8px; */
+    background: white;
+    /* selection-background-color: darkgray;  */
+    font: 10pt;
+}
+
+.mainmap-util-label {
+    padding-top: 4px;
+    padding-bottom: 1px;
+    font: 10pt "Bahnschrift";
+}
+
+.vertical {
+    /* float: right; */
+    /* background-color: antiquewhite; */
+    margin-top: 5px;
+    width: 100%;
+    /* border: 1px solid blue */
+}
+
+.vertical>* {
+    display: block;
+    width: 100%;
+}
+
+.alert {
+    background-color: white;
+    padding: 5px;
+    box-shadow: 
+         inset 0 -3em 3em rgba(255, 139, 139, 0.1), 
+               /* 0 0  0 2px rgb(255,255,255), */
+               0.3em 0.3em 1em rgba(0,0,0,0.3);
+}
+
+.alert-txt {
+    padding: inherit;
+    color: red;
+    font-size: small;
+
+}
+.horizontal {
+    float: left;
+    /* border: 1px solid green */
+}
+
+.horizontal * {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+
+/* clusters panel styles */
+.scroll-table {  
+    height: 150px !important;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/*****************tooltip*****************/
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -60px;
+
+    /* Fade in tooltip - takes 1 second to go from 0% to 100% opac: */
+    opacity: 0;
+    transition: opacity 0.25s;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}

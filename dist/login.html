@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-AU">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="./bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="./js/toastr/toastr.min.css">
+    <script src="./services/callServices/callServices.js"></script>
+    <script src="./util/login/getToken.js"></script>
+
+    <script src="./jquery-3.5.1.min.js" language="JavaScript" type="text/javascript"></script>
+    <script src="./popper.min.js" ></script>
+    <script src="./bootstrap.bundle.min.js"></script>
+
+    <script src="./bootstrap.min.js"></script>
+
+
+    <link rel="stylesheet" href="./css/login/login.css"/>
+
+    <title>Login Form</title>
+</head>
+
+<body>
+
+<!-- Main Body Starts Here -->
+<div class="main-page">
+    <div class="login">
+        <div class="avatar">
+            <img class="imgUser" src="images/login/user.png" alt="userLogin"/>
+            <span class="txtlogin">Sign in</span>
+        </div>
+        <form class="frmLogin" id="loginform" method="post" action="#">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="nameUser">
+                    <i class="fa fa-user"></i>
+                </span>
+                <input type="text" class="form-control" placeholder="UserName" name="username" id="name" value="" />
+              </div>
+
+              <div class="input-group mb-3">
+                <span class="input-group-text" id="Password">
+                    <i class="fa fa-unlock-alt"></i>
+                </span>
+                <input type="password" name="password" id="pwd" value="" class="form-control" placeholder="Password"/>
+              </div>
+              <div class="forgetPass">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="chk" id="chk" checked="checked" value="">
+                    <label class="form-check-label" for="chk">
+                      Remember me
+                    </label>
+                </div>
+
+                <a href="#" class="linkForgetpass">Forget password?</a>
+            </div> 
+
+            <button class="btn btn-login" type="submit">Login</button>
+            <div class="register">
+                Not registred? 
+                <a href="#" class="btnRegister">Create an account!</a>
+            </div>
+        </form>
+    </div>
+    
+    <div class="footer">
+        <!-- <span>SINA COMPANY <img class="Sinalogo" src="./images//SINA_Logo32.png"></span> -->
+        <span>  <i class="fa fa-envelope"></i> info@sinacomsys.com</span>
+        <span><img src="./images/sina.png" class="Sinalogo"></span>
+      
+    </div>
+  </div>
+<!-- Main Body Ends Here -->
+<script src="./login-logic.js"></script>
+<script src="./js/toastr/toastr.min.js"></script>
+<script src="./js/toastr/toastr-options.js"></script>
+</body>
+</html>

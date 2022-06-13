@@ -1,0 +1,855 @@
+<html>
+<script src="./js/jexcel/jexcel.js"></script>
+<script src="./js/jexcel/jsuites.js"></script>
+<link rel="stylesheet" href="./js/jexcel/jexcel.css" type="text/css"/>
+<link rel="stylesheet" href="./js/jexcel/jsuites.css" type="text/css"/>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<script src="https://unpkg.com/swagger-client@3.12.0/dist/swagger-client.browser.min.js"></script>
+<style>
+    .error-box {
+        background-color: lightgrey;
+        width: auto;
+        border: 15px solid green;
+        padding: 5px;
+        margin: 10px;
+        min-width: 40%;
+        height:20%;
+        overflow-x: auto;
+    }
+
+    .tm-spreasheet-panel {
+        max-height: 70%;
+        /*overflow-y: auto;*/
+        width:80%;
+    }
+    .pt-spreasheet-panel {
+        /*overflow-y: auto;*/
+        width:80%;
+    }
+    .jexcel_content::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+</style>
+<div id="tm-spreadsheet" class="tm-spreasheet-panel" style="display:none;padding-top:45px;margin-bottom:45px;"> </div>
+<div id="pt-spreadsheet" class="pt-spreasheet-panel"></div>
+<div id="spreadsheet2" class="spreasheet-panel"></div>
+<div id="pt-nodes-errors" class="error-box" hidden style="float:left;"></div>
+<div id="pt-links-errors" class="error-box"  style="float:left"></div>
+<div id="tm-errors" class="error-box" hidden style="float:left"></div>
+<!--<p><button id='download'>submit changes</button></p>-->
+<button id='submit-excel' class="btn btn-success" onclick="submitExcelData()">submit changes</button>
+
+<input id="toggle-spreadsheet" style="float:right" type="checkbox" checked data-toggle="toggle" data-on="Physical<br>Topology" data-off="Traffic<br>Matrix">
+<div style="float:right" id="console-event"></div>
+<script>
+    $(function() {
+        $('#toggle-spreadsheet').change(function() {
+            let selectedSheet = Number(document.getElementById('pt-spreadsheet').children[0].querySelector('.selected').getAttribute('data-spreadsheet'));
+            if (selectedSheet === 0) {
+                document.getElementById('pt-nodes-errors').style.display = "block";
+                document.getElementById('pt-links-errors').style.display = "none";
+            } else {
+                document.getElementById('pt-nodes-errors').style.display = "none";
+                document.getElementById('pt-links-errors').style.display = "block";
+            }
+            if($(this).prop('checked')) {
+                document.getElementById('pt-spreadsheet').style.display = "block";
+                document.getElementById('tm-spreadsheet').style.display = "none";
+                document.getElementById('tm-errors').style.display = "none";
+                if (selectedSheet === 0) {
+                    document.getElementById('pt-nodes-errors').style.display = "block";
+                    document.getElementById('pt-links-errors').style.display = "none";
+                } else {
+                    document.getElementById('pt-nodes-errors').style.display = "none";
+                    document.getElementById('pt-links-errors').style.display = "block";
+                }
+            }
+            else{
+                document.getElementById('tm-spreadsheet').style.display = "block";
+                document.getElementById('pt-spreadsheet').style.display = "none";
+                document.getElementById('tm-errors').style.display = "block";
+                document.getElementById('pt-nodes-errors').style.display = "none";
+                document.getElementById('pt-links-errors').style.display = "none";
+            }
+            // $('#console-event').html('Toggle: ' + $(this).prop('checked'))
+        })
+    })
+</script>
+
+<script>
+    const serverAddr = "http://185.211.88.140:80/v1/";
+    let userId = null;
+    if(localStorage.getItem("userId")){
+        userId = localStorage.getItem("userId");
+    }
+    var ptData = {}
+    var tmData = {}
+    var tmOtherData = {}
+    var ptOtherData = {}
+    getPtData(localStorage.getItem('ptId'),null);
+    getTmData(localStorage.getItem('tmId'),null);
+    function getPtData (ptId,version=null){
+        let loadQuery = {
+            id: {
+                value: ptId
+            },
+            version: {
+                value: version
+            }
+        }
+
+        if(version == null) {
+            delete loadQuery["version"];
+        }
+        const request = {
+            url: serverAddr + "physical_topologies/" + userId,
+            method: 'GET',
+            query: loadQuery,
+            headers: {
+                'accept': 'application/json',
+            },
+        };
+        (async () => {
+            try {
+                await SwaggerClient.http(request).then(response => {
+                    if (response.status === 200) {
+                        ptData["physical_topology"] = response.body[0].data;
+                        ptOtherData = response.body[0];
+                        delete ptOtherData["data"];
+                    }
+                })
+            } catch (error) {
+                if(error.statusCode === 409)
+                    toastr.error(error.response.body.error_msg)
+                    // alert("name is duplicate, please choose another name")
+                if(error.statusCode === 400)
+                    toastr.error(JSON.stringify(error.response.body.detail))
+                    // alert(error.response.body.detail)
+                // console.log(error.response);
+            } finally {
+                // clearTimeout(timeout);
+            }
+        })();
+    }
+
+    function getTmData (tmId, version){
+        let loadQuery = {
+            id: {
+                value: tmId
+            },
+            version: {
+                value: version
+            }
+        }
+        if(version == null) {
+            delete loadQuery["version"];
+        }
+        const request = {
+            url: serverAddr + "traffic_matrices/" + userId,
+            method: 'GET',
+            query: loadQuery,
+            headers: {
+                'accept': 'application/json',
+            },
+        };
+        (async () => {
+            try {
+                await SwaggerClient.http(request).then(response => {
+                    if (response.status === 200) {
+                        tmData["traffic_matrix"] = response.body[0].data;
+                        tmOtherData = response.body[0];
+                        delete tmOtherData["data"];
+                        initTableView();
+                    }
+                });
+            } catch (error) {
+                if(error.statusCode === 409)
+                    toastr.error(error.response.body.error_msg)
+                // alert("name is duplicate, please choose another name")
+                if(error.statusCode === 400)
+                    toastr.error(JSON.stringify(error.response.body.detail))
+                // console.log(error.response);
+            } finally {
+                // clearTimeout(timeout);
+            }
+        })();
+
+    }
+</script>
+<!--<p>Log:</p>-->
+<!--<div id='log' style='background-color:#c7eaff; border-radius:2px; color:#000; padding:20px'></div>-->
+<script>
+var tmSheet;
+function initTableView() {
+    var ptNodesData = [];
+    for (const data of ptData.physical_topology.nodes) {
+        const newDataObj = Object.keys(data).reduce((object, key) => {
+            if (!key.includes("error")) {
+                object[key] = data[key]
+            }
+            return object
+        }, {})
+        ptNodesData.push(newDataObj);
+    }
+
+    var ptNodeNames = [];
+    for (const data of ptData.physical_topology.nodes) {
+        const newDataObj = Object.keys(data).reduce((object, key) => {
+            if (key === "name") {
+                object[key] = data[key]
+            }
+            return object
+        }, {})
+        ptNodeNames.push(newDataObj.name);
+    }
+
+    var ptLinksData = [];
+    // Object.keys(ptData.physical_topology.nodes)
+    for (const data of ptData.physical_topology.links) {
+        const newDataObj = Object.keys(data).reduce((object, key) => {
+            if (!key.includes("error")) {
+                object[key] = data[key]
+            }
+            return object
+        }, {})
+        ptLinksData.push(newDataObj);
+    }
+    // ptData.physical_topology.nodes.find()
+    var ptNodesDataArray = Object.entries(ptData.physical_topology.nodes);
+    var ptLinksDataArray = Object.entries(ptData.physical_topology.links);
+    let nodesKeyNames = {
+        '0': 'name',
+        '1': 'lat',
+        '2': 'lng',
+        '3': 'roadm_type'
+    }
+
+    let linksKeyNames = {
+        '0': 'source',
+        '1': 'destination',
+        '2': 'distance',
+        '3': 'fiber_type'
+    }
+
+
+    let tmKeyNames = {
+        '0': 'source',
+        '1': 'destination',
+        '2': 'restoration_type',
+        '3': 'protection_type',
+        '4': 'type'
+    }
+    var nodesChanged = function (instance, cell, x, y, value) {
+        // console.log(cell)
+
+        if ((errorData = cell.getAttribute("error_value")) !== undefined) {
+            let cellName = jexcel.getColumnNameFromId([x, y]);
+            let worksheet = document.getElementById('pt-spreadsheet').children[0].querySelector('.selected').getAttribute('data-spreadsheet');
+            if (errorData != null && errorData.includes("err_code:1")) {
+                if (/^[+]?([0-9]{1,2})*[.]([0-9]{1,10})?$/.test(value)) {
+                    document.getElementById('pt-spreadsheet').jexcel[worksheet].setComments(cellName, "");
+                    cell.style.backgroundColor = 'white';
+                    if ((element = document.getElementById("node" + cellName + "_a")) !== null) {
+                        element.remove();
+                    }
+                } else if ($(`#node${cellName}_a`).length == 0) {
+                    document.getElementById('pt-spreadsheet').jexcel[worksheet].setComments(cellName, errorData);
+                    cell.style.backgroundColor = 'red';
+                    let newA = document.createElement('a');
+                    newA.href = "#node" + cellName;
+                    newA.setAttribute("id", "node" + cellName + "_a")
+                    let newspan = document.createElement('span');
+                    newspan.innerHTML = cell.getAttribute("error_value");
+                    newA.appendChild(newspan);
+                    newLine = document.createElement('br');
+                    document.getElementById('pt-nodes-errors').appendChild(newA).appendChild(newLine);
+                    $('#submit-pt-errors-fixed').prop("disabled", true);
+                }
+            } else if (errorData != null && errorData.includes("err_code:2") && value != "") {
+                // let worksheet = document.getElementById('spreadsheet')
+                // worksheet.jexcel.setComments(cellName, "");
+                document.getElementById('pt-spreadsheet').jexcel[worksheet].setComments(cellName, "");
+                cell.style.backgroundColor = 'white';
+                if ((element = document.getElementById("node" + cellName + "_a")) !== null) {
+                    element.remove();
+                }
+            }
+            // $('#log').append('New change on cell ' + cellName + ' to: ' + value + '<br>');
+        }
+        if ($('#pt-links-errors')[0].childElementCount == 0 && $('#pt-nodes-errors')[0].childElementCount == 0) {
+            $('#submit-pt-errors-fixed').prop("disabled", false);
+        }
+    }
+
+    var linksChanged = function (instance, cell, x, y, value) {
+        // console.log(cell)
+
+        if ((errorData = cell.getAttribute("error_value")) !== undefined) {
+            let cellName = jexcel.getColumnNameFromId([x, y]);
+            let worksheet = document.getElementById('pt-spreadsheet').children[0].querySelector('.selected').getAttribute('data-spreadsheet');
+            if (errorData != null && errorData.includes("err_code:4")) {
+
+                if (/^[+-]?\d+(\.\d+)?$/.test(value)) {
+                    document.getElementById('pt-spreadsheet').jexcel[worksheet].setComments(cellName, "");
+                    cell.style.backgroundColor = 'white';
+                    if ((element = document.getElementById("link" + cellName + "_a")) !== null) {
+                        element.remove();
+                    }
+                } else if ($(`#link${cellName}_a`).length == 0) {
+                    document.getElementById('pt-spreadsheet').jexcel[worksheet].setComments(cellName, errorData);
+                    cell.style.backgroundColor = 'red';
+                    let newA = document.createElement('a');
+                    newA.href = "#link" + cellName;
+                    newA.setAttribute("id", "link" + cellName + "_a")
+                    let newspan = document.createElement('span');
+                    newspan.innerHTML = cell.getAttribute("error_value");
+                    newA.appendChild(newspan);
+                    newLine = document.createElement('br');
+                    document.getElementById('pt-links-errors').appendChild(newA).appendChild(newLine);
+                    $('#submit-pt-errors-fixed').prop("disabled", true);
+                }
+            } else if (errorData != null && errorData.includes("err_code:3") && value != "") {
+                // let worksheet = document.getElementById('spreadsheet')
+                // worksheet.jexcel.setComments(cellName, "");
+                document.getElementById('pt-spreadsheet').jexcel[worksheet].setComments(cellName, "");
+                cell.style.backgroundColor = 'white';
+                if ((element = document.getElementById("link" + cellName + "_a")) !== null) {
+                    element.remove();
+                }
+            }
+            // $('#log').append('New change on cell ' + cellName + ' to: ' + value + '<br>');
+        }
+        if ($('#pt-links-errors')[0].childElementCount == 0 && $('#pt-nodes-errors')[0].childElementCount == 0) {
+            $('#submit-pt-errors-fixed').prop("disabled", false);
+        }
+    }
+
+    var nodesFirstTimeLoad = true;
+    var linksFirstTimeLoad = true;
+
+    var nodesLoaded = function (instance) {
+        nodesFirstTimeLoad = false;
+    }
+    var linksLoaded = function (instance) {
+        linksFirstTimeLoad = false;
+    }
+
+    var sheets = [
+        {
+            sheetName: 'Nodes',
+            data: ptNodesData,
+            tableOverflow: true,
+            // lazyLoading: true,
+            // tableWidth: '100%',
+            tableHeight: '70%',
+            columns: [
+                {
+                    type: 'text',
+                    width: '100px',
+                    title: 'node name',
+                    name: 'name'
+                },
+                {
+                    type: 'numeric',
+                    decimal: '.',
+                    width: '100px',
+                    title: 'latitude',
+                    name: 'lat'
+                },
+                {
+                    type: 'numeric',
+                    decimal: '.',
+                    width: '100px',
+                    title: 'longitude',
+                    name: 'lng'
+                },
+                {
+                    type: 'dropdown',
+                    width: '150px',
+                    source: ['Directionless', 'CDC'],
+                    title: 'roadm type',
+                    name: 'roadm_type'
+                },
+            ],
+            allowComments: true,
+            // persistance: '/jexcel/v4/save',
+            onchange: nodesChanged,
+            // onload: nodesLoaded,
+            updateTable: function (instance, cell, col, row, val, label, cellName) {
+                if ((value = ptNodesDataArray[row][1][nodesKeyNames[col] + "_error"]) !== undefined) {
+                    var newA = document.createElement('a');
+                    newA.href = "#node" + cellName;
+                    newA.setAttribute("id", "node" + cellName + "_a")
+                    var newspan = document.createElement('span');
+                    newspan.innerHTML = value;
+                    newA.appendChild(newspan);
+                    newLine = document.createElement('br');
+                    document.getElementById('pt-nodes-errors').appendChild(newA).appendChild(newLine);
+                    cell.setAttribute('id', "node" + cellName);
+                    cell.setAttribute("error_value", value);
+                    cell.style.backgroundColor = 'red';
+                    instance.jexcel.setComments(cellName, value);
+                }
+                // else if (nodesFirstTimeLoad) {
+                //     instance.jexcel.setReadOnly(cellName, true);
+                // }
+                // cell.style.overflow = 'hidden';
+            },
+            onevent: function () {
+                // console.log(arguments);
+            }
+        },
+        {
+            sheetName: 'Links',
+            data: ptLinksData,
+            tableOverflow: true,
+            // lazyLoading: true,
+            // tableWidth: '100%',
+            tableHeight: '70%',
+            columns: [
+                {
+                    type: 'autocomplete',
+                    width: '130px',
+                    source: ptNodeNames,
+                    title: 'source node',
+                    name: 'source'
+                },
+                {
+                    type: 'autocomplete',
+                    width: '130px',
+                    source: ptNodeNames,
+                    title: 'destination node',
+                    name: 'destination'
+                },
+                {
+                    type: 'numeric',
+                    decimal: '.',
+                    width: '100px',
+                    title: 'distance',
+                    name: 'distance'
+                },
+                {
+                    type: 'text',
+                    // type: 'dropdown',
+                    width: '100px',
+                    // source: ['sm'],
+                    title: 'fiber type',
+                    name: 'fiber_type'
+                },
+            ],
+            allowComments: true,
+            // persistance: '/jexcel/v4/save',
+            onchange: linksChanged,
+            // onload: linksLoaded,
+            updateTable: function (instance, cell, col, row, val, label, cellName) {
+                if ((value = ptLinksDataArray[row][1][linksKeyNames[col] + "_error"]) !== undefined) {
+                    var newA = document.createElement('a');
+                    newA.setAttribute("id", "link" + cellName + "_a")
+                    newA.href = "#link" + cellName;
+                    var newspan = document.createElement('span');
+                    newspan.innerHTML = value;
+                    newA.appendChild(newspan);
+                    newLine = document.createElement('br');
+                    document.getElementById('pt-links-errors').appendChild(newA).appendChild(newLine);
+                    cell.setAttribute('id', "link" + cellName);
+                    cell.setAttribute("error_value", value);
+                    cell.style.backgroundColor = 'red';
+                    instance.jexcel.setComments(cellName, value);
+                }
+                // else if (linksFirstTimeLoad) {
+                //     instance.jexcel.setReadOnly(cellName, true);
+                // }
+                // cell.style.overflow = 'hidden';
+            },
+            onevent: function () {
+                // console.log(arguments);
+            }
+        }
+    ];
+    var ptExcel = jexcel.tabs(document.getElementById('pt-spreadsheet'), sheets);
+
+    document.getElementById('pt-spreadsheet').children[0].addEventListener('click', function () {
+        let selectedSheet = Number(document.getElementById('pt-spreadsheet').children[0].querySelector('.selected').getAttribute('data-spreadsheet'));
+        if (selectedSheet === 0) {
+            document.getElementById('pt-nodes-errors').style.display = "block";
+            document.getElementById('pt-links-errors').style.display = "none";
+        } else {
+            document.getElementById('pt-nodes-errors').style.display = "none";
+            document.getElementById('pt-links-errors').style.display = "block";
+        }
+    });
+
+
+    var tmDataArray = [];
+    for (const data of tmData.traffic_matrix.demands) {
+        const newDataObj = Object.keys(data).reduce((object, key) => {
+            if (!key.includes("error") && !key.includes("id") && !key.includes("services")) {
+                object[key] = data[key]
+            }
+            if (key.includes("services")) {
+                // object[key] = Object.keys(data[key]).map((key) => [obj[key]]);
+                // console.log(Object.values(data[key]))
+                for (var serviceData of Object.values(data[key])) {
+                    object[serviceData.type + "_quantity"] = serviceData.quantity;
+                }
+            }
+            return object
+        }, {})
+        // console.log(newDataObj)
+        tmDataArray.push(newDataObj);
+    }
+    var tmNodesDataArray = Object.entries(tmData.traffic_matrix.demands);
+    var columns = [
+        {
+            type: 'text',
+            width: '100px',
+            title: 'source node',
+            source: ptNodeNames,
+            name: 'source'
+        },
+        {
+            type: 'text',
+            width: '100px',
+            title: 'destination node',
+            source: ptNodeNames,
+            name: 'destination'
+        },
+        {
+            type: 'dropdown',
+            width: '100px',
+            source: ['None', 'JointSame', 'AdvJointSame'],
+            title: 'restoration type',
+            name: 'restoration_type'
+        },
+        {
+            type: 'dropdown',
+            width: '150px',
+            source: ['NoProtection', '1+1_NodeDisjoint', 'Restoration', 'PRC'],
+            title: 'protection type',
+            name: 'protection_type'
+        },
+        {
+            type: 'text',
+            width: '100px',
+            title: 'type',
+            name: 'type'
+        },
+    ]
+    var servicesType = ["E1", "STM1_E", "STM1_O", "STM4", "STM16", "STM64", "FE", "GE", "10GE", "100GE"]
+    for (const type of servicesType) {
+        columns.push(
+            {
+                type: 'text',
+                width: '100px',
+                title: type + ' quantity',
+                name: type + '_quantity'
+            }
+        )
+    }
+    var tmFirstTimeLoad = true;
+    var tmChanged = function (instance, cell, x, y, value) {
+        console.log(cell)
+
+        if ((errorData = cell.getAttribute("error_value")) !== undefined) {
+            if (errorData != null && errorData.includes("err_code:8")) {
+                if (/^[+-]?\d+(\.\d+)?$/.test(value)) {
+                    let cellName = jexcel.getColumnNameFromId([x, y]);
+                    let worksheet = document.getElementById('tm-spreadsheet')
+                    worksheet.jexcel.setComments(cellName, "");
+                    // let worksheet = document.getElementById('spreadsheet').children[0].querySelector('.selected').getAttribute('data-spreadsheet');
+                    // document.getElementById('spreadsheet').jexcel[worksheet].setComments(cellName, "");
+                    cell.style.backgroundColor = 'white';
+                    if ((element = document.getElementById("#tm" + cellName + "_a")) !== null) {
+                        element.remove();
+                    }
+                } else {
+                    let cellName = jexcel.getColumnNameFromId([x, y]);
+                    let worksheet = document.getElementById('tm-spreadsheet')
+                    worksheet.jexcel.setComments(cellName, errorData);
+                    cell.style.backgroundColor = 'red';
+                    let newA = document.createElement('a');
+                    newA.href = "#node" + cellName;
+                    newA.setAttribute("id", "#tm" + cellName + "_a")
+                    let newspan = document.createElement('span');
+                    newspan.innerHTML = cell.getAttribute("error_value");
+                    newA.appendChild(newspan);
+                    newLine = document.createElement('br');
+                    document.getElementById('tm-errors').appendChild(newA).appendChild(newLine);
+                }
+            } else if ((errorData != null && errorData.includes("err_code:7") || errorData != null && errorData.includes("err_code:6")) && value != "") {
+                let cellName = jexcel.getColumnNameFromId([x, y]);
+                // let worksheet = document.getElementById('spreadsheet')
+                // worksheet.jexcel.setComments(cellName, "");
+                let worksheet = document.getElementById('tm-spreadsheet')
+                worksheet.jexcel.setComments(cellName, "");
+                cell.style.backgroundColor = 'white';
+                if ((element = document.getElementById("#tm" + cellName + "_a")) !== null) {
+                    element.remove();
+                }
+            }
+            // $('#log').append('New change on cell ' + cellName + ' to: ' + value + '<br>');
+        }
+    }
+    var tmLoaded = function (instance) {
+        tmFirstTimeLoad = false;
+    }
+
+    tmSheet = jexcel(document.getElementById('tm-spreadsheet'), {
+        data: tmDataArray,
+        tableOverflow: true,
+        // lazyLoading: true,
+        tableWidth: '100%',
+        tableHeight: '70%',
+        freezeColumns: 2,
+        columns: columns,
+        // allowComments: true,
+        // persistance: '/jexcel/v4/save',
+        onchange: tmChanged,
+        // onload: tmLoaded,
+        updateTable: function (instance, cell, col, row, val, label, cellName) {
+            if (col <= 4 && (value = tmNodesDataArray[row][1][tmKeyNames[col] + "_error"]) !== undefined) {
+                let newA = document.createElement('a');
+                newA.href = "#tm" + cellName;
+                newA.setAttribute("id", "tm" + cellName + "_a")
+                let newspan = document.createElement('span');
+                newspan.innerHTML = value;
+                newA.appendChild(newspan);
+                newLine = document.createElement('br');
+                document.getElementById('tm-errors').appendChild(newA).appendChild(newLine);
+                cell.setAttribute('id', "tm" + cellName);
+                cell.setAttribute("error_value", value);
+                cell.style.backgroundColor = 'red';
+                instance.jexcel.setComments(cellName, value);
+            } else if (col > 4) {
+                for (const service of tmNodesDataArray[row][1]['services']) {
+                    if (service.type === servicesType[col - 5] && (value = service.quantity_error) !== undefined) {
+                        let newA = document.createElement('a');
+                        newA.href = "#tm" + cellName;
+                        newA.setAttribute("id", "tm" + cellName + "_a")
+                        let newspan = document.createElement('span');
+                        newspan.innerHTML = value;
+                        newA.appendChild(newspan);
+                        newLine = document.createElement('br');
+                        document.getElementById('tm-errors').appendChild(newA).appendChild(newLine);
+                        cell.setAttribute('id', "tm" + cellName);
+                        cell.setAttribute("error_value", value);
+                        cell.style.backgroundColor = 'red';
+                        instance.jexcel.setComments(cellName, value);
+                    }
+                }
+            }
+            // if (readonlyCell && tmFirstTimeLoad) {
+            //     instance.jexcel.setReadOnly(cellName, true);
+            // }
+            // cell.style.overflow = 'hidden';
+        },
+        // onevent: function () {
+        //     console.log(arguments);
+        // }
+    })
+    document.getElementById('download').onclick = function () {
+        console.log((tmSheet.getJson()));
+        console.log(JSON.stringify(tmSheet.getData()));
+    }
+
+    $('a[href*="#"]')
+        // Remove links that don't actually link to anything
+        .not('[href="#"]')
+        .not('[href="#0"]')
+        .click(function(event) {
+            // On-page links
+            if (
+                location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '')
+                &&
+                location.hostname == this.hostname
+            ) {
+                // Figure out element to scroll to
+                var target = $(this.hash);
+                target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+                // Does a scroll target exist?
+                if (target.length) {
+                    // Only prevent default if animation is actually gonna happen
+                    event.preventDefault();
+                    $('html, body').animate({
+                        scrollTop: target.offset().top
+                    }, 0, function() {
+                        // Callback after animation
+                        // Must change focus!
+                        var $target = $(target);
+                        $target.focus();
+                        if ($target.is(":focus")) { // Checking if the target was focused
+                            return false;
+                        } else {
+                            $target.attr('tabindex','-1'); // Adding tabindex for elements not focusable
+                            $target.focus(); // Set focus again
+                        };
+                    });
+                }
+            }
+        });
+
+}
+
+
+async function submitPtExcelFixed(){
+    let ptDataForSubmit = {
+        "comment": ptOtherData["comment"],
+        "name": ptOtherData["name"],
+        "id" : localStorage.getItem('ptId'),
+        "physical_topology": {
+            "links": document.getElementById('pt-spreadsheet').jexcel[1].getJson(),
+            "nodes": document.getElementById('pt-spreadsheet').jexcel[0].getJson()
+        }
+    }
+    await createOrUpdate("physical_topologies/","update", ptDataForSubmit)
+        .then(function(result){
+            // sendEvent('#create-project-modal-5', 3,"Continue",true)
+            // $('#pt-error-excel').modal('hide');
+            toastr.success("successfully import Physical Topology excel file")
+            // alert("successfully import Physical Topology excel file")
+            // localStorage.setItem('oncreate-pt-id',result.body.id);
+            // document.getElementById('back-step-3').style.display = "none";
+            // console.log(ptDrawValues)
+        })
+        .catch(function(error){
+            if(error.statusCode === 409) {
+                // alert("name is duplicate, please choose another name")
+                let element = document.getElementById('pt-name');
+                element.setCustomValidity(error.response.body.error_msg)
+                element.reportValidity()
+                // return;
+            }
+            if(error.statusCode === 400)
+                toastr.error(JSON.stringify(error.response.body.detail))
+            // console.log(error.response)
+        });
+    // var ptDrawValues = createOrUpdate("physical_topologies/","create", formData);
+    // console.log(ptDrawValues)
+
+    console.log(ptDataForSubmit);
+}
+
+async function submitTmExcelFixed(){
+    let ptDataForSubmit = {}
+    ptDataForSubmit = createTmForSubmit();
+    await createOrUpdate("traffic_matrices/","update", ptDataForSubmit)
+        .then(function(result){
+            // sendEvent('#create-project-modal-5', 5,"Continue",true)
+            // $('#tm-error-excel').modal('hide');
+            toastr.success("successfully import Traffic Matrix excel file")
+            // alert("successfully import Traffic Matrix excel file")
+            // localStorage.setItem('oncreate-tm-id',result.body.id);
+            // document.getElementById('back-step-5').style.display = "none";
+            // console.log(ptDrawValues)
+        })
+        .catch(function(error){
+            if(error.statusCode === 409) {
+                // alert("name is duplicate, please choose another name")
+                let element = document.getElementById('pt-name');
+                element.setCustomValidity(error.response.body.error_msg)
+                element.reportValidity()
+                // return;
+            }
+            if(error.statusCode === 400)
+                toastr.error(error.response.body.error_msg)
+                // alert(error.response.body.error_msg)
+            // console.log(error.response)
+        });
+    // var ptDrawValues = createOrUpdate("physical_topologies/","create", formData);
+    // console.log(ptDrawValues)
+    // exportToJsonFile();
+
+    // console.log(ptDataForSubmit);
+}
+function createTmForSubmit(){
+
+    let tmDataForSubmit = {
+        "comment": tmOtherData["comment"],
+        "name": tmOtherData["name"],
+        "id" : localStorage.getItem('tmId'),
+        "traffic_matrix": {
+            "demands": []
+        }
+    }
+    var servicesType = ["E1","STM1_E","STM1_O","STM4","STM16","STM64","FE","GE","10GE","100GE"]
+    let demandIndex = 0;
+    for(const demand of tmSheet.getJson() ){
+        const newDataObj = Object.keys(demand).reduce((object, key) => {
+            if(new RegExp(servicesType.join("|")).test(key)) {
+                if (demand[key] != '' ) {
+                    if (('services' in object) == false){
+                        object["services"] = []
+                    }
+                    let serviceType = key.substring(0, key.lastIndexOf("_"))
+                    let serviceKey =  key.substring(key.lastIndexOf("_")+1, key.length)
+
+                    if(object["services"].find( p => p.type === serviceType) != undefined){
+                        object["services"].find( p => p.type === serviceType && ( p[serviceKey] = demand[key] , true ) );
+                    }
+                    else{
+                        object["services"].push({
+                            'type' : serviceType
+                        })
+                        object["services"].find( p => p.type === serviceType && ( p[serviceKey] = demand[key] , true ) );
+                    }
+                    // object["services"][serviceKey] = demand[key]
+                }
+            }else{
+                object[key] = demand[key];
+            }
+            return object
+        }, {})
+        newDataObj["id"] = demandIndex++;
+        tmDataForSubmit["traffic_matrix"]["demands"].push(newDataObj);
+    }
+    console.log(tmDataForSubmit)
+
+    return tmDataForSubmit;
+
+
+}
+
+function submitExcelData(){
+    submitPtExcelFixed();
+    submitTmExcelFixed();
+
+}
+
+
+function createOrUpdate(elementPath, mode, data){
+    return new Promise(function(resolve, reject){
+        const request = {
+            url: serverAddr + elementPath + userId,
+            method: mode == "create" ? "POST" : "PUT",
+            body: JSON.stringify(data),
+            headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+        };
+        (async () => {
+            try {
+                await SwaggerClient.http(request).then(response => {
+                    if (response.status === 201) {
+                        resolve(response);
+                    }
+                });
+            } catch (error) {
+                reject(error);
+            } finally {
+                // clearTimeout(timeout);
+            }
+        })();
+    });
+}
+
+</script>
+</html>

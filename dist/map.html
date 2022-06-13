@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Access-Control-Allow-Origin" content="*"/>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <script src="services/callServices/callServices.js"></script>
+    <script src="util/login/getToken.js"></script>
+    <script src="util/fromAlizadeProject/getLightPath.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="./popper.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="./extensions/filter-control/table/bootstrap-table.min.css">
+    <link rel="stylesheet" type="text/css" href="./extensions/filter-control/bootstrap-table-filter-control.css">
+    <script src="./extensions/filter-control/table/bootstrap-table.min.js"></script>
+    <script src="./extensions/filter-control/bootstrap-table-filter-control.js"></script>
+    <script src="./js/toastr/download.min.js"></script>
+
+    <script>
+        let accessToken = null;
+        // var userData = {
+        //     "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbWlyIiwiZXhwIjoxNjQ5NzIwNjE5fQ.DYJdtNOu7rDyxXlujQqVEKc9nmDTey7NRPCuwRGiwz0",
+        //     "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbWlyIiwiZXhwIjoxNjk2NTE5NDg1LCJyZWZyZXNoIjp0cnVlfQ.jt0nAEgI7yWa82W1Z4rfRbIcTrGv4vSuhLYGa9u7h84",
+        //     "expire": 15600000,
+        //     "token_type": "bearer"
+        // }
+
+        // localStorage.setItem('userData', JSON.stringify(userData));
+
+        // localStorage.setItem('userData', JSON.stringify(userData));
+        // call from util/fromAlizadeProject/getLightPath.js file
+        if (localStorage.getItem("userData")) {
+            console.log('******* we have userData *******');
+            var userData = JSON.parse(localStorage.getItem("userData"));
+            let url = window.location.href;
+            const params = new URL(url).searchParams;
+            for (let p of params) {
+                if (p[0] === 'lightpath') {
+                    console.log('we have param lightPath')
+                    get_RWA_Path();
+                }
+            }
+        } else {
+            window.location.href = window.location.href + "/login.html";
+            alert("you must login first");
+        }
+    </script>
+    <script>
+        L_NO_TOUCH = false;
+        L_DISABLE_3D = false;
+    </script>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="leaflet.css"/>
+    <link rel="stylesheet" href="MainMap_style.css"/>
+    <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"
+          rel="stylesheet" media="all">
+    <link rel="stylesheet" href="leaflet.contextmenu.css"/>
+
+    <link href="bootstrap4-toggle.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="map.css">
+    <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <link rel="stylesheet" href="offline-theme-slide-indicator.css">
+    <link rel="stylesheet" href="offline-language-english-indicator.css">
+    <link rel="stylesheet" href="jquery-ui.css">
+    <link rel="stylesheet" href="all.min.css">
+    <link rel="stylesheet" href="side-navbar.css">
+    <link rel="stylesheet" href="./js/toastr/toastr.min.css">
+    <link rel="stylesheet" href="./js/jquery-confirm/jquery-confirm.min.css">
+    <style>
+        #msgComment {
+            visibility: hidden;
+            font-size: 12px;
+            color: red;
+        }
+
+        .table-bordered td, .table-bordered th {
+            border: 1px solid #dee2e6;
+            font-size: 15px !important;
+        }
+
+        .active {
+            border: 2px solid gray;
+        }
+
+        legend {
+            background-color: #000;
+            color: #fff;
+            padding: 3px 6px;
+            font-size: 1.1em;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1.5fr 0.5fr;
+            grid-template-rows: 1fr;
+            gap: 5px 5px;
+
+            max-height: 69vh;
+            max-width: inherit;
+
+            grid-template-areas:
+                "excel-view error-box-view";
+        }
+
+        .excel-view {
+            grid-area: excel-view;
+        }
+
+        .error-box-view {
+            grid-area: error-box-view;
+        }
+
+        /*.pt-spreasheet-panel{*/
+        /*    max-height:500px;*/
+        /*    overflow-y: scroll;*/
+        /*}*/
+        /*.tm-spreasheet-panel{*/
+        /*    max-height:500px;*/
+        /*    max-width:700px;*/
+        /*    overflow-x:scroll;*/
+        /*    overflow-y: scroll;*/
+        /*}*/
+        /*When the modal fills the screen it has an even 2.5% on top and bottom*/
+        /*Centers the modal*/
+        .modal-dialog {
+            margin: 2.5vh auto;
+        }
+
+        /*Sets the maximum height of the entire modal to 95% of the screen height*/
+        .modal-content {
+            max-height: 95vh;
+            /*overflow: scroll;*/
+            text-align: center;
+        }
+
+        /*Sets the maximum height of the modal body to 90% of the screen height*/
+        .modal-body {
+            max-height: 90vh;
+        }
+
+        /*Sets the maximum height of the modal image to 69% of the screen height*/
+        .modal-body img {
+            max-height: 69vh;
+        }
+    </style>
+    <style>
+        .awesome-marker i {
+            font-size: 15px;
+        }
+
+        .btnClose {
+            font-size: 30px;
+        }
+
+        .tableview-error-box {
+            background-color: lightgrey;
+            width: auto;
+            border: 5px solid green;
+            padding: 5px;
+            margin-bottom: 3px;
+            margin-left: 3px;
+            min-width: 60vh;
+            height: 15vh;
+            overflow-x: auto;
+            position: absolute;
+            bottom: 1px;
+        }
+
+        .tableview-tm-spreasheet-panel {
+            max-height: 70%;
+            /*overflow-y: auto;*/
+            width: 95%;
+        }
+
+        .tableview-pt-spreasheet-panel {
+            max-height: 70%;
+            /*overflow-y: auto;*/
+            width: 95%;
+        }
+
+        .jexcel_content::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        /**************/
+
+        .toggle.btn {
+            margin: 15px 0;
+            min-width: 5.7rem;
+            min-height: 3.15rem;
+        }
+
+        /*************************/
+        .error-box {
+            background-color: lightgrey;
+            width: max-content;
+            border: 5px solid green;
+            padding: 5px;
+            margin: 10px;
+            min-width: 100%;
+            max-width: fit-content;
+            min-height: 15%;
+            max-height: 60%;
+            overflow-x: auto;
+        }
+
+        .tm-spreasheet-panel {
+            max-height: 70%;
+            /*overflow-y: auto;*/
+            width: 80%;
+        }
+
+        .pt-spreasheet-panel {
+            /*overflow-y: auto;*/
+            width: 80%;
+        }
+
+        .jexcel_content::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        .custom-dropdown {
+            top: -50px !important;
+            left: 150px !important;
+        }
+
+        .dropdown {
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            width: 124px !important;
+        }
+
+        .dropdown-menu {
+            min-width: 123px !important;
+        }
+
+        #grooming-list-table .dropdown-toggle::after {
+            margin-left: 10px !important;
+        }
+
+        .dropdown-toggle::after {
+            display: inline-block;
+            margin-left: 130px;
+            margin-top: 12px;
+            vertical-align: .255em;
+            content: "";
+            -webkit-transform: rotate(270deg);
+            transform: rotate(270deg);
+            border-top: .3em solid;
+            border-right: .3em solid transparent;
+            border-bottom: 0;
+            border-left: .3em solid transparent;
+        }
+
+        .history-btnbox {
+            /*position: relative;*/
+            z-index: 1050;
+            right: -64px;
+            padding: 1px;
+            transform: rotate(-90deg) translate(0, -100%);
+            transform-origin: 0% 0;
+            position: absolute;
+            top: 80%;
+            visibility: hidden;
+        }
+
+        .logout-btnbox {
+            /*position: relative;*/
+            z-index: 1050;
+            right: 15px;
+            padding: 1px;
+            /*transform: rotate(-90deg) translate(0, -100%);*/
+            transform-origin: 0% 0;
+            position: absolute;
+            top: 10px;
+            /*background-color: #b92a2a;*/
+            /*border-color: #000000;*/
+            color: white;
+        }
+
+        .project-info-box {
+            text-shadow: 0 0 3px #FF0000;
+            z-index: 1050;
+            left: 30%;
+            font-size: larger;
+            padding: 1px;
+            transform-origin: 0% 0;
+            position: absolute;
+            top: 5px;
+            border-color: #000000;
+            color: black;
+            font-weight: 600;
+        }
+
+        /*.smoothScroll {*/
+        /*    text-decoration: none;*/
+        /*}*/
+        .focus {
+            /*border:2px solid black !important;*/
+            box-shadow: 0px 0px 0px 2px #000;
+        }
+
+        /* grooming Modal  */
+        #grooming-form {
+            margin-top: 10px;
+        }
+
+        #grooming-form .labelSelect {
+            font-size: 13px;
+            margin-left: 3px;
+            color: #ce434f;
+        }
+
+        .algorithm {
+            display: flex;
+            flex-direction: row;
+            align-items: baseline;
+        }
+
+        .algorithm .title-modal-algorithm {
+            font-size: 18px;
+            margin-right: 6px;
+            padding: 2px 5px;
+            font-weight: bold;
+        }
+
+        .custom-select {
+            margin-bottom: 12px;
+        }
+
+        .radio {
+            font-weight: bold;
+            font-size: 15px;
+            padding: 0px 2px;
+        }
+
+        input {
+            margin: 10px 0px;
+        }
+
+        .clusters .panel-heading {
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            height: 38px;
+            margin: 10px 0px;
+            background-color: white;
+        }
+
+        .clusters .panel-heading:hover {
+            background-color: whitesmoke;
+            cursor: pointer;
+        }
+
+        .clusters .panel-heading a {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #34334e;
+            padding: 0.375rem 22.75rem .375rem .75rem;
+            height: 100%;
+        }
+
+        .clusters .panel-heading a:hover {
+            text-decoration: none;
+        }
+
+        .panel-collapse {
+            margin-top: -10px;
+            border: 1px solid #ced4da;
+            border-radius: 0px 0px 0.25rem 0.25rem;
+            border-top: 1px solid transparent;
+            margin-bottom: 10px;
+            background-color: white;
+        }
+
+        .panel-collapse #panel-body {
+            width: 100%;
+            padding: .375rem 1.75rem .375rem .75rem;
+        }
+
+        .panel-collapse #panel-body .form-check {
+            margin: 10px 0px;
+            font-size: 14px;
+            font-weight: bold;
+            font-family: system-ui;
+            line-height: 1.5;
+            color: #03264c;
+            vertical-align: middle;
+            padding: 5px 1.25rem;
+            border-bottom: 1px solid #ced4da;
+        }
+
+        .radio input {
+            margin-right: 5px;
+            width: 15px;
+            height: 15px;
+        }
+
+
+        /* RWA Modal */
+        #rwa-modal .modal-body {
+            text-align: left;
+        }
+
+        #rwa-modal label {
+            margin: 0px 4px;
+        }
+
+        /* Modal:Table show list of lightpath  */
+        table tbody tr {
+            text-align: center;
+        }
+
+        .btn-link:focus {
+            border: 1px solid transparent !important;
+            outline: 1px solid transparent !important;
+            box-shadow: none !important;
+            color: #676c75 !important;
+        }
+
+
+        #modal_lighpath_table {
+            height: 495px !important;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        #modal_lighpath_table #rwa-lightpath-list .card .card-header:hover {
+            background-color: rgba(0, 0, 0, .2);
+        }
+
+        #modal_lighpath_table #rwa-lightpath-list .card .card-body {
+            padding: 0px !important;
+        }
+
+        #modal_lighpath_table #rwa-lightpath-list .btn-link {
+            text-decoration: none;
+            color: rgb(24, 20, 20);
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 30px;
+        }
+
+        #modal_lighpath_table #rwa-lightpath-list table {
+            font-size: 12px;
+            color: black;
+        }
+
+        #modal_lighpath_table #rwa-lightpath-list table td {
+            color: rgb(187, 29, 61);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .lighpath_table {
+            position: absolute;
+            top: 322px;
+            right: 135px;
+            width: 498px;
+            height: 580px;
+            background-color: #fff;
+            border: 1px solid rgba(0, 0, 0, .2);
+            box-shadow: 0px 0px 3px rgba(0, 0, 0, .2);
+            border-radius: .3rem;
+            outline: 0;
+            z-index: 999999;
+            visibility: hidden;
+        }
+
+        .lighpath_table .modal-header {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            margin: 0px 12px;
+            padding: 10px;
+        }
+
+        .lighpath_table .modal-header .btn-close-table-lightpath {
+            font-size: 32px;
+        }
+
+        /* #grooming-list-modal*/
+        #grooming-list-modal .modal-dialog .modal-body .filter-part {
+            display: flex;
+            flex-direction: row;
+            align-items: baseline;
+            justify-content: space-between;
+        }
+
+        #grooming-list-modal .modal-dialog .modal-body .selectedFilter {
+            display: flex;
+            flex-direction: row;
+            align-items: baseline;
+        }
+
+        #grooming-list-modal .modal-dialog .modal-body .selectedFilter label {
+            width: 300px;
+            font-size: 17px;
+            font-weight: 700;
+            padding-right: 14px;
+        }
+
+        #grooming-list-modal .modal-dialog .ClustersInfo {
+            display: flex;
+            visibility: hidden;
+            justify-content: space-between;
+            width: 417px;
+            height: 38px;
+            text-align: left;
+            margin-left: -30rem;
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+        }
+
+
+        #grooming-list-table {
+            margin: 1rem 0px;
+            padding-bottom: 30px !important;
+        }
+
+        #grooming-list-table #ClusterNameSelected {
+            width: 100%;
+        }
+
+        .dropdown-menu li a {
+            text-decoration: none;
+            color: black;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .dropdown-menu li a:hover {
+            color: chocolate;
+        }
+
+        /* popover */
+        .popover-header {
+            background: cornflowerblue !important;
+        }
+
+        .popover-body {
+            text-align: center;
+            font-size: 14px;
+            line-height: 35px;
+            padding: 10px;
+            font-weight: bolder;
+        }
+    </style>
+    <link rel="stylesheet" href="js/jexcel/jexcel.css" type="text/css"/>
+    <link rel="stylesheet" href="js/jexcel/jsuites.css" type="text/css"/>
+    <link rel="stylesheet" href="custom-styles.css" type="text/css"/>
+</head>
+
+<body>
+<div class="container">
+    <nav id="top-navbar" class="navbar navbar-expand-lg fixed-top navbar-light bg-light"
+         style="background-color: transparent !important;width:fit-content;left:40%!important;display:none;">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="nav navbar-nav">
+                <li id="table-view-toggler" class="nav-item" style="display: none">
+                    <a class="btn btn-primary btn-sm" style="margin: 5px" id="submisst-tm-errors-fixed" href="#"
+                       onclick="toggleMapTableview();">Table view</a>
+                </li>
+
+                <li id="draw-topology-toggler" class="nav-item" style="display: none">
+                    <button class="btn btn-primary btn-sm" id="draw-physicaltopology-btn" style="margin: 5px"
+                            onclick="topologyMenuHandler()">Draw / Edit
+                        Physical Topology
+                    </button>
+                </li>
+                <li id="add-designer-toggler" class="nav-item" style="display: none">
+                    <button type="button" class="btn btn-primary btn-sm" id="add-designer-toproject-btn"
+                            onclick="designerMenuHandler(event)" style="margin: 5px" autocomplete="off"
+                            data-toggle="modal" data-target="#desinger-modal">
+                        Designers
+                    </button>
+                </li>
+                <!--                <li class="nav-item"><button class="btn btn-primary btn-sm" style="margin: 5px" id="submisst-tm-errors-fixed" onclick="createTmForSubmit()">submit changes</button></li>-->
+            </ul>
+        </div>
+    </nav>
+</div>
+
+<button class="logout-btnbox button" style="display: none;" id="logout-btn" onclick="logoutUser()">
+        <span>
+        </span>
+</button>
+<span class="project-info-box" id="project-info-box"></span>
+
+<div class="pagecontainer">
+    <div class="map-container">
+        <div class="map-frame">
+            <div id="topology-map" style="display: block;">
+            </div>
+            <div id="tableview-frame" style="padding:1vh 2vh 0 4vh;overflow:hidden;border:none;display:none;">
+                <div class="row">
+                    <div class="col-sm-10">
+                        <div id="tableview-pt-spreadsheet" class="tableview-pt-spreasheet-panel"></div>
+                        <div id="tableview-tm-spreadsheet" class="tableview-tm-spreasheet-panel"
+                             style="display:none;margin-top:45px;margin-bottom:45px;">
+                        </div>
+                    </div>
+                    <div class="col-sm-2" style="margin-top:50px;">
+                        <input id="tableview-toggle-spreadsheet" type="checkbox" data-size="sm" checked
+                               data-toggle="toggle" data-on="Physical<br>Topology" data-off="Traffic<br>Matrix"
+                               data-onstyle="success" data-offstyle="danger">
+                        <div id="tableview-commit-info" class="" style="display:block;margin-bottom: 15px;">
+                            <label for="tableview-comment">Comment:</label>
+                            <input type="text" autocomplete="off" id="tableview-comment"
+                                   class="form-control"></input>
+                        </div>
+                        <!--                        <input id="tableview-toggle-spreadsheet" style="margin-top:10px;" type="checkbox" checked data-toggle="toggle" data-on="Physical<br>Topology" data-off="Traffic<br>Matrix">-->
+                        <button id='tableview-submit-excel' class="btn btn-success"
+                                onclick="submitExcelData()">submit changes
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="pt-nodes-errors" class="tableview-error-box" style="float:left;"></div>
+                    <div id="pt-links-errors" class="tableview-error-box" style="float:left"></div>
+                    <div id="tm-errors" class="tableview-error-box" style="float: left; display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="side-buttons side-buttons-chat-container mobile-hide no-print" style="left: 0px;">
+    <ul>
+        <li class="side-close-icon">
+            <i class="fa fa-times"></i>
+        </li>
+
+        <li class="side-open-icon strong-hidden">
+            <i class="fa fa-chevron-right"></i>
+        </li>
+
+        <li class="side-buttons-14 page-help-icon">
+            <a href="" class="dropdown-toggle a" data-toggle="dropdown" role="button" aria-haspopup="true"
+               aria-expanded="false">
+                <span class="nav-label">Project manager</span><span class="custom-caret"></span></a>
+            <div class="dropdown-menu custom-dropdown" aria-labelledby="navbarDropdown">
+                <a type="button" class="dropdown-item" data-keyboard="false" data-backdrop="static"
+                   onclick="submitProject();">Save Project to Server</a>
+
+                <div class="dropdown-divider"></div>
+                <a type="button" id="create-project-nav-btn" class="dropdown-item"
+                   onclick="setCreateProjectStatus();" data-keyboard="false" data-backdrop="static">Create
+                    Project</a>
+                <a type="button" class="dropdown-item" onclick="loadProjectList();" data-keyboard="false"
+                   data-backdrop="static">Load Project</a>
+                <a type="button" class="dropdown-item" onclick="delProjectList();" data-keyboard="false"
+                   data-backdrop="static">Delete Project</a>
+                <div class="dropdown-divider"></div>
+                <a type="button" class="dropdown-item" data-toggle="modal" data-target="#load-state"
+                   data-keyboard="false" data-backdrop="static">Import Project (offline)</a>
+                <a class="dropdown-item" onclick="exportToJsonFile();" href="#">Export Project (offline)</a>
+                <div class="dropdown-divider"></div>
+                <a type="button" class="dropdown-item" data-toggle="modal" data-target="#import-physical"
+                   data-keyboard="false" data-backdrop="static">Load
+                    Physical Topology File</a>
+                <a type="button" class="dropdown-item" data-toggle="modal" data-target="#import-matrix"
+                   data-keyboard="false" data-backdrop="static">Load
+                    Matrix Topology File</a>
+                <div class="dropdown-divider"></div>
+                <a type="button" class="dropdown-item" onclick="closeProject();">Close Project</a>
+            </div>
+        </li>
+
+        <li class="side-buttons-14 page-help-icon"><a href="#" class="dropdown-toggle a" data-toggle="dropdown"
+                                                      role="button" aria-haspopup="true" aria-expanded="false">
+            <span class="nav-label">Clustering Options</span><span class="caret"></span></a>
+            <div class="dropdown-menu custom-dropdown" aria-labelledby="navbarDropdown">
+                <a type="button" id="clustering-manual-btn" class="dropdown-item">Add Manual</a>
+                <a type="button" id="clustering-modal-list-buttton" class="dropdown-item"
+                   onclick="getAllClustring();" data-keyboard="false" data-backdrop="static">Clustering List</a>
+                <!-- <a type="button" id="clustering-auto-btn" class="dropdown-item">Automatic</a> -->
+            </div>
+        </li>
+
+        <li class="side-buttons-14 page-help-icon"><a href="#" class="dropdown-toggle a" data-toggle="dropdown"
+                                                      role="button" aria-haspopup="true" aria-expanded="false">
+            <span class="nav-label">Grooming options</span><span class="caret"></span></a>
+            <div class="dropdown-menu custom-dropdown" aria-labelledby="navbarDropdown">
+                <button id="grooming-modal-list-buttton" type="button" class="dropdown-item"
+                        onclick="getAllGrooming();" data-keyboard="false" data-backdrop="static">
+                    Grooming List
+                </button>
+                <button id="grooming-modal-manual-buttton" type="button" class="dropdown-item" data-keyboard="false"
+                        data-backdrop="static">
+                    Start Manual
+                </button>
+                <button id="grooming-modal-auto-buttton" type="button" class="dropdown-item" data-toggle="modal"
+                        data-target="#grooming-modal" data-keyboard="false" data-backdrop="static"
+                        onclick="showClusterList()">
+                    Start Automatic
+                </button>
+            </div>
+        </li>
+
+        <li class="side-buttons-14 page-help-icon"><a href="#" data-keyboard="false" data-backdrop="static"
+                                                      class="dropdown-toggle a" data-toggle="dropdown" role="button"
+                                                      aria-haspopup="true"
+                                                      aria-expanded="false">
+            <span class="nav-label">RWA options</span><span class="caret"></span></a>
+            <div class="dropdown-menu custom-dropdown" aria-labelledby="navbarDropdown">
+                <button id="rwamodalButtton" type="button" class="dropdown-item" data-toggle="modal"
+                        data-target="#rwa-modal" data-keyboard="false" data-backdrop="static"
+                        onclick="check_running_rwa();">
+                    Start RWA
+                </button>
+                <button id="rwamodalListButtton" type="button" class="dropdown-item" onclick="getAllRWA();"
+                        data-toggle="modal" data-target="#rwa-list-modal" data-keyboard="false" data-backdrop="static">
+                    RWA List
+                </button>
+            </div>
+        </li>
+
+        <li class="side-buttons-14 page-help-icon"><a href="#" class="dropdown-toggle a" data-toggle="dropdown"
+                                                      role="button" aria-haspopup="true" aria-expanded="false">
+            <span class="nav-label">Export results</span><span class="caret"></span></a>
+            <div class="dropdown-menu custom-dropdown" aria-labelledby="navbarDropdown">
+                <a type="button" class="dropdown-item" onclick="export_grooming_results();"> Grooming results</a>
+                <a type="button" class="dropdown-item" onclick="export_rwa_results();">RWA results</a>
+                <a type="button" class="dropdown-item" onclick="export_full_details_xlsx();">Full details (.xlsx)</a>
+<!--                <a type="button" class="dropdown-item" onclick="export_full_details_xlsx();">Full detasddsdsfils (.xlsx)</a>-->
+            </div>
+        </li>
+
+    </ul>
+</div>
+
+<!-- Use any element to open the sidenav -->
+<!--<link rel="stylesheet" href="side-navbar.css">-->
+
+
+<!-- submit Project content-->
+<div id="submit-project" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="display: inline">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">submit project</h4>
+            </div>
+            <div class="modal-body">
+                <form class="" id="submit-project-form">
+                    <div class="form-row">
+                        <div class="form-group col-sm-12">
+                            <label for="submit-project-comment">Comment : </label>
+                            <input type="text" autocomplete="off" class="form-control" id="submit-project-comment"
+                                   name="comment">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-2 float-right">Submit</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Load state Project content-->
+<div id="load-state" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="display: inline">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Load state</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form class="form-inline" id="loadState">
+                        <div class="input-group mb-2 mr-sm-2">
+                            <input type="file" class="form-control-file" id="project-state-file"
+                                   name="project-file">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary mb-2">Import</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Load Project content-->
+<div id="load-project" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="display: inline">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Load Project</h4>
+            </div>
+            <div class="modal-body" id="project-list">
+                <div class="row"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Grooming-->
+<div id="grooming-modal" class="groomingModal modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="display: inline">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Grooming</h4>
+            </div>
+            <div class="modal-body" style="text-align: left;">
+                <div class="algorithm">
+                    <span class="title-modal-algorithm">Algorithm : </span>
+                    <div class="radio">
+
+                        <input type="radio" name="optradio" id="end_To_end" value="End to end"
+                               onclick="SelectAlgorithm()">
+                        <label for="end_To_end">End to End</label>
+
+                        <input type="radio" name="optradio" id="Advanced" value="Advanced"
+                               onclick="SelectAlgorithm()" class="ml-5">
+                        <label for="Advanced">Advanced</label>
+                    </div>
+                </div>
+
+                <form id="grooming-form">
+                    <div class="form-row">
+                        <div class="form-group col-sm-12">
+
+                            <!-- MP1H Threshold : -->
+                            <label for="grooming-mp1h-threshold" class="labelSelect">Mp1h Threshold: </label>
+                            <select name="MP1H" class="custom-select" id="grooming-mp1h-threshold"
+                                    name="mp1h_threshold" required>
+                                <option value="0">0</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="30">30</option>
+                                <option value="40">40</option>
+                                <option value="50">50</option>
+                                <option value="60">60</option>
+                                <option value="70" selected>70</option>
+                                <option value="80">80</option>
+                                <option value="90">90</option>
+                            </select>
+
+                            <!-- lineRate Threshold : -->
+                            <label for="grooming-lineRate-threshold" class="labelSelect">LineRate Threshold:
+                            </label>
+                            <select name="lineRate" class="custom-select" id="grooming-lineRate-threshold"
+                                    name="lineRate" required>
+                                <option value="40">40</option>
+                                <option value="100" selected>100</option>
+                                <option value="200">200</option>
+                            </select>
+
+                            <!-- Clusters : -->
+                            <div class="panel-group clusters">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" href="#collapseClusterList">ClusterLists</a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseClusterList" class="panel-collapse collapse">
+                                        <div id="panel-body">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input"
+                                                           value="NO Data">No Data
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Comment : -->
+                            <textarea type="text" autocomplete="off" class="form-control" id="grooming-comment"
+                                      name="comment" required placeholder="Comment"></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-2 float-right" id="btnSubmit" onclick="startEnd2EndGrooming()">Submit</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="grooming-list-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-xl" style="max-width: 80%;">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="display: inline">
+                <button onclick="close_modal('grooming-list-modal')" type="button" class="close" data-dismiss="modal"
+                        id="btn-close-grooming-list-modal">×
+                </button>
+                <h4 class="modal-title">Grooming list</h4>
+            </div>
+
+            <div class="modal-body" style="overflow-y: auto;max-height: 80vh !important;padding-bottom: 50px;"
+                 id="project-grooming-list">
+                <div class="filter-part">
+                    <div class="selectedFilter">
+                        <label>Selected Algorithm: </label>
+                        <select class="form-control" id="ExportTable">
+                            <option value="All"> All</option>
+                            <option value="End To end"> End To End</option>
+                            <option value="Advanced"> Advanced</option>
+                        </select>
+                    </div>
+
+                    <div class="ClustersInfo">
+                        <div>
+                            GateWays:
+                            <span id="ShowGateways" style="color: blue;">
+                                </span>
+                        </div>
+                        <div>
+                            SubNodes:
+                            <span id="ShowSubnodes" style="color: red;"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <table id="grooming-list-table" class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th data-field="PTVersion">PT Version</th>
+                        <th data-field="TMVersion">TM Version</th>
+                        <th data-field="StartDate">Start Date</th>
+                        <th data-field="EndDate">End Date</th>
+                        <th data-field="WithClustering">With Clustering</th>
+                        <th data-field="Clusters">Clusters</th>
+                        <th data-field="Mp1h_thershold">Mp1h_thershold</th>
+                        <th data-field="Comment">Comment</th>
+                        <th data-field="Algorithm">Algorithm</th>
+                        <th data-field="Actions">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+
+                <span id="msg"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ClustringList Modal -->
+<div id="clustring-list-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-xl" style="max-width: 80%;">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="display: inline">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Clustring list</h4>
+            </div>
+            <div class="modal-body" style="overflow-y: auto;max-height: 80vh !important;"
+                 id="project-clustring-list">
+                <table class="table table-bordered" id="clustring-list-table">
+                    <thead>
+                    <th scope="col">Name</th>
+                    <th scope="col">Gateways</th>
+                    <th scope="col">Subnodes</th>
+                    <th scope="col">color</th>
+                    <th scope="col">Actions</th>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- RWA Modal-->
+<div class="modal fade" id="rwa-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="selectedGrooming"></span>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <!-- <h4 id="modal-title"> </h4>-->
+            </div>
+            <div class="modal-body">
+                <form id='RW_Start'>
+                    <div id="accordion">
+                        <div class="card">
+                            <div class="card-header" id="headingOne">
+                                <h5 class="mb-0">
+                                    <span> RWA Start</span>
+                                </h5>
+                            </div>
+                            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
+                                 data-parent="#accordion">
+                                <div class="card-body">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label>modulation_type</label>
+                                            <select onchange="onchange_modulation_type()" name="modulation_type"
+                                                    id="modulation_type" class="form-control">
+                                                <option value="">--Please choose --</option>
+                                                <option value="BPSK">BPSK</option>
+                                                <option value="QPSK">QPSK</option>
+                                                <option value="8QAM">8QAM</option>
+                                                <option value="16QAM">16QAM</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label>algorithm</label>
+                                            <select onchange="onchange_algorithm()" name="algorithm" id="algorithm"
+                                                    class="form-control">
+                                                <option value="">--Please choose --</option>
+                                                <option value="Greedy">Greedy</option>
+                                                <option value="GroupILP">GroupILP</option>
+                                                <option value="ILP">ILP</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="shortest_path_k">shortest_path_k</label>
+                                            <input type="text" class="form-control" name="shortest_path_k"
+                                                   id="shortest_path_k" placeholder="0.2">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="restoration_k">restoration_k</label>
+                                            <input type="text" class="form-control" name="restoration_k"
+                                                   id="restoration_k" placeholder="4">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="noise_margin">noise_margin</label>
+                                            <input type="text" class="form-control" name="noise_margin"
+                                                   id="noise_margin" placeholder="3-7">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="trade_off">trade_off</label>
+                                            <input type="text" class="form-control" name="trade_off" id="trade_off"
+                                                   placeholder="4">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="iterations">iterations</label>
+                                            <input type="text" class="form-control" name="k" id="iterations"
+                                                   placeholder="3">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="group_size">group_size</label>
+                                            <input type="text" class="form-control" name="group_size"
+                                                   id="group_size" placeholder="80">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="history_window">history_window</label>
+                                            <input type="text" class="form-control" name="history_window"
+                                                   id="history_window" placeholder="2">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="comment">comment</label>
+                                            <input type="text" class="form-control" name="comment" id="comment"
+                                                   placeholder="type..." onchange="Call_running_rwa()">
+                                            <span id="msgComment">Please Enter Comment</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <input type="checkbox" id="enable_merge" name="enable_merge" value="">
+                                            <label for="enable_merge"><b>enable_merge</b></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-success btn-send-rwa"
+                        data-dismiss="modal" id="btn_rwa_start" onclick="running_rwa()">Send
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- RWAList Modal -->
+<div id="rwa-list-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-xl" style="max-width: 80%;">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="display: inline">
+                <button onclick="close_modal('rwa-list-modal')" type="button" class="close"
+                        data-dismiss="modal">&times;
+                </button>
+                <h4 class="modal-title">RWA list</h4>
+            </div>
+            <div class="modal-body" style="overflow-y: auto;max-height: 80vh !important;" id="project-rwa-list">
+                <table class="table table-bordered" id="rwa-list-table">
+                    <thead>
+                    <th scope="col">#</th>
+                    <th scope="col">PT version</th>
+                    <th scope="col">TM version</th>
+                    <th scope="col">Start Date</th>
+                    <th scope="col">End Date</th>
+                    <th scope="col">Algorithm</th>
+                    <!-- <th scope="col">With Clustering</th> -->
+                    <th scope="col">State</th>
+                    <th scope="col">Current</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Comment</th>
+                    <th scope="col">Actions</th>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!--  RWA_list: modal for show table of lighPath -->
+<div class="lighpath_table">
+    <div class="modal-header">
+        <h4 class="modal-title">lightPath list</h4>
+        <!-- <button type="button" class="btn btn-close-table-lightpath"
+            onclick="close_table_lightpath()">&times;</button> -->
+    </div>
+
+    <div id="modal_lighpath_table">
+        <div class="table-body" id="rwa-lightpath-list">
+            <!-- inner html html -->
+        </div>
+    </div>
+</div>
+
+
+<!-- Button trigger modal -->
+
+<!-- create Project-->
+<!--<div id="new-project" class="modal fade" role="dialog">-->
+<!--    <div class="modal-dialog">-->
+
+<!--        &lt;!&ndash; Modal content&ndash;&gt;-->
+<!--        <div class="modal-content">-->
+<!--            <div class="modal-header" style="display: inline">-->
+<!--                <button type="button" class="close" data-dismiss="modal">&times;</button>-->
+<!--                <h4 class="modal-title">Create Project</h4>-->
+<!--            </div>-->
+<!--            <div class="modal-body">-->
+<!--                <span>Physical Topologies</span>-->
+<!--                <div id="physical-from-server"></div>-->
+<!--                <div class="dropdown-divider"></div>-->
+<!--                <span>Matrix Traffics</span>-->
+<!--                <div id="matrix-from-server"></div>-->
+<!--            </div>-->
+<!--            <div class="modal-footer" style="display: flow-root !important;">-->
+<!--                <form class="form-inline" id="create-project">-->
+<!--                    <label class="" for="project-name">Project Name: </label>-->
+<!--                    <input type="text" class="form-control mb-2 mr-sm-2" id="project-name" name="name"-->
+<!--                           placeholder="Sample">-->
+
+<!--                    <button type="submit" id="createProjectBtn" class="btn btn-primary mb-2" disabled>Create</button>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--    </div>-->
+<!--</div>-->
+
+<!-- Import Physical Topology Modal content-->
+<div id="import-physical" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="display: inline">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Import Physical Topology</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form class="form-inline" id="ptdata">
+                        <!--                          action="http://desktop-5qi3b0c:5000/v1/physical_topologies/from_excel/">-->
+
+                        <label class="" for="topology-name">Name: </label>
+                        <input type="text" autocomplete="off" class="form-control mb-2 mr-sm-2" id="topology-name"
+                               name="name" placeholder="Sample">
+
+
+                        <div class="input-group mb-2 mr-sm-2">
+                            <input type="file" class="form-control-file" id="topology-file" name="pt_binary">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary mb-2">Import</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Import Matrix Topology Modal content-->
+<div id="import-matrix" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="display: inline">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Import Matrix Traffic</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form class="form-inline" id="matrixdata">
+                        <!--                          action="http://desktop-5qi3b0c:5000/v1/traffic_matrices/from_excel/">-->
+
+                        <label class="" for="matrix-name">Name: </label>
+                        <input type="text" autocomplete="off" class="form-control mb-2 mr-sm-2" id="matrix-name"
+                               name="name" placeholder="Sample">
+                        <div class="input-group mb-2 mr-sm-2">
+                            <input type="file" class="form-control-file" id="matrix-file" name="tm_binary">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary mb-2">Import</button>
+                    </form>
+                </div>
+            </div>
+            <!--            <div class="modal-footer">-->
+            <!--                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+            <!--            </div>-->
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="desinger-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="display: inline">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Designers Managment</h4>
+            </div>
+            <div class="modal-body">
+                <select class="form-control basicModalAutoSelect" name="simple_select"
+                        placeholder="type to search..." autocomplete="off"></select>
+                <button type="button" class="btn btn-primary btn-sm" style="margin-top:8px;display:none;"
+                        onclick="selectUser(event);return false;" id="select-user-btn">Select
+                </button>
+                <code class="basicModalAutoSelectSelected"></code>
+            </div>
+            <div class="modal-footer">
+                <div class="container">
+                    <div class="row" style="margin-bottom:5px">
+                        <div class="form-control" id="user-list" style="height:fit-content;">
+
+                        </div>
+                        <select id="selected-user" hidden></select>
+                        <button type="button" class="btn btn-dark pull-right" disabled id="addDesignerBtn"
+                                data-dismiss="modal" onclick="addDesigner(event)">Add designers
+                        </button>
+                    </div>
+                    <div class="row" id="project-user-list">
+                        <table class="table table-bordered" id="project-user-table">
+                            <thead>
+                            <th scope="col">#</th>
+                            <th scope="col">User Name</th>
+
+                            <th scope="col">Action</th>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<!-- Physical Topology Modal Excel Errors-->
+<div id="pt-error-excel" class="modal fade" role="dialog" style="z-index:2500">
+    <div class="modal-dialog modal-xl" style="max-width: 80%;">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="display: inline">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Fix Physical Topology Errors</h4>
+            </div>
+            <div class="modal-body">
+                <div class="grid-container">
+                    <div class="excel-view">
+                        <div id="pt-spreadsheet" class="pt-spreasheet-panel"></div>
+                    </div>
+                    <div class="error-box-view">
+                        <!--                        <div id="pt-nodes-errors" class="error-box" style="display:none;"></div>-->
+                        <!--                        <div id="pt-links-errors" class="error-box"></div>-->
+                        <div id="pt-commit-info" class="" style="display:block;">
+                            <label for="pt-comment">Comment:</label>
+                            <input type="text" id="pt-comment" class="form-control"></input>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button id="submit-pt-errors-fixed" class="btn btn-dark" disabled
+                        onclick="submitPtExcelFixed()">submit changes
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Traffic Matrix Modal Excel Errors-->
+<div id="tm-error-excel" class="modal fade" role="dialog" style="z-index:2500">
+    <div class="modal-dialog modal-xl" style="max-width: 80%;">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="display: inline">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Fix Traffic Matrix Errors</h4>
+            </div>
+            <div class="modal-body">
+                <div class="grid-container">
+                    <div class="excel-view">
+                        <div id="tm-spreadsheet" class="tm-spreasheet-panel"></div>
+                    </div>
+                    <div class="error-box-view">
+                        <!--                        <div id="tm-errors" class="error-box"></div>-->
+                        <div id="tm-commit-info" class="" style="display:block;">
+                            <label for="tm-comment">Comment:</label>
+                            <input type="text" id="tm-comment" class="form-control"></input>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button id="submit-tm-errors-fixed" class="btn btn-dark" disabled
+                        onclick="submitTmExcelFixed()">submit changes
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal multi-step" id="create-project-modal-5">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title step-1" data-step="1">Create Project - Step 1</h4>
+                <h4 class="modal-title step-2" data-step="2">Create Project - Step 2</h4>
+                <h4 class="modal-title step-3" data-step="3">Create Project - Step 3</h4>
+                <h4 class="modal-title step-4" data-step="4">Create Project - Step 4</h4>
+                <h4 class="modal-title step-5" data-step="5">Create Project - Step 5</h4>
+                <h4 class="modal-title step-6" data-step="6">Create Project - Final Step</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body step-1" data-step="1" style="min-height:324px;">
+                <form id="project-form">
+                    <label for="project-name">Project Name: </label>
+                    <input type="text" autocomplete="off" style="margin-bottom: 8px;" class="form-control "
+                           id="project-name" name="name" placeholder="Sample" required>
+                    <label for="project-client">Client Name: </label>
+                    <input type="text" autocomplete="off" style="margin-bottom: 8px;" class="form-control "
+                           id="project-client" name="name" placeholder="Sample">
+                    <label for="project-unit">Unit: </label>
+                    <input type="text" autocomplete="off" style="margin-bottom: 8px;" class="form-control "
+                           id="project-unit" name="name" placeholder="Sample">
+                    <button type="submit" hidden id="project-form-btn">submit</button>
+                </form>
+            </div>
+
+            <div class="modal-body step-2" data-step="2" style="min-height:324px;">
+                <fieldset id="pt-fieldset">
+                    <legend>Physical Topology</legend>
+
+                    <input type="radio" id="pt-server" name="ptradio" checked>
+                    <label for="pt-server">From Server</label><br/>
+
+                    <input type="radio" id="pt-excel" name="ptradio">
+                    <label for="pt-excel">From Excel</label><br/>
+
+                    <input type="radio" id="pt-draw" name="ptradio">
+                    <label for="pt-draw">Draw</label>
+                </fieldset>
+            </div>
+            <div class="modal-body step-3" data-step="3" style="min-height:324px;">
+                <div class="" id="project-ptexcel" style="display:none;">
+                    <legend>Physical Topology</legend>
+                    <form id="project-ptexcel-form">
+                        <label for="project-topology-name">Name: </label>
+                        <input type="text" autocomplete="off" style="margin-bottom: 8px;" class="form-control "
+                               id="project-topology-name" name="name" placeholder="Sample" required>
+                        <input type="file" class="form-control-file" id="project-topology-file" name="pt_binary"
+                               required>
+                        <button type="submit" hidden id="project-ptexcel-form-btn">submit</button>
+                    </form>
+                    <!--                    data-toggle="modal" data-target="#pt-error-excel" data-backdrop="static"  data-keyboard="false"-->
+                    <button type="button" class="btn btn-danger" id="fix-pt-excel-button"
+                            onclick="toggleMapTableview()" style="margin-top: 15px;display:none;">Fix errors
+                    </button>
+                </div>
+
+                <div id="project-ptserver" style="display:none;">
+                    <legend>Physical Topologies</legend>
+                    <div id="physical-from-server-list" style="max-height: 300px;overflow-x: auto;"></div>
+                </div>
+
+                <div id="project-ptdraw" style="display:none;">
+                    <legend>Physical Topology</legend>
+                    <form id="project-ptdraw-form">
+
+                        <label for="project-draw-name">Name: </label>
+                        <input type="text" autocomplete="off" style="margin-bottom: 8px;" class="form-control "
+                               id="project-draw-name" name="name" placeholder="Sample" required>
+                        <label for="project-draw-comment">Comment: </label>
+                        <input type="text" autocomplete="off" style="margin-bottom: 8px;" class="form-control "
+                               id="project-draw-comment" name="comment" placeholder="Sample" required>
+                        <button type="submit" hidden id="project-draw-form-btn">submit</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-body step-4" data-step="4" style="min-height:324px;">
+                <fieldset id="tm-fieldset">
+                    <legend>Traffic Matrix</legend>
+
+                    <input type="radio" id="tm-server" name="tmradio" checked>
+                    <label for="tm-server">From Server</label><br/>
+
+                    <input type="radio" id="tm-excel" name="tmradio">
+                    <label for="tm-excel">From Excel</label><br/>
+
+                    <input type="radio" id="tm-enter" name="tmradio">
+                    <label for="tm-enter">Enter</label>
+                </fieldset>
+            </div>
+            <div class="modal-body step-5" data-step="5" style="min-height:324px;">
+                <div id="project-tmserver" style="display:none;">
+                    <legend>Traffic Matrices</legend>
+                    <div id="matrix-from-server-list" style="max-height: 300px;overflow-x: auto;"></div>
+                </div>
+
+                <div class="" id="project-tmexcel" style="display:none;">
+                    <legend>Traffic Matrix</legend>
+                    <form id="project-tmexcel-form">
+                        <label for="project-traffic-name">Name: </label>
+                        <input type="text" autocomplete="off" style="margin-bottom: 8px;" class="form-control "
+                               id="project-traffic-name" name="name" placeholder="Sample" required>
+                        <input type="file" class="form-control-file" id="project-traffic-file" name="tm_binary"
+                               required>
+                        <button type="submit" hidden id="project-tmexcel-form-btn"></button>
+                    </form>
+                    <!--                    data-toggle="modal" data-target="#tm-error-excel"  data-backdrop="static"  data-keyboard="false"-->
+                    <button type="button" class="btn btn-danger" id="fix-tm-excel-button"
+                            onclick="toggleMapTableview()" style="margin-top: 15px;display:none;">Fix errors
+                    </button>
+                </div>
+
+                <div id="project-tmenter" style="display:none;">
+                    <legend>Traffic Matrix</legend>
+                    <form id="project-tmenter-form">
+                        <label for="project-enter-name">Name: </label>
+                        <input type="text" autocomplete="off" style="margin-bottom: 8px;" class="form-control "
+                               id="project-enter-name" name="name" placeholder="Sample" required>
+                        <label for="project-enter-comment">Comment: </label>
+                        <input type="text" autocomplete="off" style="margin-bottom: 8px;" class="form-control "
+                               id="project-enter-comment" name="comment" placeholder="Sample" required>
+                        <button type="submit" hidden id="project-enter-form-btn">submit</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-body step-6" data-step="6" style="min-height:324px;">
+                <legend>Create Project Ending</legend>
+                <span>project successfully created</span>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary step step-1" id="continue-step-1" data-step="1"
+                        onclick="sendEvent('#create-project-modal-5', 2,'Continue')">Continue
+                </button>
+                <!--                <button type="button" class="btn btn-primary step step-2" data-step="2" onclick="sendEvent('#create-project-modal-5', 1,'Back')">Back</button>-->
+                <button type="button" class="btn btn-primary step step-2" id="continue-step-2" data-step="2"
+                        onclick="sendEvent('#create-project-modal-5', 3,'Continue')">Continue
+                </button>
+                <button type="button" class="btn btn-primary step step-3" id="back-step-3" data-step="3"
+                        onclick="sendEvent('#create-project-modal-5', 2,'Back')">Back
+                </button>
+                <button type="button" class="btn btn-primary step step-3" id="continue-step-3" data-step="3"
+                        onclick="sendEvent('#create-project-modal-5', 4,'Continue')">Continue
+                </button>
+                <button type="button" class="btn btn-primary step step-4" id="back-step-4" data-step="4"
+                        onclick="sendEvent('#create-project-modal-5', 3,'Back')">Back
+                </button>
+                <button type="button" class="btn btn-primary step step-4" id="continue-step-4" data-step="4"
+                        onclick="sendEvent('#create-project-modal-5', 5,'Continue')">Continue
+                </button>
+                <button type="button" class="btn btn-primary step step-5" id="back-step-5" data-step="5"
+                        onclick="sendEvent('#create-project-modal-5', 4,'Back')">Back
+                </button>
+                <button type="button" class="btn btn-primary step step-5" id="continue-step-5" data-step="5"
+                        onclick="sendEvent('#create-project-modal-5', 6,'Continue')">Continue
+                </button>
+                <button type="button" class="btn btn-primary step step-6" id="continue-step-6" data-step="6"
+                        onclick="sendEvent('#create-project-modal-5', 7,'Finish')">Finish
+                </button>
+                <!--                <button type="button" id="create-project-done" onclick="createProject();"  class="btn btn-success">Create</button>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- pt history modal -->
+<div id="pt-history-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog" style="max-width: 60%;">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="display: inline">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Physical Topology History</h4>
+            </div>
+            <div class="modal-body" style="overflow-y: auto;max-height: 80vh !important;" id="pt-history-list">
+                <table class="table table-bordered" id="pt-history-table">
+                    <thead>
+                    <th scope="col">#</th>
+                    <th scope="col">Version</th>
+                    <th scope="col">Create Date</th>
+                    <th scope="col">Comment</th>
+                    <th scope="col">Actions</th>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- pt history modal -->
+<div id="tm-history-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog" style="max-width: 60%;">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="display: inline">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Traffic Matrix History</h4>
+            </div>
+            <div class="modal-body" style="overflow-y: auto;max-height: 80vh !important;" id="tm-history-list">
+                <table class="table table-bordered" id="tm-history-table">
+                    <thead>
+                    <th scope="col">#</th>
+                    <th scope="col">Version</th>
+                    <th scope="col">Create Date</th>
+                    <th scope="col">Comment</th>
+                    <th scope="col">Actions</th>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="history-btnbox" id="history-btn" style="display: none">
+    <button class="btn btn-primary btn-sm" onclick="showProjectHistory();">History</button>
+</div>
+<!--<div class="histroy-btn">-->
+<!--    <button  onclick="openProjectsMenu();">History</button>-->
+<!--</div>-->
+
+<script>
+    /* Set the width of the side navigation to 250px */
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+    }
+
+    /* Set the width of the side navigation to 0 */
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+
+</script>
+
+
+<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>-->
+<!--<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>-->
+<script src="./js/jquery-3.6.0.min.js"></script>
+<script src="./js/jquery-migrate-1.4.1.min.js"></script>
+<script src="idb.min.js"></script>
+<script src="./bootstrap.min.js"></script>
+<script src="./bootstrap.bundle.min.js"></script>
+<script src="leaflet.js"></script>
+<script src="leaflet.contextmenu.js"></script>
+<script src="swagger-client.browser.min.js"></script>
+<script src="bootstrap4-toggle.min.js"></script>
+<script src="bootstrap-autocomplete.js"></script>
+<script src="all.min.js"></script>
+<script src="side-navbar.js"></script>
+<script src="./js/toastr/toastr.min.js"></script>
+<script src="./js/toastr/toastr-options.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="map_logic.js"></script>
+<script src="local_storage.js"></script>
+<script src="tableview-logic.js"></script>
+<script src="project-logic.js"></script>
+<script src="offline.min.js"></script>
+<script src="js/designer-logic.js"></script>
+<script src="js/multi-step-modal.js"></script>
+<script src="js/jexcel/jexcel.js"></script>
+<script src="js/jexcel/jsuites.js"></script>
+<script src="algorithm-logic.js"></script>
+<script src="clustering-logic.js"></script>
+<script src="./js/jquery-confirm/jquery-confirm.min.js"></script>
+<script
+        src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.min.js"></script>
+
+<script>
+    $("[data-toggle=popover]").popover();
+    if (userData != undefined) {
+        document.getElementById("logout-btn").firstElementChild.innerHTML = localStorage.getItem("userName");
+        document.getElementById('logout-btn').style.display = "block";
+    }
+
+</script>
+<script>
+    $('#project-form').on("submit", function (event) {
+        event.preventDefault();
+    });
+    $('#project-ptexcel-form').on("submit", function (event) {
+        event.preventDefault();
+    });
+    $('#project-tmexcel-form').on("submit", function (event) {
+        event.preventDefault();
+    });
+    $('#project-tmenter-form').on("submit", function (event) {
+        event.preventDefault();
+    });
+    $('#project-ptdraw-form').on("submit", function (event) {
+        event.preventDefault();
+    });
+</script>
+
+<script>
+    // function toggleMenu(element,event) {
+    //     if(event.type == 'mouseleave'){
+    //         console.log("leave")
+    //     }
+    //     if(event.type == 'mouseover') {
+    //         if ($(element).hasClass("show"))
+    //             $(element).first().dropdown('toggle');
+    //     }
+    // }
+    // $( ".side-buttons-14.page-help-icon" )
+    //     .mouseenter(function() {
+    //         $( this ).first().dropdown("toggle")
+    //     })
+    //     .mouseleave(function() {
+    //         $( this ).first().dropdown("toggle")
+    //     });
+    // $(".side-buttons-14.page-help-icon").mouseleave(function(){
+    //     //your code here
+    //     $( this ).dropdown("toggle");
+    // });
+    // $(".side-buttons-14.page-help-icon").mouseover(function(){
+    //     //your code here
+    //     $( this ).dropdown("toggle");
+    // });
+    async function toggleMapTableview() {
+        if (localStorage.getItem("projectState") !== "creating") {
+            if (document.getElementById('topology-map').style.display === "none") {
+                document.getElementById('topology-map').style.display = "block";
+                document.getElementById('draw-physicaltopology-btn').style.display = "block";
+                document.getElementById('add-designer-toproject-btn').style.display = "block";
+                document.getElementById('tableview-frame').style.display = "none";
+                document.getElementById('submisst-tm-errors-fixed').innerHTML = "Table View"
+            } else {
+                document.getElementById('topology-map').style.display = "none";
+                document.getElementById('draw-physicaltopology-btn').style.display = "none";
+                document.getElementById('add-designer-toproject-btn').style.display = "none";
+                document.getElementById('tableview-frame').style.display = "block";
+                // document.getElementById('tableview-frame').contentWindow.toggleInit();
+                document.getElementById('submisst-tm-errors-fixed').innerHTML = "Planning View";
+
+            }
+        } else {
+            document.getElementById('topology-map').style.display = "none";
+            document.getElementById('tableview-frame').style.display = "block";
+
+            $('#top-navbar').hide();
+            $('#draw-topology-toggler').hide();
+            // $('#table-view-toggler').hide();
+            // tableview-toggle-spreadsheet
+            // $('#toggle-spreadsheet').bootstrapToggle();
+
+            let step = localStorage.getItem('createProjectStep')
+            await initTableView();
+            $('#tableview-toggle-spreadsheet').bootstrapToggle('enable')
+            if (step == '3') {
+                $('#tableview-toggle-spreadsheet').bootstrapToggle('on')
+            } else if (step == '5') {
+                $('#tableview-toggle-spreadsheet').bootstrapToggle('off')
+            }
+            $('#tableview-toggle-spreadsheet').bootstrapToggle('disable')
+            // $('#tableview-toggle-spreadsheet').hide();
+
+            // $('#table-view-toggler a').click();
+            $('#create-project-modal-5').modal('hide');
+            $('.side-close-icon').click();
+        }
+    }
+
+</script>
+<script src="util/RWA/rwaLogic.js">
+
+</script>
+</body>
+
+</html>
