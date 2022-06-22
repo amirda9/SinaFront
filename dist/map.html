@@ -138,7 +138,8 @@
 
         /*Sets the maximum height of the modal body to 90% of the screen height*/
         .modal-body {
-            max-height: 90vh;
+            /* max-height: 90vh; */
+            overflow: scroll;
         }
 
         /*Sets the maximum height of the modal image to 69% of the screen height*/
@@ -556,6 +557,37 @@
             line-height: 35px;
             padding: 10px;
             font-weight: bolder;
+        }
+        #myProgress {
+            width: 100%;
+            background-color: #aaa;
+            
+        }
+
+        #myBar {
+            width: 0%;
+            height: 30px;
+            background-color: #04aa6d;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+        }
+        #myProgresscontanner{
+            display: none;
+            width: 350px;
+            height: 120px;
+            z-index: 1050;
+            position: fixed;
+            top: 40%;
+            right: 2px;
+            padding: 0.7rem;
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+        .myProgressheader{
+            text-align: center;
+            margin:0 0 1.5rem 0 ;
+            font-size: 40px;
+            color: rgba(0, 0, 0, 0.9);
         }
     </style>
     <link rel="stylesheet" href="js/jexcel/jexcel.css" type="text/css"/>
@@ -1053,44 +1085,44 @@
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <label for="shortest_path_k">shortest_path_k</label>
-                                            <input type="text" class="form-control" name="shortest_path_k"
-                                                   id="shortest_path_k" placeholder="0.2">
+                                            <input type="number" class="form-control" name="shortest_path_k"
+                                                   id="shortest_path_k" placeholder="عدد صحیح بزرگ تر مساوی ۱">
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label for="restoration_k">restoration_k</label>
-                                            <input type="text" class="form-control" name="restoration_k"
-                                                   id="restoration_k" placeholder="4">
+                                            <input type="number" class="form-control" name="restoration_k"
+                                                   id="restoration_k" placeholder="عدد صحیح بزرگ تر مساوی ۱">
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <label for="noise_margin">noise_margin</label>
-                                            <input type="text" class="form-control" name="noise_margin"
-                                                   id="noise_margin" placeholder="3-7">
+                                            <input type="number" class="form-control" name="noise_margin"
+                                                   id="noise_margin" placeholder="عدد صحیح بزرگ تر مساوی ۱">
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label for="trade_off">trade_off</label>
-                                            <input type="text" class="form-control" name="trade_off" id="trade_off"
-                                                   placeholder="4">
+                                            <input type="number" class="form-control" name="trade_off" id="trade_off"
+                                            placeholder="۱ عدد بین صفر و ">
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <label for="iterations">iterations</label>
-                                            <input type="text" class="form-control" name="k" id="iterations"
-                                                   placeholder="3">
+                                            <input type="number" class="form-control" name="k" id="iterations"
+                                            placeholder="عدد صحیح بزرگ تر مساوی ۱">
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label for="group_size">group_size</label>
-                                            <input type="text" class="form-control" name="group_size"
-                                                   id="group_size" placeholder="80">
+                                            <input type="number" class="form-control" name="group_size"
+                                                   id="group_size" placeholder="عدد صحیح بزرگ تر مساوی ۱">
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <label for="history_window">history_window</label>
-                                            <input type="text" class="form-control" name="history_window"
-                                                   id="history_window" placeholder="2">
+                                            <input type="number" class="form-control" name="history_window"
+                                                   id="history_window" placeholder="عدد صحیح بزرگ تر مساوی ۱">
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label for="comment">comment</label>
@@ -1629,6 +1661,13 @@
 <div class="history-btnbox" id="history-btn" style="display: none">
     <button class="btn btn-primary btn-sm" onclick="showProjectHistory();">History</button>
 </div>
+<div id="myProgresscontanner">
+    <h1 class="myProgressheader">: پیشرفت</h1>
+    <div id="myProgress">
+        <div id="myBar">0%</div>
+    </div>
+</div>
+
 <!--<div class="histroy-btn">-->
 <!--    <button  onclick="openProjectsMenu();">History</button>-->
 <!--</div>-->
@@ -1773,6 +1812,59 @@
             $('.side-close-icon').click();
         }
     }
+
+</script>
+<!-- Script for checking the Value of RWA inputs -->
+<script>
+$("#shortest_path_k").on("change", function() {
+    let shortest_path_k =Number( $(this).val());
+    if (!Number.isInteger(shortest_path_k) || shortest_path_k < 1)
+    {
+        console.log(typeof shortest_path_k)
+        alert("عدد shortest_path_k باید عدد صحیح بزرگتر از یک باشد");
+    }
+});
+$("#restoration_k").on("change", function() {
+    let restoration_k =Number( $(this).val());
+    if (!Number.isInteger(restoration_k) || restoration_k < 1)
+    {
+        alert("عدد restoration_k باید عدد صحیح بزرگتر از یک باشد");
+    }
+});
+$("#noise_margin").on("change", function() {
+    let noise_margin =Number( $(this).val());
+    if (!Number.isInteger(noise_margin) || noise_margin < 1)
+    {
+        alert("عدد noise_margin باید عدد صحیح بزرگتر از یک باشد");
+    }
+});
+$("#trade_off").on("change", function() {
+    let trade_off =Number( $(this).val());
+    if (trade_off < 0 || trade_off > 1) {
+      alert("عدد trade_off باید بین یک و یک باشد");
+    }
+});
+$("#iterations").on("change", function() {
+    let iterations =Number( $(this).val());
+    if (!Number.isInteger(iterations) || iterations < 1)
+    {
+        alert("عدد iterations باید عدد صحیح بزرگتر از یک باشد");
+    }
+});
+$("#group_size").on("change", function() {
+    let group_size =Number( $(this).val());
+    if (!Number.isInteger(group_size) || group_size < 1)
+    {
+        alert("عدد group_size باید عدد صحیح بزرگتر از یک باشد");
+    }
+});
+$("#history_window").on("change", function() {
+    let history_window =Number( $(this).val());
+    if (!Number.isInteger(history_window) || history_window < 1)
+    {
+        alert("عدد history_window باید عدد صحیح بزرگتر از یک باشد");
+    }
+});
 
 </script>
 <script src="util/RWA/rwaLogic.js">
