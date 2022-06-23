@@ -16,7 +16,7 @@
     <script src="./extensions/filter-control/bootstrap-table-filter-control.js"></script>
     <script src="./js/toastr/download.min.js"></script>
 
-    <script>
+    <!-- <script>
         let accessToken = null;
         // var userData = {
         //     "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbWlyIiwiZXhwIjoxNjQ5NzIwNjE5fQ.DYJdtNOu7rDyxXlujQqVEKc9nmDTey7NRPCuwRGiwz0",
@@ -44,7 +44,7 @@
             window.location.href = window.location.href + "/login.html";
             alert("you must login first");
         }
-    </script>
+    </script> -->
     <script>
         L_NO_TOUCH = false;
         L_DISABLE_3D = false;
@@ -1084,45 +1084,45 @@
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
-                                            <label for="shortest_path_k">shortest_path_k</label>
+                                            <label for="shortest_path_k">shortest_path_k <div></div></label>
                                             <input type="number" class="form-control" name="shortest_path_k"
-                                                   id="shortest_path_k" placeholder="int and larger than 1">
+                                                   id="shortest_path_k" placeholder="1-5">
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label for="restoration_k">restoration_k</label>
                                             <input type="number" class="form-control" name="restoration_k"
-                                                   id="restoration_k" placeholder="int and larger than 1">
+                                                   id="restoration_k" placeholder="1">
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <label for="noise_margin">noise_margin</label>
                                             <input type="number" class="form-control" name="noise_margin"
-                                                   id="noise_margin" placeholder="int and larger than 1">
+                                                   id="noise_margin" placeholder="3-7">
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label for="trade_off">trade_off</label>
                                             <input type="number" class="form-control" name="trade_off" id="trade_off"
-                                            placeholder="number beetween 0 and 1">
+                                            placeholder="0.01">
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <label for="iterations">iterations</label>
                                             <input type="number" class="form-control" name="k" id="iterations"
-                                            placeholder="int and larger than 1">
+                                            placeholder="10">
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label for="group_size">group_size</label>
                                             <input type="number" class="form-control" name="group_size"
-                                                   id="group_size" placeholder="int and larger than 1">
+                                                   id="group_size" placeholder="4">
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <label for="history_window">history_window</label>
                                             <input type="number" class="form-control" name="history_window"
-                                                   id="history_window" placeholder="int and larger than 1">
+                                                   id="history_window" placeholder="20">
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label for="comment">comment</label>
