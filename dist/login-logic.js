@@ -18,8 +18,8 @@ $("form#loginform").submit(function (e) {
             console.log(res)
             setTimeout(() => {
                 // window.location.href = "http://192.168.7.22/map.html";
-                window.location.href = window.location.href+"/map.html";
-            }, 2000);
+                window.location.href = window.location.href+"map.html";
+            }, 1000);
         }
     }).catch(error => {
         if (error.statusCode === 409)

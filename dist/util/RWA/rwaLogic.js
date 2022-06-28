@@ -133,47 +133,54 @@ async function running_rwa() {
       `http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/start?project_id=${project_id}&grooming_id=${grooming_id}`,
       requestOptions
     );
-    RWACheck(project_id);
+
     if (Object.keys(result).includes("rwa_id")) {
       console.log("****", Object.keys(result).includes("rwa_id"));
       localStorage.setItem("rwa_id", JSON.stringify(result.rwa_id));
+      RWACheck(result.rwa_id);
       // toastr.success("RWA is starting successfully... ");
       // alert('RWA is starting successfully... ', result.rwa_id);
     }
   }
 }
 
-function RWACheck(projectId) {
+function RWACheck(rwa_id) {
+  let progress = 0;
   let funcA = async () => {
     let elem = document.getElementById("myProgresscontanner");
     elem.style.display = "block";
-    let a = 0;
-    if (a >= 100) {
+    if (progress >= 100) {
       clearInterval(inter);
       elem.style.display = "none";
     } else {
       var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
       myHeaders.append(
         "Authorization",
         `${userData.token_type} ${userData.access_token}`
       );
+      var body = JSON.stringify({
+        rwa_id: rwa_id
+      })
 
       var requestOptions = {
         method: "POST",
         headers: myHeaders,
-        rwa_id: projectId,
+        body: body,
       };
       let rwa_result = await callService(
         `http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/check`,
         requestOptions
       );
       let div = document.getElementById("myBar");
-      a = rwa_result.progress;
-      div.style.width = a + "%";
-      div.innerHTML = a + "%";
+      progress = rwa_result.progress + 45;
+      div.style.width = progress + "%";
+      div.innerHTML = progress + "%";
     }
   };
-  var inter = setInterval(funcA, 500);
+  if (progress <= 100){
+    var inter = setInterval(funcA, 500);
+  }
 }
 function validationRWA() {
   algorithm = $("#algorithm").val();
