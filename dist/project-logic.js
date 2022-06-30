@@ -234,6 +234,7 @@ $("form#submit-project-form").submit(async function (e) {
             });
 
     } else {
+        console.log("hideeeee")
         toastr.error("you are currently offline, can not submit to server")
         $('#submit-project').modal('hide');
     }

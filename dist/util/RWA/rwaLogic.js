@@ -146,12 +146,18 @@ async function running_rwa() {
 
 function RWACheck(rwa_id) {
   let progress = 0;
+  let finished = false
   let funcA = async () => {
     let elem = document.getElementById("myProgresscontanner");
     elem.style.display = "block";
-    if (progress >= 100) {
-      clearInterval(inter);
-      elem.style.display = "none";
+    if (finished) {
+      let div = document.getElementById("myBar");
+      div.style.width = 100 + "%";
+      div.innerHTML = 100 + "%";
+      setTimeout(() => {
+        clearInterval(inter);
+        elem.style.display = "none";
+      }, 2000);
     } else {
       var myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
@@ -174,11 +180,15 @@ function RWACheck(rwa_id) {
       );
       let div = document.getElementById("myBar");
       progress = rwa_result.progress + 45;
+      finished = rwa_result.current_stage_info == "Finished successfully." ? true : false;
       div.style.width = progress + "%";
       div.innerHTML = progress + "%";
     }
   };
-  if (progress <= 100){
+  setTimeout(() => {
+    finished = true;
+  }, 10000);
+  if (!finished){
     var inter = setInterval(funcA, 500);
   }
 }

@@ -826,6 +826,7 @@ function submitExcelData(){
 
 function createOrUpdate(elementPath, mode, data){
     return new Promise(function(resolve, reject){
+        console.log(data)
         const request = {
             url: serverAddr + elementPath + userId,
             method: mode == "create" ? "POST" : "PUT",
