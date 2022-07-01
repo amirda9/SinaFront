@@ -204,16 +204,19 @@ $("form#submit-project-form").submit(async function (e) {
             toastr.error(trafficData[1]);
             return;
         }
-
-        await createOrUpdate("projects/", project[0].id == 0 ? "create" : "update", project[0])
+        console.log(project[0])
+        await createOrUpdate("projects/", project[0].id == 0 ? "create" : "update", project[0], project[0].id == 0 ? null : project[0].id)
             .then(async function (result) {
+                let operation = project[0].id == 0 ? "create" : "update";
+                console.log("Kiiiiiiiiiiiiiiiiiiiiir", project[0].id , operation)
                 if (project[0].id == 0) {
                     project[0].id = result.body.id;
                 }
                 if (operation == "create") {
                     project[0].version = 1
-                } else
+                } else {
                     project[0].version = project[0].version + 1
+                }
                 await updateElement("project", project[0]);
                 $('#submit-project').modal('hide');
                 toastr.success("project changes successfully saved!");
@@ -275,6 +278,7 @@ async function saveProject() {
                 $('#history-btn').show();
                 await updateElement("project", project[0]);
                 document.getElementById("project-info-box").innerHTML = project[0].name;
+                // $('#')
                 $('#project-info-box').show();
             })
             .catch(function (error) {
@@ -294,6 +298,8 @@ async function saveProject() {
 }
 
 function createOrUpdate(elementPath, mode, data, id = null) {
+    console.log(id)
+    console.log(serverAddr + elementPath + (id != null ? "?id=" + id : ""))
     return new Promise(function (resolve, reject) {
         const request = {
             url: serverAddr + elementPath + (id != null ? "?id=" + id : ""),
@@ -1178,9 +1184,12 @@ async function loadProject(projectId) {
                         // });
                         // MapVar = null;
                         console.log('getPtData is start...');
+                        // console.log(localStorage.getItem("physical_topologies"))
+                        // localStorage.removeItem("physical_topologies")
                         await getPtData(response.body.pt_id, response.body.current_pt_version, "project");
                         console.log('getTmData is start...');
                         await getTmData(response.body.tm_id, response.body.current_tm_version, "project");
+                        // console.log(localStorage.getItem("physical_topologies"))
 
                         $('#top-navbar').show();
                         $('#draw-topology-toggler').show();
@@ -2310,6 +2319,7 @@ const radios = Array.from($(`[name='ptradio']`));
 const checkedRadio = radios.filter(e => e.checked);
 
 async function submitProject() {
+    document.getElementById("save-project-submit").disabled = false;
     let project = await getAllRecords("project");
     if (project != undefined && project.length > 0) {
         $('#submit-project').modal({
