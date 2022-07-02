@@ -1625,7 +1625,7 @@ async function export_full_details_xlsx() {
       requestOptions
     );
     // console.log(result)
-    download("grooming_result_" + new Date().toLocaleString() + ".json", JSON.stringify(grooming_result, undefined, 2))
+    // download("grooming_result_" + new Date().toLocaleString() + ".json", JSON.stringify(grooming_result, undefined, 2))
   }
 
   rwa_id = localStorage.getItem("rwa_id");

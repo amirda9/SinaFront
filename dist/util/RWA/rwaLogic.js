@@ -147,8 +147,9 @@ async function running_rwa() {
 function RWACheck(rwa_id) {
   let progress = 0;
   let finished = false
+  let failed = false
+  let elem = document.getElementById("myProgresscontanner");
   let funcA = async () => {
-    let elem = document.getElementById("myProgresscontanner");
     elem.style.display = "block";
     if (finished) {
       let div = document.getElementById("myBar");
@@ -181,14 +182,19 @@ function RWACheck(rwa_id) {
       let div = document.getElementById("myBar");
       progress = rwa_result.progress + 45;
       finished = rwa_result.current_stage_info == "Finished successfully." ? true : false;
+      failed = rwa_result.failed;
       div.style.width = progress + "%";
       div.innerHTML = progress + "%";
     }
   };
   setTimeout(() => {
-    finished = true;
+    if (failed) {
+      clearInterval(inter);
+      elem.style.display = "none";
+      toastr.error("rwa failed");
+    }
   }, 10000);
-  if (!finished){
+  if (!finished) {
     var inter = setInterval(funcA, 500);
   }
 }
