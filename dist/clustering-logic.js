@@ -33,7 +33,7 @@ var manClusDiv = document.createElement("div");
 manClusDiv.setAttribute("id", "man-clus-panel");
 
 var clusteringBtn = document.createElement("button");
-clusteringBtn.innerHTML = "Clustering options";
+clusteringBtn.innerHTML = "Clustering Settings";
 
 var manualBtn = document.createElement("button");
 manualBtn.innerHTML = "Manual";

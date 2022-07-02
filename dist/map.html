@@ -687,7 +687,7 @@
         <li class="side-buttons-14 page-help-icon">
             <a href="" class="dropdown-toggle a" data-toggle="dropdown" role="button" aria-haspopup="true"
                aria-expanded="false">
-                <span class="nav-label">Project manager</span><span class="custom-caret"></span></a>
+                <span class="nav-label">Project Settings</span><span class="custom-caret"></span></a>
             <div class="dropdown-menu custom-dropdown" aria-labelledby="navbarDropdown">
                 <a type="button" class="dropdown-item" data-keyboard="false" data-backdrop="static"
                    onclick="submitProject();">Save Project to Server</a>
@@ -707,10 +707,10 @@
                 <div class="dropdown-divider"></div>
                 <a type="button" class="dropdown-item" data-toggle="modal" data-target="#import-physical"
                    data-keyboard="false" data-backdrop="static">Load
-                    Physical Topology File</a>
+                    Physical Topology</a>
                 <a type="button" class="dropdown-item" data-toggle="modal" data-target="#import-matrix"
                    data-keyboard="false" data-backdrop="static">Load
-                    Matrix Topology File</a>
+                    Matrix Topology</a>
                 <div class="dropdown-divider"></div>
                 <a type="button" class="dropdown-item" onclick="closeProject();">Close Project</a>
             </div>
@@ -718,7 +718,7 @@
 
         <li class="side-buttons-14 page-help-icon"><a href="#" class="dropdown-toggle a" data-toggle="dropdown"
                                                       role="button" aria-haspopup="true" aria-expanded="false">
-            <span class="nav-label">Clustering Options</span><span class="caret"></span></a>
+            <span class="nav-label">Clustering Settings</span><span class="caret"></span></a>
             <div class="dropdown-menu custom-dropdown" aria-labelledby="navbarDropdown">
                 <a type="button" id="clustering-manual-btn" class="dropdown-item">Add Manual</a>
                 <a type="button" id="clustering-modal-list-buttton" class="dropdown-item"
@@ -729,7 +729,7 @@
 
         <li class="side-buttons-14 page-help-icon"><a href="#" class="dropdown-toggle a" data-toggle="dropdown"
                                                       role="button" aria-haspopup="true" aria-expanded="false">
-            <span class="nav-label">Grooming options</span><span class="caret"></span></a>
+            <span class="nav-label">Grooming Settings</span><span class="caret"></span></a>
             <div class="dropdown-menu custom-dropdown" aria-labelledby="navbarDropdown">
                 <button id="grooming-modal-list-buttton" type="button" class="dropdown-item"
                         onclick="getAllGrooming();" data-keyboard="false" data-backdrop="static">
@@ -737,12 +737,12 @@
                 </button>
                 <button id="grooming-modal-manual-buttton" type="button" class="dropdown-item" data-keyboard="false"
                         data-backdrop="static">
-                    Start Manual
+                    Manual
                 </button>
                 <button id="grooming-modal-auto-buttton" type="button" class="dropdown-item" data-toggle="modal"
                         data-target="#grooming-modal" data-keyboard="false" data-backdrop="static"
                         onclick="showClusterList()">
-                    Start Automatic
+                    Automatic
                 </button>
             </div>
         </li>
@@ -751,16 +751,16 @@
                                                       class="dropdown-toggle a" data-toggle="dropdown" role="button"
                                                       aria-haspopup="true"
                                                       aria-expanded="false">
-            <span class="nav-label">RWA options</span><span class="caret"></span></a>
+            <span class="nav-label">RWA Settings</span><span class="caret"></span></a>
             <div class="dropdown-menu custom-dropdown" aria-labelledby="navbarDropdown">
                 <button id="rwamodalButtton" type="button" class="dropdown-item" data-toggle="modal"
                         data-target="#rwa-modal" data-keyboard="false" data-backdrop="static"
                         onclick="check_running_rwa();">
-                    Start RWA
+                    Start Routing
                 </button>
                 <button id="rwamodalListButtton" type="button" class="dropdown-item" onclick="getAllRWA();"
                         data-toggle="modal" data-target="#rwa-list-modal" data-keyboard="false" data-backdrop="static">
-                    RWA List
+                    View Result
                 </button>
             </div>
         </li>
@@ -770,7 +770,7 @@
             <span class="nav-label">Export results</span><span class="caret"></span></a>
             <div class="dropdown-menu custom-dropdown" aria-labelledby="navbarDropdown">
                 <a type="button" class="dropdown-item" onclick="export_grooming_results();"> Grooming results</a>
-                <a type="button" class="dropdown-item" onclick="export_rwa_results();">RWA results</a>
+                <a type="button" class="dropdown-item" onclick="export_rwa_results();">Routing result</a>
                 <a type="button" class="dropdown-item" onclick="export_full_details_xlsx();">Full details (.xlsx)</a>
 <!--                <a type="button" class="dropdown-item" onclick="export_full_details_xlsx();">Full detasddsdsfils (.xlsx)</a>-->
             </div>
@@ -1165,7 +1165,7 @@
                 <button onclick="close_modal('rwa-list-modal')" type="button" class="close"
                         data-dismiss="modal">&times;
                 </button>
-                <h4 class="modal-title">RWA list</h4>
+                <h4 class="modal-title">View Result</h4>
             </div>
             <div class="modal-body" style="overflow-y: auto;max-height: 80vh !important;" id="project-rwa-list">
                 <table class="table table-bordered" id="rwa-list-table">

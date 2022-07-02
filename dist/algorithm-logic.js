@@ -342,7 +342,7 @@ function close_modal(name) {
 }
 
 async function getAllRWA(grooming_id) {
-  $(".modal-title").html("RWA List");
+  $(".modal-title").html("View Result");
   let project = await getAllRecords("project");
   if (project == undefined || project[0].id == 0) {
     toastr.error(
@@ -592,7 +592,7 @@ async function getRWA_general_info(rwa_id) {
   return infoData;
 }
 
-//function For get LightPathList :: RWA Options/RWA List when clicked on any lightPath sow protection and working path on map
+//function For get LightPathList :: RWA Settings/View Result when clicked on any lightPath sow protection and working path on map
 async function getLightPathList(RWA_Id) {
   close_modal("rwa-list-modal");
   //btn show-light-path: if onClick Show lighpath_table
@@ -980,7 +980,7 @@ async function ShowClustrsOnMap(Clusters) {
   }
 }
 
-//function for select type of algorithm for show LineRate & checked of ClusterLists in Grooming Options/Start Automatic
+//function for select type of algorithm for show LineRate & checked of ClusterLists in Grooming Settings/Automatic
 function SelectAlgorithm() {
   // If the radio:Advanced is checked, display the LineRate & checked of ClusterLists
   if (document.getElementById("end_To_end").checked == true) {
@@ -994,7 +994,7 @@ function SelectAlgorithm() {
   }
 }
 
-//function for show ClusterList in Grooming Options/Start Automatic
+//function for show ClusterList in Grooming Settings/Automatic
 async function showClusterList() {
   let project_id = "";
   let result = [];
@@ -1092,7 +1092,7 @@ async function startEnd2EndGrooming() {
   $("#panel-body .form-check:last-child").css({ border: "none" });
 }
 
-//Disabled btn submit form grooming/Start Automatic
+//Disabled btn submit form grooming/Automatic
 $().ready(function () {
   let endToEnd = document.getElementById("end_To_end");
   let advanced = document.getElementById("Advanced");
@@ -1102,7 +1102,7 @@ $().ready(function () {
   }
 });
 
-//Submit form grooming/Start Automatic
+//Submit form grooming/Automatic
 $("form#grooming-form").submit(async function (e) {
   e.preventDefault();
   //get project_id
@@ -1125,7 +1125,7 @@ $("form#grooming-form").submit(async function (e) {
   }
 });
 
-// send data to algorithms/grooming/automatic/end_to_end --> Grooming option/Start Automatic
+// send data to algorithms/grooming/automatic/end_to_end --> Grooming option/Automatic
 function SubmitGroomingEndToEnd(project_id) {
   console.log(localStorage.getItem(project_id));
 
@@ -1165,7 +1165,7 @@ function SubmitGroomingEndToEnd(project_id) {
   $("#grooming-modal").modal("toggle");
 }
 
-// send data to algorithms/grooming/automatic/Advanced --> Grooming option/Start Automatic
+// send data to algorithms/grooming/automatic/Advanced --> Grooming option/Automatic
 function SubmitGroomingAdvanced(project_id) {
   let mp1h_threshold = document.getElementById("grooming-mp1h-threshold").value;
   let grooming_lineRate_threshold = document.getElementById(
@@ -1536,9 +1536,9 @@ async function Call_Lom_Excel(RWA_Id) {
 async function export_grooming_results() {
   grooming_id = localStorage.getItem("grooming_id");
   if (grooming_id == undefined || grooming_id == null) {
-    // alert("Please choose a grooming from Grooming options >> Grooming List.")
+    // alert("Please choose a grooming from Grooming Settings >> Grooming List.")
     alert(
-      "لطفا از قسمت Grooming options >> Grooming List یک Grooming را انتخاب کنید."
+      "لطفا از قسمت Grooming Settings >> Grooming List یک Grooming را انتخاب کنید."
     );
   } else {
     var myHeaders = new Headers();
@@ -1567,8 +1567,8 @@ async function export_grooming_results() {
 async function export_rwa_results() {
   rwa_id = localStorage.getItem("rwa_id");
   if (rwa_id == undefined || rwa_id == null) {
-    // alert("Please choose a grooming from Grooming options >> Grooming List.")
-    alert("لطفا از قسمت RWA options >> RWA List یک RWA را انتخاب کنید.");
+    // alert("Please choose a grooming from Grooming Settings >> Grooming List.")
+    alert("لطفا از قسمت RWA Settings >> View Result یک RWA را انتخاب کنید.");
   } else {
     rwa_id = rwa_id.replaceAll('"', "");
     var myHeaders = new Headers();
@@ -1604,9 +1604,9 @@ async function export_full_details_xlsx() {
 
   grooming_id = localStorage.getItem("grooming_id");
   if (grooming_id == undefined || grooming_id == null) {
-    // alert("Please choose a grooming from Grooming options >> Grooming List.")
+    // alert("Please choose a grooming from Grooming Settings >> Grooming List.")
     alert(
-      "لطفا از قسمت Grooming options >> Grooming List یک Grooming را انتخاب کنید."
+      "لطفا از قسمت Grooming Settings >> Grooming List یک Grooming را انتخاب کنید."
     );
   } else {
     var myHeaders = new Headers();
@@ -1630,8 +1630,8 @@ async function export_full_details_xlsx() {
 
   rwa_id = localStorage.getItem("rwa_id");
   if (rwa_id == undefined || rwa_id == null) {
-    // alert("Please choose a grooming from Grooming options >> Grooming List.")
-    alert("لطفا از قسمت RWA options >> RWA List یک RWA را انتخاب کنید.");
+    // alert("Please choose a grooming from Grooming Settings >> Grooming List.")
+    alert("لطفا از قسمت RWA Settings >> View Result یک RWA را انتخاب کنید.");
   } else {
     rwa_id = rwa_id.replaceAll('"', "");
     var myHeaders = new Headers();
@@ -1690,8 +1690,8 @@ async function export_full_details_xlsx() {
   // console.log(Baud_rate)
   // rwa_id = localStorage.getItem('rwa_id');
   // if (rwa_id == undefined || rwa_id == null) {
-  //     // alert("Please choose a grooming from Grooming options >> Grooming List.")
-  //     alert("لطفا از قسمت RWA options >> RWA List یک RWA را انتخاب کنید.")
+  //     // alert("Please choose a grooming from Grooming Settings >> Grooming List.")
+  //     alert("لطفا از قسمت RWA Settings >> View Result یک RWA را انتخاب کنید.")
   // }
   // else {
   //     rwa_id = rwa_id.replaceAll('"', '')
