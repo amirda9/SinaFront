@@ -134,63 +134,63 @@ async function getAllGrooming() {
 
             $("#grooming-list-table>tbody").append(
               "<tr>" +
-                '<td>   <input  type="radio" name="radioSelected" value="' +
-                data.id +
-                '" onclick="GroomingSelected(\'' +
-                data.id +
-                "')\"> </td>\n" +
-                "                        <td>" +
-                data.pt_version +
-                "</td>\n" +
-                "                        <td>" +
-                data.tm_version +
-                "</td>\n" +
-                "                        <td>" +
-                data.start_date +
-                "</td>\n" +
-                "                        <td>" +
-                data.end_date +
-                "</td>\n" +
-                "                        <td>" +
-                data.with_clustering +
-                "</td>\n" +
-                // "                        <td>" + groomingStateData.state + "</td>\n" +
-                '<td><select onchange="showData(this);" id="' +
-                data.id +
-                '" class="form-select" aria-label="Default select example"><option selected>Select cluster</option> </select></td>' +
-                "                        <td>" +
-                data.form.mp1h_threshold +
-                "</td>\n" +
-                "                        <td>" +
-                data.form.comment +
-                "</td>\n" +
-                "                        <td>" +
-                data.algorithm +
-                "</td>\n" +
-                "                        <td>\n" +
-                '                            <button type="button" class="btn btn-success" title="View Grooming" onclick="viewGrooming(this, \'' +
-                data.id +
-                '\')" ><i class="far fa-eye"></i></button>\n' +
-                '                            <button type="button" class="btn btn-info Statistical" title="Statistical Result" data-toggle="popover" data-placement="right" data-content="[groomout_no: ' +
-                Statisctical[0] +
-                " | [lightpath_no: " +
-                Statisctical[1] +
-                "]  |  [mean_lightpath_cap: " +
-                Statisctical[2] +
-                "]  |  [mp1h_no: " +
-                Statisctical[3] +
-                "]  |  [mp2x_no: " +
-                Statisctical[4] +
-                "]  |  [tp1h_no: " +
-                Statisctical[5] +
-                ']"><i class="fas fa-poll"></i></button>\n' +
-                '                            <button id="view' +
-                data.id +
-                '" type="button" class="btn btn-primary" title="Grooming Table"  onclick="viewgroomingTable(\'' +
-                data.id +
-                '\')"><i class="fas fa-border-all"></i></button>\n' +
-                "                        </td>" +
-                "</tr>"
+              '<td>   <input  type="radio" name="radioSelected" value="' +
+              data.id +
+              '" onclick="GroomingSelected(\'' +
+              data.id +
+              "')\"> </td>\n" +
+              "                        <td>" +
+              data.pt_version +
+              "</td>\n" +
+              "                        <td>" +
+              data.tm_version +
+              "</td>\n" +
+              "                        <td>" +
+              data.start_date +
+              "</td>\n" +
+              "                        <td>" +
+              data.end_date +
+              "</td>\n" +
+              "                        <td>" +
+              data.with_clustering +
+              "</td>\n" +
+              // "                        <td>" + groomingStateData.state + "</td>\n" +
+              '<td><select onchange="showData(this);" id="' +
+              data.id +
+              '" class="form-select" aria-label="Default select example"><option selected>Select cluster</option> </select></td>' +
+              "                        <td>" +
+              data.form.mp1h_threshold +
+              "</td>\n" +
+              "                        <td>" +
+              data.form.comment +
+              "</td>\n" +
+              "                        <td>" +
+              data.algorithm +
+              "</td>\n" +
+              "                        <td>\n" +
+              '                            <button type="button" class="btn btn-success" title="View Grooming" onclick="viewGrooming(this, \'' +
+              data.id +
+              '\')" ><i class="far fa-eye"></i></button>\n' +
+              '                            <button type="button" class="btn btn-info Statistical" title="Statistical Result" data-toggle="popover" data-placement="right" data-content="[groomout_no: ' +
+              Statisctical[0] +
+              " | [lightpath_no: " +
+              Statisctical[1] +
+              "]  |  [mean_lightpath_cap: " +
+              Statisctical[2] +
+              "]  |  [mp1h_no: " +
+              Statisctical[3] +
+              "]  |  [mp2x_no: " +
+              Statisctical[4] +
+              "]  |  [tp1h_no: " +
+              Statisctical[5] +
+              ']"><i class="fas fa-poll"></i></button>\n' +
+              '                            <button id="view' +
+              data.id +
+              '" type="button" class="btn btn-primary" title="Grooming Table"  onclick="viewgroomingTable(\'' +
+              data.id +
+              '\')"><i class="fas fa-border-all"></i></button>\n' +
+              "                        </td>" +
+              "</tr>"
             );
 
             for (j = 0; j < CluserID.length; j++) {
@@ -309,28 +309,28 @@ async function getAllClustring() {
 
     $("#clustring-list-table>tbody").append(
       "<tr id=" +
-        result[i].id +
-        ">" +
-        "                        <th>" +
-        result[i].name +
-        "</th>\n" +
-        "                        <td>" +
-        result[i].data.gateways +
-        "</td>\n" +
-        "                        <td>" +
-        result[i].data.subnodes +
-        "</td>\n" +
-        "                        <td>" +
-        result[i].data.color +
-        "</td>\n" +
-        "                        <td>\n" +
-        '                            <button type="button" class="btn btn-danger" onclick=\'deleteClustring(' +
-        res +
-        ')\'><i class="far fa-trash-alt"></i></button>\n' +
-        // "                            <button type=\"button\" class=\"btn btn-primary\" onclick=\'ShowClustrsOnMap(" + res + ")\'><i class=\"far fa-eye\"></i></button>\n" +
-        // "                            <button type=\"button\" class=\"btn btn-danger\" onclick=\"removeGrooming(this, '"+data.id+"',"+data.version+","+i+")\"><i class=\"far fa-trash-alt\"></i></button>\n" +
-        "                        </td>" +
-        "</tr>"
+      result[i].id +
+      ">" +
+      "                        <th>" +
+      result[i].name +
+      "</th>\n" +
+      "                        <td>" +
+      result[i].data.gateways +
+      "</td>\n" +
+      "                        <td>" +
+      result[i].data.subnodes +
+      "</td>\n" +
+      "                        <td>" +
+      result[i].data.color +
+      "</td>\n" +
+      "                        <td>\n" +
+      '                            <button type="button" class="btn btn-danger" onclick=\'deleteClustring(' +
+      res +
+      ')\'><i class="far fa-trash-alt"></i></button>\n' +
+      // "                            <button type=\"button\" class=\"btn btn-primary\" onclick=\'ShowClustrsOnMap(" + res + ")\'><i class=\"far fa-eye\"></i></button>\n" +
+      // "                            <button type=\"button\" class=\"btn btn-danger\" onclick=\"removeGrooming(this, '"+data.id+"',"+data.version+","+i+")\"><i class=\"far fa-trash-alt\"></i></button>\n" +
+      "                        </td>" +
+      "</tr>"
     );
   }
 
@@ -425,58 +425,58 @@ async function getAllRWA(grooming_id) {
           // groomingState.find()
           $("#rwa-list-table>tbody").append(
             "<tr>" +
-              "<td>" +
-              i +
-              "</td>\n" +
-              "                        <td>" +
-              data.pt_version +
-              "</td>\n" +
-              "                        <td>" +
-              data.tm_version +
-              "</td>\n" +
-              "                        <td>" +
-              data.start_date +
-              "</td>\n" +
-              "                        <td>" +
-              data.end_date +
-              "</td>\n" +
-              "                        <td>" +
-              data.form.algorithm +
-              "</td>\n" +
-              // "                        <td>" + data.with_clustering + "</td>\n" +
-              "                        <td>" +
-              groomingStateData.state +
-              "</td>\n" +
-              "                        <td>" +
-              groomingStateData.current +
-              "</td>\n" +
-              "                        <td>" +
-              groomingStateData.total +
-              "</td>\n" +
-              "                        <td>" +
-              data.form.comment +
-              "</td>\n" +
-              "                        <td>\n" +
-              '                            <button type="button" class="btn btn-success" title="viewGrooming" onclick="viewGrooming(this, \'' +
-              data.grooming_id +
-              '\')"><i class="far fa-eye"></i></button> \n' +
-              '                            <button type="button" class="btn btn-info" title="Show lightPath"  id="show-light-path" onclick="getLightPathList(\'' +
-              data.id +
-              '\')"><i class="fa fa-list"></i></button>\n' +
-              '                            <button type="button" class="btn btn-secondary " title="RWA General Info" data-toggle="popover" data-placement="left" data-content="Protection: [average_lambda_capacity_usage: ' +
-              source[0] +
-              " | [total_lambda_link: " +
-              source[1] +
-              "]  Working:  [average_lambda_capacity_usage: " +
-              source[2] +
-              "]  |  [total_lambda_link: " +
-              source[3] +
-              ']"><i class="fas fa-poll"></i></button>\n' +
-              '                            <button type="button" class="btn btn-warning" title="Lom_Excel" id="downloadlink" onClick=" Call_Lom_Excel(\'' +
-              RWA_Id +
-              '\')"><i class="fa fa-download"></i></button> \n' +
-              "                        </td>" +
-              "</tr>"
+            "<td>" +
+            i +
+            "</td>\n" +
+            "                        <td>" +
+            data.pt_version +
+            "</td>\n" +
+            "                        <td>" +
+            data.tm_version +
+            "</td>\n" +
+            "                        <td>" +
+            data.start_date +
+            "</td>\n" +
+            "                        <td>" +
+            data.end_date +
+            "</td>\n" +
+            "                        <td>" +
+            data.form.algorithm +
+            "</td>\n" +
+            // "                        <td>" + data.with_clustering + "</td>\n" +
+            "                        <td>" +
+            groomingStateData.state +
+            "</td>\n" +
+            "                        <td>" +
+            groomingStateData.current +
+            "</td>\n" +
+            "                        <td>" +
+            groomingStateData.total +
+            "</td>\n" +
+            "                        <td>" +
+            data.form.comment +
+            "</td>\n" +
+            "                        <td>\n" +
+            '                            <button type="button" class="btn btn-success" title="viewGrooming" onclick="viewGrooming(this, \'' +
+            data.grooming_id +
+            '\')"><i class="far fa-eye"></i></button> \n' +
+            '                            <button type="button" class="btn btn-info" title="Show lightPath"  id="show-light-path" onclick="getLightPathList(\'' +
+            data.id +
+            '\')"><i class="fa fa-list"></i></button>\n' +
+            '                            <button type="button" class="btn btn-secondary " title="RWA General Info" data-toggle="popover" data-placement="left" data-content="Protection: [average_lambda_capacity_usage: ' +
+            source[0] +
+            " | [total_lambda_link: " +
+            source[1] +
+            "]  Working:  [average_lambda_capacity_usage: " +
+            source[2] +
+            "]  |  [total_lambda_link: " +
+            source[3] +
+            ']"><i class="fas fa-poll"></i></button>\n' +
+            '                            <button type="button" class="btn btn-warning" title="Lom_Excel" id="downloadlink" onClick=" Call_Lom_Excel(\'' +
+            RWA_Id +
+            '\')"><i class="fa fa-download"></i></button> \n' +
+            "                        </td>" +
+            "</tr>"
           );
           i++;
         }
@@ -670,97 +670,97 @@ async function getLightPathList(RWA_Id) {
 
       $(".lighpath_table #modal_lighpath_table #rwa-lightpath-list").append(
         "<div class='card' id=" +
-          lightPathId +
-          ">" +
-          "<div class='card-header selected' id=ss" +
-          lightPathId +
-          ">" +
-          " <h2 class='mb-0'>" +
-          " <button class='btn btn-link btn-block text-left' type='button' data-toggle='collapse' data-target='#collapse" +
-          lightPathId +
-          "' aria-expanded='true' aria-controls='collapse" +
-          lightPathId +
-          "'>" +
-          "source: " +
-          source +
-          " | " +
-          "destination: " +
-          destination +
-          " | " +
-          "capacity: " +
-          capacity +
-          " | " +
-          "protectionType: " +
-          protection_type +
-          "</button>" +
-          "</h2>" +
-          "</div>" +
-          "<div id='collapse" +
-          lightPathId +
-          "' class='collapse' aria-labelledby=" +
-          lightPathId +
-          " data-parent='#rwa-lightpath-list'>" +
-          "<div class='card-body'>" +
-          "<table class='table'>" +
-          "<thead>" +
-          "<tr>" +
-          "<th>" +
-          "#" +
-          "</th>" +
-          "<th>" +
-          "Snr" +
-          "</th>" +
-          "<th>" +
-          "Wavelength" +
-          "</th>" +
-          "<th>" +
-          "Regenerators" +
-          "</th>" +
-          "<th>" +
-          "Lambda_Link" +
-          "</th>" +
-          "</tr>" +
-          "</thead>" +
-          "<tbody>" +
-          "<tr>" +
-          "<th>" +
-          "Protection" +
-          "</th>" +
-          "<td>" +
-          protection_snr +
-          "</td>" +
-          "<td>" +
-          protection_wavelength +
-          "</td>" +
-          "<td>" +
-          protection_regenerators +
-          "</td>" +
-          "<td>" +
-          protection_lambda_link +
-          "</td>" +
-          "</tr>" +
-          "<tr>" +
-          "<th>" +
-          "Working" +
-          "</th>" +
-          "<td>" +
-          working_snr +
-          "</td>" +
-          "<td>" +
-          working_wavelength +
-          "</td>" +
-          "<td>" +
-          working_regenerators +
-          "</td>" +
-          "<td>" +
-          working_lambda_link +
-          "</td>" +
-          "</tr>" +
-          "</tbody>" +
-          "</table>" +
-          "</div>" +
-          "</div>" +
-          " </div>"
+        lightPathId +
+        ">" +
+        "<div class='card-header selected' id=ss" +
+        lightPathId +
+        ">" +
+        " <h2 class='mb-0'>" +
+        " <button class='btn btn-link btn-block text-left' type='button' data-toggle='collapse' data-target='#collapse" +
+        lightPathId +
+        "' aria-expanded='true' aria-controls='collapse" +
+        lightPathId +
+        "'>" +
+        "source: " +
+        source +
+        " | " +
+        "destination: " +
+        destination +
+        " | " +
+        "capacity: " +
+        capacity +
+        " | " +
+        "protectionType: " +
+        protection_type +
+        "</button>" +
+        "</h2>" +
+        "</div>" +
+        "<div id='collapse" +
+        lightPathId +
+        "' class='collapse' aria-labelledby=" +
+        lightPathId +
+        " data-parent='#rwa-lightpath-list'>" +
+        "<div class='card-body'>" +
+        "<table class='table'>" +
+        "<thead>" +
+        "<tr>" +
+        "<th>" +
+        "#" +
+        "</th>" +
+        "<th>" +
+        "Snr" +
+        "</th>" +
+        "<th>" +
+        "Wavelength" +
+        "</th>" +
+        "<th>" +
+        "Regenerators" +
+        "</th>" +
+        "<th>" +
+        "Lambda_Link" +
+        "</th>" +
+        "</tr>" +
+        "</thead>" +
+        "<tbody>" +
+        "<tr>" +
+        "<th>" +
+        "Protection" +
+        "</th>" +
+        "<td>" +
+        protection_snr +
+        "</td>" +
+        "<td>" +
+        protection_wavelength +
+        "</td>" +
+        "<td>" +
+        protection_regenerators +
+        "</td>" +
+        "<td>" +
+        protection_lambda_link +
+        "</td>" +
+        "</tr>" +
+        "<tr>" +
+        "<th>" +
+        "Working" +
+        "</th>" +
+        "<td>" +
+        working_snr +
+        "</td>" +
+        "<td>" +
+        working_wavelength +
+        "</td>" +
+        "<td>" +
+        working_regenerators +
+        "</td>" +
+        "<td>" +
+        working_lambda_link +
+        "</td>" +
+        "</tr>" +
+        "</tbody>" +
+        "</table>" +
+        "</div>" +
+        "</div>" +
+        " </div>"
       );
 
       //When Click on lightPathId : Set color on protection and working path.
@@ -832,11 +832,11 @@ async function viewGrooming(element, groomingId) {
   window
     .open(
       "http://" +
-        window.location.hostname +
-        ":5000/" +
-        project[0].name +
-        "&1&" +
-        groomingId,
+      window.location.hostname +
+      ":5000/" +
+      project[0].name +
+      "&1&" +
+      groomingId,
       "_blank"
     )
     .focus();
@@ -1028,20 +1028,20 @@ async function showClusterList() {
     for (let i = 0; i < result.length; i = i + 1) {
       $("#collapseClusterList>#panel-body").append(
         "<div class='form-check'>" +
-          "<label class='form-check-label'>" +
-          "<input type='checkbox' id='clusterId' class='form-check-input' name='chkClusters' value=" +
-          result[i].id +
-          ">" +
-          "Name: " +
-          result[i].name +
-          " | " +
-          "Gateways: " +
-          result[i].data.gateways +
-          " | " +
-          "Subnodes: " +
-          result[i].data.subnodes +
-          " </label>" +
-          " </div>"
+        "<label class='form-check-label'>" +
+        "<input type='checkbox' id='clusterId' class='form-check-input' name='chkClusters' value=" +
+        result[i].id +
+        ">" +
+        "Name: " +
+        result[i].name +
+        " | " +
+        "Gateways: " +
+        result[i].data.gateways +
+        " | " +
+        "Subnodes: " +
+        result[i].data.subnodes +
+        " </label>" +
+        " </div>"
       );
     }
   }
@@ -1360,66 +1360,66 @@ async function viewgroomingTable(groomingId) {
 
     $(".lighpath_table #modal_lighpath_table #rwa-lightpath-list").append(
       "<div class='card' id=" +
-        ItemId +
-        " onclick=\"viewSourceDestination('" +
-        source +
-        "','" +
-        destination +
-        "')\">" +
-        "<div class='card-header selected' id=ss" +
-        ItemId +
-        ">" +
-        " <h2 class='mb-0'>" +
-        " <button  id=btn" +
-        ItemId +
-        " class='btn btn-link btn-block text-left' type='button' data-toggle='collapse' data-target='#collapse" +
-        ItemId +
-        "' aria-expanded='true' aria-controls='collapse" +
-        ItemId +
-        "'>" +
-        "source: " +
-        source +
-        " | " +
-        "destination: " +
-        destination +
-        "</button>" +
-        "</h2>" +
-        "</div>" +
-        "<div id='collapse" +
-        ItemId +
-        "' class='collapse' aria-labelledby=" +
-        ItemId +
-        " data-parent='#rwa-lightpath-list'>" +
-        "<div class='card-body'>" +
-        "<table  class='table' id=Table" +
-        ItemId +
-        ">" +
-        "<thead>" +
-        "<tr>" +
-        "<th>" +
-        "#" +
-        "</th>" +
-        "<th>" +
-        "Source" +
-        "</th>" +
-        "<th>" +
-        "Destination" +
-        "</th>" +
-        "<th>" +
-        "Traffic Type" +
-        "</th>" +
-        "<th>" +
-        "Traffic Count" +
-        "</th>" +
-        "</tr>" +
-        "</thead>" +
-        "<tbody>" +
-        //Append <tr></tr>
-        "</tbody>" +
-        "</table>" +
-        "</div>" +
-        "</div>" +
-        " </div>"
+      ItemId +
+      " onclick=\"viewSourceDestination('" +
+      source +
+      "','" +
+      destination +
+      "')\">" +
+      "<div class='card-header selected' id=ss" +
+      ItemId +
+      ">" +
+      " <h2 class='mb-0'>" +
+      " <button  id=btn" +
+      ItemId +
+      " class='btn btn-link btn-block text-left' type='button' data-toggle='collapse' data-target='#collapse" +
+      ItemId +
+      "' aria-expanded='true' aria-controls='collapse" +
+      ItemId +
+      "'>" +
+      "source: " +
+      source +
+      " | " +
+      "destination: " +
+      destination +
+      "</button>" +
+      "</h2>" +
+      "</div>" +
+      "<div id='collapse" +
+      ItemId +
+      "' class='collapse' aria-labelledby=" +
+      ItemId +
+      " data-parent='#rwa-lightpath-list'>" +
+      "<div class='card-body'>" +
+      "<table  class='table' id=Table" +
+      ItemId +
+      ">" +
+      "<thead>" +
+      "<tr>" +
+      "<th>" +
+      "#" +
+      "</th>" +
+      "<th>" +
+      "Source" +
+      "</th>" +
+      "<th>" +
+      "Destination" +
+      "</th>" +
+      "<th>" +
+      "Traffic Type" +
+      "</th>" +
+      "<th>" +
+      "Traffic Count" +
+      "</th>" +
+      "</tr>" +
+      "</thead>" +
+      "<tbody>" +
+      //Append <tr></tr>
+      "</tbody>" +
+      "</table>" +
+      "</div>" +
+      "</div>" +
+      " </div>"
     );
 
     if (splitted_sections.length > 0) {
@@ -1431,26 +1431,26 @@ async function viewgroomingTable(groomingId) {
         Type_Splitted = RowSplitted.type;
         $(
           ".lighpath_table #modal_lighpath_table #rwa-lightpath-list #Table" +
-            ItemId +
-            " tbody"
+          ItemId +
+          " tbody"
         ).append(
           '<tr class="Splitted">' +
-            "<th>" +
-            "Splitted Sections" +
-            "</th>" +
-            "<td>" +
-            source_Splitted +
-            "</td>" +
-            "<td>" +
-            destination_Splitted +
-            "</td>" +
-            "<td>" +
-            Type_Splitted +
-            "</td>" +
-            "<td>" +
-            Count_Splitted +
-            "</td>" +
-            "</tr>"
+          "<th>" +
+          "Splitted Sections" +
+          "</th>" +
+          "<td>" +
+          source_Splitted +
+          "</td>" +
+          "<td>" +
+          destination_Splitted +
+          "</td>" +
+          "<td>" +
+          Type_Splitted +
+          "</td>" +
+          "<td>" +
+          Count_Splitted +
+          "</td>" +
+          "</tr>"
         );
       }
     }
@@ -1463,22 +1463,22 @@ async function viewgroomingTable(groomingId) {
         Type_endToend = RowEndtoend.type;
         $(
           ".lighpath_table #modal_lighpath_table #rwa-lightpath-list #Table" +
-            ItemId +
-            " tbody"
+          ItemId +
+          " tbody"
         ).append(
           '<tr class="End">' +
-            "<th>" +
-            "End to Ends" +
-            "</th>" +
-            "<td></td>" +
-            "<td></td>" +
-            "<td>" +
-            Type_endToend +
-            "</td>" +
-            "<td>" +
-            Count_endToend +
-            "</td>" +
-            "</tr>"
+          "<th>" +
+          "End to Ends" +
+          "</th>" +
+          "<td></td>" +
+          "<td></td>" +
+          "<td>" +
+          Type_endToend +
+          "</td>" +
+          "<td>" +
+          Count_endToend +
+          "</td>" +
+          "</tr>"
         );
       }
     }
@@ -1583,15 +1583,41 @@ async function export_rwa_results() {
       redirect: "follow",
     };
     // result = await callService(`http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/result?rwa_id=b48a8220-a594-40ce-b83d-60795b3ca046`, requestOptions);
-    result = await callService(
-      `http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/result?rwa_id=${rwa_id}`,
-      requestOptions
-    );
-    // console.log(rwa_id);
-    download(
-      "rwa_result_" + new Date().toLocaleString() + ".json",
-      JSON.stringify(result, undefined, 2)
-    );
+    // result = await callService(
+    //   `http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/result/excel?rwa_id=${rwa_id}`,
+    //   requestOptions
+    // );
+
+    let result = await fetch(`http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/result/excel?rwa_id=${rwa_id}`, requestOptions)
+      .then(response => {
+        console.log("kir3")
+        return response.blob();
+      })
+      .then(result => {
+        console.log(result)
+        return result
+      })
+      .catch(error => toastr.error(error));
+
+    const newBlob = new Blob([result]);
+
+    const blobUrl = window.URL.createObjectURL(newBlob);
+
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.setAttribute('download', `output.xlsx`);
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode.removeChild(link);
+
+    // clean up Url
+    window.URL.revokeObjectURL(blobUrl);
+
+    // console.log(result)
+    // download(
+    //   "rwa_excel_" + new Date().toLocaleString() + ".xlsx",
+    //   JSON.stringify(result, undefined, 2)
+    // );
   }
 }
 
