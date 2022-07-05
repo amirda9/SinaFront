@@ -453,6 +453,8 @@ function checkForExcel(elementPath, form) {
                 if (error.statusCode === 401) {
                     await refreshToken();
                     await checkForExcel(elementPath, form);
+                } else if(error.statusCode === 404){
+                    toastr.error("there is problem in excel format")
                 } else
                     reject(error);
             } finally {
