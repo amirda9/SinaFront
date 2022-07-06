@@ -472,10 +472,18 @@ async function getAllRWA(grooming_id) {
             "]  |  [total_lambda_link: " +
             source[3] +
             ']"><i class="fas fa-poll"></i></button>\n' +
-            '                            <button type="button" class="btn btn-warning" title="excel_result" id="downloadlink" onClick=" Call_excel_result(\'' +
+
+
+            '                            <button type="button" disabled class="btn btn-warning" title="Lom_excel" id="downloadlink" onClick=" Call_Lom_excel(\'' +
             RWA_Id +
             '\')"><i class="fa fa-download"></i></button> \n' +
+
+            '                            <button type="button" class="btn btn-info" title="rwa_excel" id="downloadlink" onClick=" Call_rwa_excel(\'' +
+            RWA_Id +
+            '\')"><i class="fa fa-download"></i></button> \n' +
+
             "                        </td>" +
+
             "</tr>"
           );
           i++;
@@ -1514,8 +1522,8 @@ function show_source_dest(source, destination, Source_prev, destination_prev) {
   change_icon(destination, getLatLng(destination), "blue", 1, "notified");
 }
 
-async function Call_excel_result(RWA_Id) {
 
+async function Call_rwa_excel(RWA_Id) {
   var myHeaders = new Headers();
   myHeaders.append(
     "Authorization",
@@ -1549,28 +1557,30 @@ async function Call_excel_result(RWA_Id) {
   link.click();
   link.parentNode.removeChild(link);
 
-  // clean up Url
+  // // clean up Url
   window.URL.revokeObjectURL(blobUrl);
+}
 
+async function Call_Lom_excel(RWA_Id) {
 
   // lom_excel ### 
 
-  // let url = `http://185.211.88.140:80/api/v2.0.0/algorithms/grooming/excel_result?rwa_id=${RWA_Id}`;
+  let url = `http://185.211.88.140:80/api/v2.0.0/algorithms/grooming/Lom_excel?rwa_id=${RWA_Id}`;
 
-  // return fetch(url, {
-  //   method: "GET",
-  //   headers: {
-  //     Authorization: `${userData.token_type} ${userData.access_token}`,
-  //   },
-  //   responseType: "blob",
-  // }).then(function (response) {
-  //   return response.blob().then((b) => {
-  //     var a = document.createElement("a");
-  //     a.href = URL.createObjectURL(b);
-  //     a.setAttribute("download", "kerman_End to end.xlsx");
-  //     a.click();
-  //   });
-  // });
+  return fetch(url, {
+    method: "GET",
+    headers: {
+      Authorization: `${userData.token_type} ${userData.access_token}`,
+    },
+    responseType: "blob",
+  }).then(function (response) {
+    return response.blob().then((b) => {
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(b);
+      a.setAttribute("download", "kerman_End to end.xlsx");
+      a.click();
+    });
+  });
 }
 
 async function export_grooming_results() {
