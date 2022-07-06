@@ -472,7 +472,7 @@ async function getAllRWA(grooming_id) {
             "]  |  [total_lambda_link: " +
             source[3] +
             ']"><i class="fas fa-poll"></i></button>\n' +
-            '                            <button type="button" class="btn btn-warning" title="Lom_Excel" id="downloadlink" onClick=" Call_Lom_Excel(\'' +
+            '                            <button type="button" class="btn btn-warning" title="excel_result" id="downloadlink" onClick=" Call_excel_result(\'' +
             RWA_Id +
             '\')"><i class="fa fa-download"></i></button> \n' +
             "                        </td>" +
@@ -1514,23 +1514,63 @@ function show_source_dest(source, destination, Source_prev, destination_prev) {
   change_icon(destination, getLatLng(destination), "blue", 1, "notified");
 }
 
-async function Call_Lom_Excel(RWA_Id) {
-  let url = `http://185.211.88.140:80/api/v2.0.0/algorithms/grooming/lom_excel?rwa_id=${RWA_Id}`;
+async function Call_excel_result(RWA_Id) {
 
-  return fetch(url, {
+  var myHeaders = new Headers();
+  myHeaders.append(
+    "Authorization",
+    `${userData.token_type} ${userData.access_token}`
+  );
+
+  var requestOptions = {
     method: "GET",
-    headers: {
-      Authorization: `${userData.token_type} ${userData.access_token}`,
-    },
-    responseType: "blob",
-  }).then(function (response) {
-    return response.blob().then((b) => {
-      var a = document.createElement("a");
-      a.href = URL.createObjectURL(b);
-      a.setAttribute("download", "kerman_End to end.xlsx");
-      a.click();
-    });
-  });
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  let result = await fetch(`http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/result/excel?rwa_id=${RWA_Id}`, requestOptions)
+    .then(response => {
+      return response.blob();
+    })
+    .then(result => {
+      console.log(result)
+      return result
+    })
+    .catch(error => toastr.error(error));
+
+  const newBlob = new Blob([result]);
+
+  const blobUrl = window.URL.createObjectURL(newBlob);
+
+  const link = document.createElement('a');
+  link.href = blobUrl;
+  link.setAttribute('download', `output.xlsx`);
+  document.body.appendChild(link);
+  link.click();
+  link.parentNode.removeChild(link);
+
+  // clean up Url
+  window.URL.revokeObjectURL(blobUrl);
+
+
+  // lom_excel ### 
+
+  // let url = `http://185.211.88.140:80/api/v2.0.0/algorithms/grooming/excel_result?rwa_id=${RWA_Id}`;
+
+  // return fetch(url, {
+  //   method: "GET",
+  //   headers: {
+  //     Authorization: `${userData.token_type} ${userData.access_token}`,
+  //   },
+  //   responseType: "blob",
+  // }).then(function (response) {
+  //   return response.blob().then((b) => {
+  //     var a = document.createElement("a");
+  //     a.href = URL.createObjectURL(b);
+  //     a.setAttribute("download", "kerman_End to end.xlsx");
+  //     a.click();
+  //   });
+  // });
 }
 
 async function export_grooming_results() {
@@ -1582,42 +1622,41 @@ async function export_rwa_results() {
       headers: myHeaders,
       redirect: "follow",
     };
-    // result = await callService(`http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/result?rwa_id=b48a8220-a594-40ce-b83d-60795b3ca046`, requestOptions);
-    // result = await callService(
-    //   `http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/result/excel?rwa_id=${rwa_id}`,
-    //   requestOptions
-    // );
+    result = await callService(
+      `http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/result?rwa_id=${rwa_id}`,
+      requestOptions
+    );
 
-    let result = await fetch(`http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/result/excel?rwa_id=${rwa_id}`, requestOptions)
-      .then(response => {
-        console.log("kir3")
-        return response.blob();
-      })
-      .then(result => {
-        console.log(result)
-        return result
-      })
-      .catch(error => toastr.error(error));
+    download(
+      "rwa_result_" + new Date().toLocaleString() + ".json",
+      JSON.stringify(result, undefined, 2)
+    );
 
-    const newBlob = new Blob([result]);
+    // let result = await fetch(`http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/result/excel?rwa_id=${rwa_id}`, requestOptions)
+    //   .then(response => {
+    //     return response.blob();
+    //   })
+    //   .then(result => {
+    //     console.log(result)
+    //     return result
+    //   })
+    //   .catch(error => toastr.error(error));
 
-    const blobUrl = window.URL.createObjectURL(newBlob);
+    // const newBlob = new Blob([result]);
 
-    const link = document.createElement('a');
-    link.href = blobUrl;
-    link.setAttribute('download', `output.xlsx`);
-    document.body.appendChild(link);
-    link.click();
-    link.parentNode.removeChild(link);
+    // const blobUrl = window.URL.createObjectURL(newBlob);
 
-    // clean up Url
-    window.URL.revokeObjectURL(blobUrl);
+    // const link = document.createElement('a');
+    // link.href = blobUrl;
+    // link.setAttribute('download', `output.xlsx`);
+    // document.body.appendChild(link);
+    // link.click();
+    // link.parentNode.removeChild(link);
+
+    // // clean up Url
+    // window.URL.revokeObjectURL(blobUrl);
 
     // console.log(result)
-    // download(
-    //   "rwa_excel_" + new Date().toLocaleString() + ".xlsx",
-    //   JSON.stringify(result, undefined, 2)
-    // );
   }
 }
 
