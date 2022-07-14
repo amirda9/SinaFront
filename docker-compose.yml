@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  nginx:
+  nginx-stage:
     build:
       context: .
       dockerfile: Dockerfile
