@@ -208,7 +208,6 @@ $("form#submit-project-form").submit(async function (e) {
         await createOrUpdate("projects/", project[0].id == 0 ? "create" : "update", project[0], project[0].id == 0 ? null : project[0].id)
             .then(async function (result) {
                 let operation = project[0].id == 0 ? "create" : "update";
-                console.log("Kiiiiiiiiiiiiiiiiiiiiir", project[0].id , operation)
                 if (project[0].id == 0) {
                     project[0].id = result.body.id;
                 }
@@ -299,6 +298,7 @@ async function saveProject() {
 
 function createOrUpdate(elementPath, mode, data, id = null) {
     console.log(id)
+    console.log(data, "pyhsycal topologies")
     console.log(serverAddr + elementPath + (id != null ? "?id=" + id : ""))
     return new Promise(function (resolve, reject) {
         const request = {
@@ -534,6 +534,7 @@ function getPtData(ptId, version = null, caller) {
                         await addElement("physical", physical);
                         tableviewPtData["data"] = response.body[0].data;
                         initPtTableView();
+                        initTmTableView();
                     } else if (callerMethod == "history") {
                         let i = 1
                         localStorage.setItem("physicalHistory", JSON.stringify(response.body))

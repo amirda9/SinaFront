@@ -328,6 +328,8 @@ async function storeLocallyDrawModeDataChanges(drawData)
 }
 
 async function submitDrawModeDataChanges(physicalTopologyData) {
+    console.log(physicalTopologyData.data, "this is physical topology data")
+    // localStorage.setItem("physical_topologies", physicalTopologyData.data)
 
     const actionMode = physicalTopologyData.id == 0 ? "POST" : "PUT"
     // physicalTopologyData["comment"] = "nocomment";
@@ -1203,6 +1205,7 @@ async function drawDoneBtnConfirmed(comment, markersGroup, featureGroup, linksGr
         if (updateElement("physical", physical[0])) {
             tableviewPtData.data = drawData;
             initPtTableView();
+            initTmTableView();
             toastr.success("successfully save draw data locally");
             div.remove();
         }
@@ -1228,6 +1231,7 @@ async function drawDoneBtnConfirmed(comment, markersGroup, featureGroup, linksGr
         if (updateElement("physical", physical[0])) {
             tableviewPtData.data = drawData;
             await initPtTableView();
+            await initTmTableView();
             toastr.success("successfully save draw data locally");
         }
         $('#back-step-4').hide();

@@ -54,6 +54,7 @@ async function initPtTableView()
     $("#pt-nodes-errors").html("")
     $("#pt-links-errors").html("")
     var ptNodesData = [];
+
     if (tableviewPtData.data != undefined && tableviewPtData.data.nodes != undefined && tableviewPtData.data.nodes.length > 0) {
         for (const data of tableviewPtData.data.nodes) {
             const newDataObj = Object.keys(data).reduce((object, key) => {
@@ -109,7 +110,6 @@ async function initPtTableView()
     }
 
     var nodesChanged = function (instance, cell, x, y, value) {
-        // console.log(cell)
         if ((errorData = cell.getAttribute("error_value")) !== undefined) {
             let cellName = jexcel.getColumnNameFromId([x, y]);
             let worksheet = document.getElementById('tableview-pt-spreadsheet').children[0].querySelector('.selected').getAttribute('data-spreadsheet');
@@ -158,7 +158,6 @@ async function initPtTableView()
     }
 
     var linksChanged = function (instance, cell, x, y, value) {
-        // console.log(cell)
 
         if ((errorData = cell.getAttribute("error_value")) !== undefined) {
             let cellName = jexcel.getColumnNameFromId([x, y]);
@@ -382,6 +381,36 @@ async function initPtTableView()
 var tmSheet;
 var servicesType = ["E1", "STM1 Electrical", "STM1 Optical", "STM4", "STM16", "STM64", "FE", "GE", "10GE", "100GE"]
 async function initTmTableView(){
+
+    // code to update nodes name 
+
+    var ptNodesData = [];
+    if (tableviewPtData.data != undefined && tableviewPtData.data.nodes != undefined && tableviewPtData.data.nodes.length > 0) {
+        for (const data of tableviewPtData.data.nodes) {
+            const newDataObj = Object.keys(data).reduce((object, key) => {
+                if (!key.includes("error")) {
+                    object[key] = data[key]
+                }
+                return object
+            }, {})
+            ptNodesData.push(newDataObj);
+        }
+    }
+
+    if (tableviewPtData.data != undefined && tableviewPtData.data.nodes != undefined && tableviewPtData.data.nodes.length > 0) {
+        for (const data of tableviewPtData.data.nodes) {
+            const newDataObj = Object.keys(data).reduce((object, key) => {
+                if (key === "name") {
+                    object[key] = data[key]
+                }
+                return object
+            }, {})
+            ptNodeNames.push(newDataObj.name);
+        }
+        var ptNodesDataArray = Object.entries(tableviewPtData.data.nodes);
+    }
+    // ###
+
     $("#tableview-tm-spreadsheet").html("")
     $("#tm-errors").html("")
 
@@ -409,7 +438,6 @@ async function initTmTableView(){
     if(tableviewTmData.data != undefined && tableviewTmData.data.demands != undefined ) {
         tmNodesDataArray =  Object.entries(tableviewTmData.data.demands);
     }
-
     let tmKeyNames = {
         '0': 'source',
         '1': 'destination',
@@ -422,14 +450,14 @@ async function initTmTableView(){
             type: 'autocomplete',
             width: '100px',
             title: 'source node',
-            source: ptNodeNames,
+            source: await ptNodeNames,
             name: 'source'
         },
         {
             type: 'autocomplete',
             width: '100px',
             title: 'destination node',
-            source: ptNodeNames,
+            source: await ptNodeNames,
             name: 'destination'
         },
         {
