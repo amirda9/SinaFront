@@ -2450,7 +2450,7 @@ async function viewTrafficHistory(id, version, rownumber) {
 function logoutUser() {
     localStorage.removeItem("userData");
     localStorage.removeItem("userName");
-    window.location.href = "/login.html"
+    window.location.href = "/"
 }
 
 function refreshToken() {
