@@ -383,7 +383,6 @@ var servicesType = ["E1", "STM1 Electrical", "STM1 Optical", "STM4", "STM16", "S
 async function initTmTableView(){
 
     // code to update nodes name 
-
     var ptNodesData = [];
     if (tableviewPtData.data != undefined && tableviewPtData.data.nodes != undefined && tableviewPtData.data.nodes.length > 0) {
         for (const data of tableviewPtData.data.nodes) {
