@@ -383,18 +383,18 @@ var servicesType = ["E1", "STM1 Electrical", "STM1 Optical", "STM4", "STM16", "S
 async function initTmTableView(){
 
     // code to update nodes name 
-    var ptNodesData = [];
-    if (tableviewPtData.data != undefined && tableviewPtData.data.nodes != undefined && tableviewPtData.data.nodes.length > 0) {
-        for (const data of tableviewPtData.data.nodes) {
-            const newDataObj = Object.keys(data).reduce((object, key) => {
-                if (!key.includes("error")) {
-                    object[key] = data[key]
-                }
-                return object
-            }, {})
-            ptNodesData.push(newDataObj);
-        }
-    }
+    ptNodeNames = [];
+    // if (tableviewPtData.data != undefined && tableviewPtData.data.nodes != undefined && tableviewPtData.data.nodes.length > 0) {
+    //     for (const data of tableviewPtData.data.nodes) {
+    //         const newDataObj = Object.keys(data).reduce((object, key) => {
+    //             if (!key.includes("error")) {
+    //                 object[key] = data[key]
+    //             }
+    //             return object
+    //         }, {})
+    //         ptNodesData.push(newDataObj);
+    //     }
+    // }
 
     if (tableviewPtData.data != undefined && tableviewPtData.data.nodes != undefined && tableviewPtData.data.nodes.length > 0) {
         for (const data of tableviewPtData.data.nodes) {
