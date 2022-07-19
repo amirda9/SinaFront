@@ -17,7 +17,7 @@ $(window).on('load', function () {
                             }
                             document.getElementById("project-info-box").innerHTML = project[0].name;
                             let physical = await getAllRecords("physical")
-                            console.log('physical = ',physical)
+                            console.log('physical = ', physical)
                             if (physical[0].data !== undefined && physical[0].data.nodes.length > 0)
                                 drawPhysicalTopology(physical[0].data);
                             if (physical[0].id != 0) {
@@ -269,8 +269,8 @@ async function saveProject() {
         await createOrUpdate("projects/", "create", project[0])
             .then(async function (result) {
                 project[0].id = result.body.id;
-                console.log("IDDD:",project[0].id);
-                localStorage.setItem("project_id",JSON.stringify(project[0].id));
+                console.log("IDDD:", project[0].id);
+                localStorage.setItem("project_id", JSON.stringify(project[0].id));
                 console.log("saved:");
                 //localStorage.setItem("project_id",JSON.stringify(project[0].id));
                 project[0].version = 1
@@ -297,8 +297,13 @@ async function saveProject() {
 }
 
 function createOrUpdate(elementPath, mode, data, id = null) {
-    console.log(id)
-    console.log(data, "pyhsycal topologies")
+    if (id == null && elementPath == "physical_topologies/"){
+        console.log(id)
+        console.log(data, "pyhsycal topologies")
+        localStorage.removeItem("physical_topologies")
+        localStorage.setItem("physical_topologies", JSON.stringify(data.data))
+    }
+
     console.log(serverAddr + elementPath + (id != null ? "?id=" + id : ""))
     return new Promise(function (resolve, reject) {
         const request = {
@@ -453,7 +458,7 @@ function checkForExcel(elementPath, form) {
                 if (error.statusCode === 401) {
                     await refreshToken();
                     await checkForExcel(elementPath, form);
-                } else if(error.statusCode === 404){
+                } else if (error.statusCode === 404) {
                     toastr.error("there is problem in excel format")
                 } else
                     reject(error);
@@ -519,12 +524,12 @@ function getPtData(ptId, version = null, caller) {
             await SwaggerClient.http(request).then(async response => {
                 if (response.status === 200) {
                     if (callerMethod == "project") {
-                        console.log('physical_topologies service is start...',response.body[0].data)
+                        console.log('physical_topologies service is start...', response.body[0].data)
                         drawPhysicalTopology(response.body[0].data);
-                        
+
                         //save location of nodes in a localstorage when project is loading
-                        localStorage.setItem('physical_topologies',JSON.stringify(response.body[0].data));
-                        
+                        localStorage.setItem('physical_topologies', JSON.stringify(response.body[0].data));
+
 
                         let project = await getAllRecords("project")
                         let physical = new Object();
@@ -871,7 +876,7 @@ function createProject(e) {
             await SwaggerClient.http(request).then(response => {
                 if (response.status === 201) {
                     loadProject(response.body.project_id);
-                    localStorage.setItem("project_id",JSON.stringify(response.body.project_id));
+                    localStorage.setItem("project_id", JSON.stringify(response.body.project_id));
                     toastr.success("successfully create project");
                     // alert("successfully create project");
                     $('#create-project').modal('hide');
@@ -1175,7 +1180,7 @@ async function loadProject(projectId) {
                 await SwaggerClient.http(request).then(async response => {
                     if (response.status === 200) {
                         //get Project ID
-                        localStorage.setItem("project_id",JSON.stringify(projectId));
+                        localStorage.setItem("project_id", JSON.stringify(projectId));
                         console.log('loadProject in project-logic : ', response.body)
                         let recivedProject = response.body
                         await addElement("project", recivedProject);
