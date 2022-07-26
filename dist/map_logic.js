@@ -1252,6 +1252,8 @@ async function drawDoneBtnConfirmed(comment, markersGroup, featureGroup, linksGr
 // check for links connected to marker, also delete the data. - params? - only works for new nodes now
 function deleteOnRightClick(event, featureGroup, markers, links, mymap) {
     closeAllPopups();
+    temp = confirm("Are you sure you want to delete this?")
+    if(temp==true){
     tempMarkerlist = [];
     if (event.layer instanceof L.Marker) {
         //delete data, connected links;
@@ -1268,6 +1270,7 @@ function deleteOnRightClick(event, featureGroup, markers, links, mymap) {
         link = event.layer;
         deleteOnRightClickLayer(link, links, featureGroup);
     }
+}
 }
 
 function deleteOnRightClickLayer(layer, list, featureGroup) {
