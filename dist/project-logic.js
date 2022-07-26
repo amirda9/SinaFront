@@ -1124,7 +1124,7 @@ function delProjectList() {
                     for (const key of response.body) {
                         projectRowsTag += '<div class="row" >\n' +
                             `                    <div class="col-md-6">${key.name}</div>\n` +
-                            `                    <div class="col-md-6"><button type="submit" class="btn btn-primary btn-sm mb-2 " id="btn_${key.id}" onmousedown="loadProject('${key.id}');">load this</button> </div>\n` +
+                            `                    <div class="col-md-6"><button type="submit" class="btn btn-primary btn-sm mb-2 " id="btn_${key.id}" onmousedown="DelProject('${key.id}');">Delete</button> </div>\n` +
                             '                </div>'
                         // var value = response.data()[key];
 
@@ -1152,6 +1152,51 @@ function delProjectList() {
     })();
 }
 
+
+async function DelProject(projectId) {
+    // console.log('Delete project is start...')
+    temp = confirm("Are you sure you want to delete this project ?")
+    const request = {
+        url: serverAddr + "projects/",
+        method: 'DELETE',
+        query: {
+            id: {
+                value: projectId
+            }
+        },
+        headers: {
+            'accept': 'application/json',
+            'Authorization': `${userData.token_type} ${userData.access_token}`
+        },
+    };
+    if (temp == true){
+    await (async () => {
+        try {
+            await SwaggerClient.http(request).then(async response => {
+                if (response.status === 200) {
+                    toastr.success("project deleted successfully");
+                    $('#load-project').modal('toggle');
+                }
+            });
+        } catch (error) {
+            if (error.statusCode === 409)
+                toastr.error(error.response.body.detail);
+            // alert("name is duplicate, please choose another name")
+            if (error.statusCode === 400)
+                toastr.error(error.response.body.detail)
+            if (error.statusCode === 401) {
+                await refreshToken();
+            }
+            // console.log(error.response);
+        } finally {
+            // clearTimeout(timeout);
+        }
+    })();
+}
+else{
+    $('#load-project').modal('toggle');
+}
+}
 
 async function loadProject(projectId) {
     console.log('load project is start...')

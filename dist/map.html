@@ -705,7 +705,8 @@
                    data-keyboard="false" data-backdrop="static">Import Project (offline)</a>
                 <a class="dropdown-item" onclick="exportToJsonFile();" href="#">Export Project (offline)</a>
                 <div class="dropdown-divider"></div>
-                <a type="button" class="dropdown-item" data-toggle="modal" data-target="#import-physical"
+                <a type="button" class="dropdown-item"
+                 data-toggle="modal" data-target="#import-physical"
                    data-keyboard="false" data-backdrop="static">Load
                     Physical Topology</a>
                 <a type="button" class="dropdown-item" data-toggle="modal" data-target="#import-matrix"
@@ -881,13 +882,37 @@
                         <label for="Advanced">Advanced</label>
                     </div>
                 </div>
+                <div class="algorithm" >
+                    <span class="title-modal-algorithm">Line Rate : </span>
+                    <div class="radio">
+
+                        <input type="radio" name="LineRadio" id="QPSK1" value="1"
+                                >
+                        <label for="QPSK1">100 Gbps</label>
+
+                        <input type="radio" name="LineRadio" id="QPSK2" value="2"
+                             class="ml-5">
+                        <label for="QPSK2">100 Gbps &
+                            200 Gbps</label>
+                    </div>
+                </div>
+                <div class="algorithm" >
+                    <span class="title-modal-algorithm">MP1H : </span>
+                    <div class="radio">
+                        <select name="MP1H" class="custom-select" id="MP1H_select"
+                                     required>
+                                <option value="True">True</option>
+                                <option value="False" selected>False</option>
+                            </select>
+                    </div>
+                </div>
 
                 <form id="grooming-form">
                     <div class="form-row">
                         <div class="form-group col-sm-12">
 
                             <!-- MP1H Threshold : -->
-                            <label for="grooming-mp1h-threshold" class="labelSelect">Mp1h Threshold: </label>
+                            <!-- <label for="grooming-mp1h-threshold" class="labelSelect">Mp1h Threshold: </label>
                             <select name="MP1H" class="custom-select" id="grooming-mp1h-threshold"
                                     name="mp1h_threshold" required>
                                 <option value="0">0</option>
@@ -900,20 +925,22 @@
                                 <option value="70" selected>70</option>
                                 <option value="80">80</option>
                                 <option value="90">90</option>
-                            </select>
+                            </select> -->
 
                             <!-- lineRate Threshold : -->
-                            <label for="grooming-lineRate-threshold" class="labelSelect">LineRate Threshold:
+                <div class="algorithm" >
+                            <label class="title-modal-algorithm">MP1H Threshold
                             </label>
-                            <select name="lineRate" class="custom-select" id="grooming-lineRate-threshold"
-                                    name="lineRate" required>
-                                <option value="40">40</option>
-                                <option value="100" selected>100</option>
-                                <option value="200">200</option>
-                            </select>
+                            <input name="MP1H_Tresh"></input>
+                            </div>
+                            <div class="algorithm" >
+                                <label class="title-modal-algorithm">MPBD Threshold
+                                </label>
+                                <input name="MPBD_Tresh"></input>
+                                </div>
 
                             <!-- Clusters : -->
-                            <div class="panel-group clusters">
+                            <!-- <div class="panel-group clusters">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
                                         <h4 class="panel-title">
@@ -931,11 +958,11 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <!-- Comment : -->
-                            <textarea type="text" autocomplete="off" class="form-control" id="grooming-comment"
-                                      name="comment" required placeholder="Comment"></textarea>
+                            <!-- <textarea type="text" autocomplete="off" class="form-control" id="grooming-comment"
+                                      name="comment" required placeholder="Comment"></textarea> -->
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary mb-2 float-right" id="btnSubmit" onclick="startEnd2EndGrooming()">Submit</button>

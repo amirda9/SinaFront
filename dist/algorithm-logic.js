@@ -992,12 +992,12 @@ async function ShowClustrsOnMap(Clusters) {
 function SelectAlgorithm() {
   // If the radio:Advanced is checked, display the LineRate & checked of ClusterLists
   if (document.getElementById("end_To_end").checked == true) {
-    document.getElementById("grooming-lineRate-threshold").disabled = true;
-    $("input[name='chkClusters']").attr("disabled", true);
+    // document.getElementById("grooming-lineRate-threshold").disabled = true;
+    // $("input[name='chkClusters']").attr("disabled", true);
     $(':input[type="submit"]').prop("disabled", false);
   } else if (document.getElementById("Advanced").checked == true) {
-    document.getElementById("grooming-lineRate-threshold").disabled = false;
-    $("input[name='chkClusters']").attr("disabled", false);
+    // document.getElementById("grooming-lineRate-threshold").disabled = false;
+    // $("input[name='chkClusters']").attr("disabled", false);
     $(':input[type="submit"]').prop("disabled", false);
   }
 }
@@ -1106,7 +1106,7 @@ $().ready(function () {
   let advanced = document.getElementById("Advanced");
 
   if (endToEnd.checked == false && advanced.checked == false) {
-    $(':input[type="submit"]').prop("disabled", true);
+    // $(':input[type="submit"]').prop("disabled", true);
   }
 });
 
