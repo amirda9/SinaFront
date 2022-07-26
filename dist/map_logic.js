@@ -1325,12 +1325,13 @@ function createAddNodeForm(featureGroup, markers, mymap, pathToIcon, oldMarkers)
     div.setAttribute("class", "vertical");
 
     var inputParams = {
-        "paramNames": ["Node_Name", "roadm_type"],
-        "paramValues": ["", "Directionless"],
-        "paramAllValues": ["", ["Directionless", "CDC"]]
+        "paramNames": ["Node_Name", "Number of Channels for Expansion"],
+        "paramValues": ["", "0"],
+        "paramAllValues": ["", ["0"]]
     }
 
-    var nodeParams = createParamsInputs(inputParams.paramNames, inputParams.paramValues);
+    var nodeParams = createParamsInputsNode(inputParams.paramNames, inputParams.paramValues);
+
 
     var doneBtn = document.createElement("button");
     doneBtn.setAttribute("id", "submitNodeForm");
@@ -1449,12 +1450,12 @@ function createAddLinkForm(featureGroup, links, mymap, linksGroup) {
     div.setAttribute("class", "vertical");
 
     var inputParams = {
-        "paramValues": ["0.0", "0", "0.2", "0", "1.40E-03", "3.16914E-19"],
-        "paramNames": ["Length", "Fiber_Type", "Loss_Coefficient", "Beta", "Gamma", "Dispersion"]
+        "paramValues": ["0.0", "0.0","0.0"],
+        "paramNames": ["Length (Km)", "Loss_Coefficient (dB/Km)", "Dispersion (ps/Km-nm)"]
     };
 
     //create link Params
-    linkParams = createParamsInputs(inputParams.paramNames, inputParams.paramValues);
+    linkParams = createParamsInputsForm(inputParams.paramNames, inputParams.paramValues);
 
     var doneBtn = document.createElement("button");
     doneBtn.setAttribute("id", "submitLinkForm");
@@ -1800,6 +1801,152 @@ function createParamsInputs(paramNames, paramValues) {
     return paramElements;
 }
 
+
+function createLblTxtFromParamName(paramNames) {
+
+    var lblTxts = [];
+    for (var i = 0; i < paramNames.length; i++) {
+        var txt = paramNames[i].replace(/_/g, " ");
+        txt = txt.concat(": ");
+        lblTxts.push(txt);
+    }
+
+    return lblTxts;
+}
+
+function createParamsInputsNode(paramNames, paramValues) {
+
+    var paramLblTxts = createLblTxtFromParamName(paramNames);
+
+    var paramElements = [];
+
+    for (var i = 0; i < paramNames.length; i++) {
+        var param = document.createElement("input");
+        param.setAttribute("id", paramNames[i]);
+        param.setAttribute("class", "mainmap-util-input");
+        param.setAttribute("type", "text");
+        param.placeholder = paramValues[i];
+
+        var paramLbl = document.createElement("label");
+        paramLbl.setAttribute("class", "mainmap-util-label");
+        paramLbl.innerHTML = paramLblTxts[i];
+
+        paramElements.push({
+            "param": param,
+            "label": paramLbl
+        });
+    }
+
+    var Typeselect = document.createElement("select");
+    var option1 = document.createElement("option"),
+        text = document.createTextNode("Add/Drop");
+    var option2 = document.createElement("option"),
+    text2 = document.createTextNode("OLA");
+    option1.appendChild(text);
+    option2.appendChild(text2);
+    Typeselect.appendChild(option1);
+    Typeselect.appendChild(option2);
+
+    
+    var NodeTypeLbl = document.createElement("label");
+    NodeTypeLbl.setAttribute("class", "mainmap-util-label");
+    NodeTypeLbl.innerHTML = "Node Type";
+
+    var Regen = document.createElement("select");
+    var option1 = document.createElement("option"),
+        text = document.createTextNode("True");
+    var option2 = document.createElement("option"),
+    text2 = document.createTextNode("False");
+    option1.appendChild(text);
+    option2.appendChild(text2);
+    Regen.appendChild(option1);
+    Regen.appendChild(option2);
+
+
+
+    var RegenLbl = document.createElement("label");
+        RegenLbl.setAttribute("class", "mainmap-util-label");
+        RegenLbl.innerHTML = "Regeneration Capability";
+    
+    paramElements.push({
+        "param": Typeselect,
+        "label": NodeTypeLbl
+    });
+
+    paramElements.push({
+        "param": Regen,
+        "label": RegenLbl
+    });
+    
+    return paramElements;
+}
+
+
+function createParamsInputsForm(paramNames, paramValues) {
+
+    var paramLblTxts = createLblTxtFromParamName(paramNames);
+
+    var paramElements = [];
+
+    for (var i = 0; i < paramNames.length; i++) {
+        var param = document.createElement("input");
+        param.setAttribute("id", paramNames[i]);
+        param.setAttribute("class", "mainmap-util-input");
+        param.setAttribute("type", "text");
+        param.placeholder = paramValues[i];
+
+        var paramLbl = document.createElement("label");
+        paramLbl.setAttribute("class", "mainmap-util-label");
+        paramLbl.innerHTML = paramLblTxts[i];
+
+        paramElements.push({
+            "param": param,
+            "label": paramLbl
+        });
+    }
+
+    var Typeselect = document.createElement("select");
+    var option1 = document.createElement("option"),
+        text = document.createTextNode("SMF (G.652)");
+    var option2 = document.createElement("option"),
+    text2 = document.createTextNode("NZDSF (G.655)");
+    option1.appendChild(text);
+    option2.appendChild(text2);
+    Typeselect.appendChild(option1);
+    Typeselect.appendChild(option2);
+
+    
+    var TypeLbl = document.createElement("label");
+    TypeLbl.setAttribute("class", "mainmap-util-label");
+    TypeLbl.innerHTML = "Fiber Type";
+
+    var Spec = document.createElement("select");
+    var option1 = document.createElement("option"),
+        text = document.createTextNode("Default");
+    var option2 = document.createElement("option"),
+    text2 = document.createTextNode("Customized");
+    option1.appendChild(text);
+    option2.appendChild(text2);
+    Spec.appendChild(option1);
+    Spec.appendChild(option2);
+
+
+    var SpecLbl = document.createElement("label");
+    SpecLbl.setAttribute("class", "mainmap-util-label");
+    SpecLbl.innerHTML = "Specifications";
+    
+    paramElements.push({
+        "param": Typeselect,
+        "label": TypeLbl
+    });
+
+    paramElements.push({
+        "param": Spec,
+        "label": SpecLbl
+    });
+    
+    return paramElements;
+}
 
 // not using this now - codes's acting strange
 function checkLinkValidity(featureGroup) {
