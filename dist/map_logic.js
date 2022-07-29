@@ -1450,8 +1450,8 @@ function createAddLinkForm(featureGroup, links, mymap, linksGroup) {
     div.setAttribute("class", "vertical");
 
     var inputParams = {
-        "paramValues": ["0.0", "0.0","0.0"],
-        "paramNames": ["Length (Km)", "Loss_Coefficient (dB/Km)", "Dispersion (ps/Km-nm)"]
+        "paramValues": ["0.0", "0.0","0.0","0.0"],
+        "paramNames": ["Length (Km)", "Loss_Coefficient (dB/Km)", "Dispersion (ps/Km-nm)","Non-Linear Parameter Ɣ"]
     };
 
     //create link Params
@@ -1476,6 +1476,12 @@ function createAddLinkForm(featureGroup, links, mymap, linksGroup) {
 
         var linkData;
 
+        linkData = onSubmitFormLink(inputParams.paramValues, inputParams.paramNames);
+        var temp = document.getElementById("FiberType").value;
+        linkData["FiberType"] = temp
+        var temp = document.getElementById("Spec").value;
+        linkData["Spec"] = temp
+        console.log(linkData)
         // will uncomment this once I fixed the method
         // var linkValidity = checkLinkValidity(tempMarkerlist, featureGroup);
 
@@ -1572,7 +1578,8 @@ function createAddLinkForm(featureGroup, links, mymap, linksGroup) {
         link.bindTooltip("<h3>" + linkName + "</h3>");
         featureGroup.addLayer(link);
 
-        linkData = onSubmitForm(inputParams.paramValues, inputParams.paramNames);
+        // linkData = onSubmitForm(inputParams.paramValues, inputParams.paramNames);
+        // console.log(linkData)
 
         links.push({
             "name": linkName,
@@ -1600,7 +1607,8 @@ function createAddLinkForm(featureGroup, links, mymap, linksGroup) {
 
 }
 
-function onSubmitForm(paramValues, paramNames) {
+
+function onSubmitFormLink(paramValues, paramNames) {
 
     params = {};
 
@@ -1888,6 +1896,63 @@ function createParamsInputsForm(paramNames, paramValues) {
 
     var paramElements = [];
 
+    var Typeselect = document.createElement("select");
+    var option1 = document.createElement("option"),
+        text = document.createTextNode("SMF (G.652)");
+    var option2 = document.createElement("option"),
+    text2 = document.createTextNode("NZDSF (G.655)");
+    option1.appendChild(text);
+    option2.appendChild(text2);
+    Typeselect.appendChild(option1);
+    Typeselect.appendChild(option2);
+    Typeselect.setAttribute("id", "FiberType");
+
+    
+    var TypeLbl = document.createElement("label");
+    TypeLbl.setAttribute("class", "mainmap-util-label");
+    TypeLbl.innerHTML = "Fiber Type";
+
+    var Spec = document.createElement("select");
+    var option1 = document.createElement("option"),
+        text = document.createTextNode("Default");
+    var option2 = document.createElement("option"),
+    text2 = document.createTextNode("Customized");
+    option1.appendChild(text);
+    option2.appendChild(text2);
+    Spec.appendChild(option1);
+    Spec.appendChild(option2);
+    Spec.setAttribute("id", "Spec");
+    Spec.addEventListener("change", () => {
+        if(Spec.value == "Default"){
+            document.getElementById("Loss_Coefficient (dB/Km)").setAttribute('disabled', '');
+            document.getElementById("Dispersion (ps/Km-nm)").setAttribute('disabled', '');
+            document.getElementById("Non-Linear Parameter Ɣ").setAttribute('disabled', '');
+            document.getElementById("Loss_Coefficient (dB/Km)").value = 0;
+            document.getElementById("Dispersion (ps/Km-nm)").value = 0;
+            document.getElementById("Non-Linear Parameter Ɣ").value = 0;
+        }
+        if(Spec.value == "Customized"){
+            document.getElementById("Loss_Coefficient (dB/Km)").removeAttribute('disabled');
+            document.getElementById("Dispersion (ps/Km-nm)").removeAttribute('disabled');
+            document.getElementById("Non-Linear Parameter Ɣ").removeAttribute('disabled');
+        }
+    })
+
+
+    var SpecLbl = document.createElement("label");
+    SpecLbl.setAttribute("class", "mainmap-util-label");
+    SpecLbl.innerHTML = "Specifications";
+    
+    paramElements.push({
+        "param": Typeselect,
+        "label": TypeLbl
+    });
+
+    paramElements.push({
+        "param": Spec,
+        "label": SpecLbl
+    });
+
     for (var i = 0; i < paramNames.length; i++) {
         var param = document.createElement("input");
         param.setAttribute("id", paramNames[i]);
@@ -1905,45 +1970,7 @@ function createParamsInputsForm(paramNames, paramValues) {
         });
     }
 
-    var Typeselect = document.createElement("select");
-    var option1 = document.createElement("option"),
-        text = document.createTextNode("SMF (G.652)");
-    var option2 = document.createElement("option"),
-    text2 = document.createTextNode("NZDSF (G.655)");
-    option1.appendChild(text);
-    option2.appendChild(text2);
-    Typeselect.appendChild(option1);
-    Typeselect.appendChild(option2);
 
-    
-    var TypeLbl = document.createElement("label");
-    TypeLbl.setAttribute("class", "mainmap-util-label");
-    TypeLbl.innerHTML = "Fiber Type";
-
-    var Spec = document.createElement("select");
-    var option1 = document.createElement("option"),
-        text = document.createTextNode("Default");
-    var option2 = document.createElement("option"),
-    text2 = document.createTextNode("Customized");
-    option1.appendChild(text);
-    option2.appendChild(text2);
-    Spec.appendChild(option1);
-    Spec.appendChild(option2);
-
-
-    var SpecLbl = document.createElement("label");
-    SpecLbl.setAttribute("class", "mainmap-util-label");
-    SpecLbl.innerHTML = "Specifications";
-    
-    paramElements.push({
-        "param": Typeselect,
-        "label": TypeLbl
-    });
-
-    paramElements.push({
-        "param": Spec,
-        "label": SpecLbl
-    });
     
     return paramElements;
 }
