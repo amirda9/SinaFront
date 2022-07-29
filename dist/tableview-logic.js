@@ -474,6 +474,12 @@ async function initTmTableView(){
             name: 'protection_type'
         },
         {
+            type: 'checkbox',
+            width: '100px',
+            title: 'card protection',
+            name: 'card protection'
+        },
+        {
             type: 'text',
             width: '100px',
             title: 'type',

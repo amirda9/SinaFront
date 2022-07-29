@@ -537,6 +537,12 @@ function initTableView() {
             name: 'protection_type'
         },
         {
+            type: 'checkbox',
+            width: '100px',
+            title: 'card protection',
+            name: 'card protection'
+        },
+        {
             type: 'text',
             width: '100px',
             title: 'type',
@@ -740,6 +746,7 @@ async function submitPtExcelFixed(){
 async function submitTmExcelFixed(){
     let ptDataForSubmit = {}
     ptDataForSubmit = createTmForSubmit();
+    console.log(ptDataForSubmit, "this is traffic matrix 2")
     await createOrUpdate("traffic_matrices/","update", ptDataForSubmit)
         .then(function(result){
             // sendEvent('#create-project-modal-5', 5,"Continue",true)
