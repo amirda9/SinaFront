@@ -988,14 +988,24 @@ async function ShowClustrsOnMap(Clusters) {
   }
 }
 
+function mp1hbooleanToggle() {
+  document.getElementById("MP1HTresh").disabled = !document.getElementById("MP1HTresh").disabled;
+  document.getElementById("MP1HTresh").value = ''
+}
 //function for select type of algorithm for show LineRate & checked of ClusterLists in Grooming Settings/Automatic
 function SelectAlgorithm() {
   // If the radio:Advanced is checked, display the LineRate & checked of ClusterLists
   if (document.getElementById("end_To_end").checked == true) {
     // document.getElementById("grooming-lineRate-threshold").disabled = true;
     // $("input[name='chkClusters']").attr("disabled", true);
-    $(':input[type="submit"]').prop("disabled", false);
+    document.getElementById("MP1H_bool").disabled = false;
+    document.getElementById("MP1HTresh").disabled = false;
+    document.getElementById("MPBDTresh").disabled = false;
+    // $(':input[type="submit"]').prop("disabled", false);
   } else if (document.getElementById("Advanced").checked == true) {
+    document.getElementById("MP1H_bool").disabled = true;
+    document.getElementById("MP1HTresh").disabled = true;
+    document.getElementById("MPBDTresh").disabled = true;
     // document.getElementById("grooming-lineRate-threshold").disabled = false;
     // $("input[name='chkClusters']").attr("disabled", false);
     $(':input[type="submit"]').prop("disabled", false);
@@ -1058,7 +1068,7 @@ async function showClusterList() {
 }
 
 async function startEnd2EndGrooming() {
-  console.log("dsakfjgh;lksdfhg;fdhsl");
+  // console.log("dsakfjgh;lksdfhg;fdhsl");
   let project_id = "";
   let result = [];
   var myHeaders = new Headers();
@@ -1137,8 +1147,15 @@ $("form#grooming-form").submit(async function (e) {
 function SubmitGroomingEndToEnd(project_id) {
   console.log(localStorage.getItem(project_id));
 
-  let mp1h_threshold = document.getElementById("grooming-mp1h-threshold").value;
+  let mp1h_threshold = document.getElementById("MP1HTresh").value;
+  let mpbd_threshold = document.getElementById("MPBDTresh").value;
+  let mp1h_boolean = document.getElementById("MP1H_bool").value;
+  let grooming_linerate = 100;
   let grooming_comment = document.getElementById("grooming-comment").value;
+
+
+  // mehdi console log
+  console.log(grooming_linerate,mp1h_threshold,mpbd_threshold,mp1h_boolean,grooming_comment)
 
   //Call Service
   var myHeaders = new Headers();
@@ -1175,10 +1192,8 @@ function SubmitGroomingEndToEnd(project_id) {
 
 // send data to algorithms/grooming/automatic/Advanced --> Grooming option/Automatic
 function SubmitGroomingAdvanced(project_id) {
-  let mp1h_threshold = document.getElementById("grooming-mp1h-threshold").value;
-  let grooming_lineRate_threshold = document.getElementById(
-    "grooming-lineRate-threshold"
-  ).value;
+  let multi_threshold = document.getElementById("MultiTresh").value;
+  let grooming_linerate = 100;
   let grooming_comment = document.getElementById("grooming-comment").value;
 
   let clusters_id_Array = [];
@@ -1191,11 +1206,12 @@ function SubmitGroomingAdvanced(project_id) {
     clusters_id_Array.push(checkbox.value);
   });
 
+  // mehdi console log
   console.log(
     "clusters_id_Array",
     clusters_id_Array,
-    mp1h_threshold,
-    grooming_lineRate_threshold,
+    multi_threshold,
+    grooming_linerate,
     grooming_comment
   );
   //Call Service

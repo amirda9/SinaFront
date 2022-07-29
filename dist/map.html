@@ -899,10 +899,10 @@
                 <div class="algorithm" >
                     <span class="title-modal-algorithm">MP1H : </span>
                     <div class="radio">
-                        <select name="MP1H" class="custom-select" id="MP1H_select"
+                        <select id="MP1H_bool" onchange="mp1hbooleanToggle()" name="MP1H" class="custom-select" id="MP1H_select"
                                      required>
-                                <option value="True">True</option>
-                                <option value="False" selected>False</option>
+                                <option value="True" selected>True</option>
+                                <option value="False" >False</option>
                             </select>
                     </div>
                 </div>
@@ -931,14 +931,18 @@
                 <div class="algorithm" >
                             <label class="title-modal-algorithm">MP1H Threshold
                             </label>
-                            <input name="MP1H_Tresh"></input>
+                            <input id="MP1HTresh"  name="MP1H_Tresh"></input>
                             </div>
                             <div class="algorithm" >
                                 <label class="title-modal-algorithm">MPBD Threshold
                                 </label>
-                                <input name="MPBD_Tresh"></input>
+                                <input id ="MPBDTresh" name="MPBD_Tresh"></input>
                                 </div>
-
+                                <div class="algorithm" >
+                                    <label class="title-modal-algorithm">Multiplex Threshold
+                                    </label>
+                                    <input id="MultiTresh" name="Multi_Tresh"></input>
+                                    </div>
                             <!-- Clusters : -->
                             <!-- <div class="panel-group clusters">
                                 <div class="panel panel-default">
@@ -961,8 +965,8 @@
                             </div> -->
 
                             <!-- Comment : -->
-                            <!-- <textarea type="text" autocomplete="off" class="form-control" id="grooming-comment"
-                                      name="comment" required placeholder="Comment"></textarea> -->
+                            <textarea type="text" autocomplete="off" class="form-control" id="grooming-comment"
+                                      name="comment" required placeholder="Comment"></textarea>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary mb-2 float-right" id="btnSubmit" onclick="startEnd2EndGrooming()">Submit</button>
