@@ -1752,6 +1752,7 @@ async function submitTmExcelFixed() {
         }
     }
     tmDataForSubmit = createTmForSubmit();
+    console.log(tmDataForSubmit, "this is traffic matrix 1")
     await createOrUpdate("traffic_matrices/", "create", tmDataForSubmit)
         .then(function (result) {
             // sendEvent('#create-project-modal-5', 6,"Continue",true)
@@ -1851,6 +1852,12 @@ function tm_show_errors() {
             source: ['NoProtection', '1+1_NodeDisjoint', 'Restoration', 'PRC'],
             title: 'protection type',
             name: 'protection_type'
+        },
+        {
+            type: 'checkbox',
+            width: '100px',
+            title: 'card protection',
+            name: 'card protection'
         },
         {
             type: 'text',
