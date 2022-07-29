@@ -1627,12 +1627,30 @@ function pt_show_errors() {
                     name: 'length'
                 },
                 {
-                    type: 'text',
-                    // type: 'dropdown',
+                    type: 'dropdown',
                     width: '100px',
-                    // source: ['sm'],
+                    source: ['SMF (G.652)', 'NZDSF (G.655)'],
                     title: 'fiber type',
                     name: 'fiber_type'
+                },
+                {
+                    type: 'numeric',
+                    width: '100px',
+                    title: 'Loss Coefficient(dB/Km)',
+                    name: 'loss_coefficient'
+                },
+                {
+                    type: 'numeric',
+                    width: '100px',
+                    title: 'Dispersion (ps/Km-nm)',
+                    name: 'dispersion'
+                },
+                {
+                    type: 'dropdown',
+                    width: '100px',
+                    source: ['Default', 'Customized'],
+                    title: 'Specifications',
+                    name: 'specifications'
                 },
             ],
             allowComments: true,
