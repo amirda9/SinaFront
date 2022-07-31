@@ -3,9 +3,172 @@ function onchange_modulation_type() {
   console.log(modulation_type);
 }
 
+
+
 function onchange_algorithm() {
   let algorithm = document.getElementById("algorithm").value;
-  console.log(algorithm);
+  // console.log(document.getElementById("restoration_k").disabled)
+  // console.log(document.getElementById("restoration_k").value)
+
+  if(algorithm == "ILP"){
+    console.log("ILP");
+    document.getElementById("restoration_k").disabled = true;
+    document.getElementById("restoration_k").value = null;
+    // document.getElementById("restoration_k").placeholder = null;
+    document.getElementById("iterations").disabled = true;
+    document.getElementById("iterations").value = null;
+    // document.getElementById("iterations").placeholder = null;
+    document.getElementById("group_size").disabled = true;
+    document.getElementById("group_size").value = null;
+    // document.getElementById("group_size").placeholder = null;
+    document.getElementById("history_window").disabled = true;
+    document.getElementById("history_window").value = null;
+    document.getElementById("shortest_path_k").disabled = false;
+    document.getElementById("noise_margin").disabled = false;
+    document.getElementById("trade_off").disabled = false;
+    // document.getElementById("history_window").placeholder = null;
+  }
+  else if (algorithm == "Default"){
+    document.getElementById("restoration_k").disabled = true;
+    document.getElementById("restoration_k").value = null;
+    document.getElementById("iterations").disabled = true;
+    document.getElementById("iterations").value = null;
+    document.getElementById("group_size").disabled = true;
+    document.getElementById("group_size").value = null;
+    document.getElementById("history_window").disabled = true;
+    document.getElementById("history_window").value = null;
+    document.getElementById("shortest_path_k").disabled = true;
+    document.getElementById("shortest_path_k").value = null;
+    document.getElementById("noise_margin").disabled = true;
+    document.getElementById("noise_margin").value = null;
+    document.getElementById("trade_off").disabled = true;
+    document.getElementById("trade_off").value = null;
+  }
+  else if (algorithm == "Greedy"){
+    console.log(algorithm);
+    document.getElementById("restoration_k").disabled = false;
+    // document.getElementById("restoration_k").value = null;
+    document.getElementById("iterations").disabled = false;
+    // document.getElementById("iterations").value = null;
+    document.getElementById("group_size").disabled = true;
+    document.getElementById("group_size").value = null;
+    // document.getElementById("group_size").placeholder = null;
+    document.getElementById("history_window").disabled = true;
+    document.getElementById("history_window").value = null;
+    document.getElementById("shortest_path_k").disabled = false;
+    document.getElementById("noise_margin").disabled = false;
+    document.getElementById("trade_off").disabled = false;
+  }
+  else if (algorithm=="GroupILP"){
+    console.log(algorithm);
+    document.getElementById("restoration_k").disabled = true;
+    document.getElementById("restoration_k").value = null;
+    // document.getElementById("restoration_k").placeholder = null;
+    document.getElementById("iterations").disabled = false;
+    // document.getElementById("iterations").value = null;
+    document.getElementById("group_size").disabled = false;
+    // document.getElementById("group_size").value = null;
+    document.getElementById("history_window").disabled = false;
+    document.getElementById("shortest_path_k").disabled = false;
+    document.getElementById("noise_margin").disabled = false;
+    document.getElementById("trade_off").disabled = false;
+  }
+}
+
+function onchange_raman() {
+  let raman = document.getElementById("raman").value;
+  if(raman=="Default"){
+    document.getElementById("ramanThresh").disabled = true;
+    document.getElementById("ramanThresh").value = null;
+    document.getElementById("NF_raman").disabled = true;
+    document.getElementById("NF_raman").value = null;
+    document.getElementById("Gain_R").disabled = true;
+    document.getElementById("Gain_R").value = null;
+  }
+  else{
+    document.getElementById("ramanThresh").disabled = false;
+    document.getElementById("NF_raman").disabled = false;
+    document.getElementById("Gain_R").disabled = false;
+  }
+}
+
+function onchange_dwdm() {
+  let dwdm = document.getElementById("raman").value;
+  if(dwdm=="Default"){
+    document.getElementById("ChannelSpacing").disabled = true;
+    document.getElementById("ChannelSpacing").value = null;
+    document.getElementById("ChannelsNO").disabled = true;
+    document.getElementById("ChannelsNO").value = null;
+  }
+  else{
+    document.getElementById("ChannelSpacing").disabled = false;
+    document.getElementById("ChannelsNO").disabled = false;
+  }
+}
+
+function onchange_baudrate() {
+  let baudrate = document.getElementById("baudrate").value;
+  if(baudrate=="Default"){
+    document.getElementById("QPSK_baudrate").disabled = true;
+    document.getElementById("QPSK_baudrate").value = null;
+    document.getElementById("8QAM_baudrate").disabled = true;
+    document.getElementById("8QAM_baudrate").value = null;
+  }
+  else{
+    document.getElementById("QPSK_baudrate").disabled = false;
+    document.getElementById("8QAM_baudrate").disabled = false;
+  }
+}
+
+function onchange_powerOptimization() {
+  let PowerOptimization = document.getElementById("PowerOptimization").value;
+  if(PowerOptimization=="Optimized"){
+    document.getElementById("P_fixed").disabled = true;
+    document.getElementById("P_fixed").value = null;
+  }
+  else{
+    document.getElementById("P_fixed").disabled = false;
+  }
+}
+
+function onchange_SNR() {
+  let SNR_Thresh = document.getElementById("SNR_Thresh").value;
+  if(SNR_Thresh=="Default"){
+    document.getElementById("QPSK_SNR").disabled = true;
+    document.getElementById("QPSK_SNR").value = null;
+    document.getElementById("8QAM_SNR").disabled = true;
+    document.getElementById("8QAM_SNR").value = null;
+  }
+  else{
+    document.getElementById("QPSK_SNR").disabled = false;
+    document.getElementById("8QAM_SNR").disabled = false;
+  }
+}
+
+
+function onchange_edfa() {
+  let edfa = document.getElementById("edfa").value;
+  console.log(edfa)
+  if(edfa=="Default"){
+    document.getElementById("Gain_min").disabled = true;
+    document.getElementById("Gain_min").value = null;
+    document.getElementById("Gain_max").disabled = true;
+    document.getElementById("Gain_max").value = null;
+    document.getElementById("NF_edfa").disabled = true;
+    document.getElementById("NF_edfa").value = null;
+    document.getElementById("Psat_edfa").disabled = true;
+    document.getElementById("Psat_edfa").value = null;
+  }
+  else{
+    document.getElementById("Gain_min").disabled = false;
+    // document.getElementById("Gain_min").value = null;
+    document.getElementById("Gain_max").disabled = false;
+    // document.getElementById("Gain_max").value = null;
+    document.getElementById("NF_edfa").disabled = false;
+    // document.getElementById("NF_edfa").value = null;
+    document.getElementById("Psat_edfa").disabled = false;
+    // document.getElementById("Psat_edfa").value = null;
+  }
 }
 
 // when show modal disabled button and show Label:Enter comment(use in rwa_start)
@@ -26,21 +189,46 @@ function Call_running_rwa() {
 
 //(use in rwa_start)
 async function running_rwa() {
-  if (validationRWA() == 1) {
-    // document.getElementsByClassName("btn-send-rwa").style.visibility = "hidden"
-    // $(':input[type="submit"]').prop('disabled', false);
-
-    let modulation_type = document.getElementById("modulation_type").value;
+    let edfa = document.getElementById("edfa").value;
+    let Gain_min = document.getElementById("Gain_min").value;
+    let Gain_max = document.getElementById("Gain_max").value;
+    let NF_edfa = document.getElementById("NF_edfa").value;
+    let Psat_edfa = document.getElementById("Psat_edfa").value;
+    let raman = document.getElementById("raman").value;
+    let Gain_R = document.getElementById("Gain_R").value;
+    let NF_raman = document.getElementById("NF_raman").value;
+    let ramanThresh = document.getElementById("ramanThresh").value;
+    let dwdm = document.getElementById("dwdm").value;
+    let ChannelSpacing = document.getElementById("ChannelSpacing").value;
+    let ChannelsNO = document.getElementById("ChannelsNO").value;
+    let baudrate = document.getElementById("baudrate").value;
+    let QPSK_baudrate = document.getElementById("QPSK_baudrate").value;
+    let QAM_baudrate = document.getElementById("8QAM_baudrate").value;
+    let PowerOptimization = document.getElementById("PowerOptimization").value;
+    let P_fixed = document.getElementById("P_fixed").value;
+    let SNR_Thresh = document.getElementById("SNR_Thresh").value;
+    let QPSK_SNR = document.getElementById("QPSK_SNR").value;
+    let QAM_SNR = document.getElementById("8QAM_SNR").value;
     let algorithm = document.getElementById("algorithm").value;
     let shortest_path_k = document.getElementById("shortest_path_k").value;
     let restoration_k = document.getElementById("restoration_k").value;
     let noise_margin = document.getElementById("noise_margin").value;
     let trade_off = document.getElementById("trade_off").value;
-    let enable_merge = document.getElementById("enable_merge").checked;
     let iterations = document.getElementById("iterations").value;
     let group_size = document.getElementById("group_size").value;
     let history_window = document.getElementById("history_window").value;
     let comment = document.getElementById("comment").value;
+    //  rwa run
+  console.log(edfa,Gain_min,Gain_max,NF_edfa,Psat_edfa,raman,Gain_R,NF_raman,ramanThresh,dwdm,ChannelSpacing,ChannelsNO,baudrate,QPSK_baudrate,QPSK_baudrate,QAM_baudrate,
+    PowerOptimization,P_fixed,SNR_Thresh,QPSK_SNR,QAM_SNR,algorithm,shortest_path_k,restoration_k,noise_margin,trade_off,iterations,group_size,history_window,comment)
+
+
+
+  if (validationRWA() == 1) {
+    // document.getElementsByClassName("btn-send-rwa").style.visibility = "hidden"
+    // $(':input[type="submit"]').prop('disabled', false);
+
+    
 
     // let token = await getTokn("amir", "1234");
     if (

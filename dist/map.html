@@ -1091,7 +1091,172 @@
                                  data-parent="#accordion">
                                 <div class="card-body">
                                     <div class="form-row">
-                                        <div class="form-group col-md-6">
+                                        <div class="form-group col-md-12">
+                                            <label>EDFA</label>
+                                            <select onchange="onchange_edfa()" name="edfa" id="edfa"
+                                                    class="form-control">
+                                                <option value="Default">Default</option>
+                                                <option value="Customized" selected>Customized</option>
+                                            </select>
+                                        </div>
+                                        </div>
+    
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="Gain_min">Gain_min(DB)</label>
+                                                <input type="number" class="form-control" name="Gain_min"
+                                                       id="Gain_min">
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="Gain_max">Gain_max(DB)</label>
+                                                <input type="number" class="form-control" name="Gain_max"
+                                                id="Gain_max">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="NF_edfa">NF (DB)</label>
+                                                <input type="number" class="form-control" name="NF_edfa"
+                                                       id="NF_edfa">
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="Psat_edfa">P sat (DB)</label>
+                                                <input type="number" class="form-control" name="Psat_edfa"
+                                                id="Psat_edfa">
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="form-row">
+                                            <div class="form-group col-md-12">
+                                                <label>Raman</label>
+                                                <select onchange="onchange_raman()" name="raman" id="raman"
+                                                        class="form-control">
+                                                    <option value="Default">Default</option>
+                                                    <option value="Customized" selected>Customized</option>
+                                                </select>
+                                            </div>
+                                            </div>
+
+                                            <div class="form-row">
+                                                <div class="form-group col-md-6">
+                                                    <label for="Gain_R">G R (DB)</label>
+                                                    <input type="number" class="form-control" name="Gain_R"
+                                                           id="Gain_R">
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label for="NF_raman">NF (DB)</label>
+                                                    <input type="number" class="form-control" name="NF_raman"
+                                                    id="NF_raman">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row">
+                                                <div class="form-group col-md-12">
+                                                    <label for="ramanThresh">Raman Placement Threshold (km)</label>
+                                                    <input type="number" class="form-control" name="ramanThresh"
+                                                    id="ramanThresh">
+                                                </div>
+                                            </div>
+
+
+                                            <div class="form-row">
+                                                <div class="form-group col-md-12">
+                                                    <label>DWDM</label>
+                                                    <select onchange="onchange_dwdm()" name="dwdm" id="dwdm"
+                                                            class="form-control">
+                                                        <option value="Default">Default</option>
+                                                        <option value="Customized" selected>Customized</option>
+                                                    </select>
+                                                </div>
+                                                </div>
+    
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-6">
+                                                        <label for="ChannelSpacing">Channel Spacing (GHz)</label>
+                                                        <input type="number" class="form-control" name="ChannelSpacing"
+                                                               id="ChannelSpacing">
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <label for="ChannelsNO">Number of channels</label>
+                                                        <input type="number" class="form-control" name="ChannelsNO"
+                                                        id="ChannelsNO">
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-12">
+                                                        <label>Baudrate</label>
+                                                        <select onchange="onchange_baudrate()" name="baudrate" id="baudrate"
+                                                                class="form-control">
+                                                            <option value="Default">Default</option>
+                                                            <option value="Customized" selected>Customized</option>
+                                                        </select>
+                                                    </div>
+                                                    </div>
+        
+                                                    <div class="form-row">
+                                                        <div class="form-group col-md-6">
+                                                            <label for="QPSK_baudrate">for QPSK (dB) </label>
+                                                            <input type="number" class="form-control" name="QPSK_baudrate"
+                                                                   id="QPSK_baudrate">
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <label for="8QAM_baudrate">for 8QAM (dB)</label>
+                                                            <input type="number" class="form-control" name="8QAM_baudrate"
+                                                            id="8QAM_baudrate">
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="form-row">
+                                                        <div class="form-group col-md-12">
+                                                            <label>Power Optimization</label>
+                                                            <select onchange="onchange_powerOptimization()" name="PowerOptimization" id="PowerOptimization"
+                                                                    class="form-control">
+                                                                <option value="Optimized">Optimized</option>
+                                                                <option value="Fixed" selected>Fixed</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                        <div class="form-row">
+
+                                                        <div class="form-group col-md-12">
+                                                            <label for="P_fixed">P_ch</label>
+                                                            <input type="number" class="form-control" name="P_fixed"
+                                                            id="P_fixed">
+                                                        </div>
+                                                        </div>
+                                                        
+                                                        
+                                                        <div class="form-row">
+                                                            <div class="form-group col-md-12">
+                                                                <label>SNR threshold</label>
+                                                                <select onchange="onchange_SNR()" name="SNR_Thresh" id="SNR_Thresh"
+                                                                        class="form-control">
+                                                                    <option value="Default">Default</option>
+                                                                    <option value="Customized" selected>Customized</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                    
+                                                            <div class="form-row">
+                                                                <div class="form-group col-md-6">
+                                                                    <label for="QPSK_SNR">for QPSK (dB) </label>
+                                                                    <input type="number" class="form-control" name="QPSK_SNR"
+                                                                           id="QPSK_SNR">
+                                                                </div>
+                                                                <div class="form-group col-md-6">
+                                                                    <label for="8QAM_SNR">for 8QAM (dB)</label>
+                                                                    <input type="number" class="form-control" name="8QAM_SNR"
+                                                                    id="8QAM_SNR">
+                                                                </div>
+                                                            </div>
+
+                                    <div class="form-row">
+                                        <!-- <div class="form-group col-md-6">
                                             <label>modulation_type</label>
                                             <select onchange="onchange_modulation_type()" name="modulation_type"
                                                     id="modulation_type" class="form-control">
@@ -1101,12 +1266,13 @@
                                                 <option value="8QAM">8QAM</option>
                                                 <option value="16QAM">16QAM</option>
                                             </select>
-                                        </div>
-                                        <div class="form-group col-md-6">
+                                        </div> -->
+                                        <div class="form-group col-md-12">
                                             <label>algorithm</label>
                                             <select onchange="onchange_algorithm()" name="algorithm" id="algorithm"
                                                     class="form-control">
                                                 <option value="">--Please choose --</option>
+                                                <option value="Default">Default</option>
                                                 <option value="Greedy">Greedy</option>
                                                 <option value="GroupILP">GroupILP</option>
                                                 <option value="ILP">ILP</option>
@@ -1163,12 +1329,15 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-row">
-                                        <div class="form-group col-md-6">
-                                            <input type="checkbox" id="enable_merge" name="enable_merge" value="">
-                                            <label for="enable_merge"><b>enable_merge</b></label>
+                                   
+
+                                    <!-- <div class="form-row">
+                                        <div class="form-group col-md-12">
+                                            <label>Optical Amplifiers Specifications </label>
                                         </div>
-                                    </div>
+                                    </div> -->
+                                    
+
                                 </div>
                             </div>
                         </div>

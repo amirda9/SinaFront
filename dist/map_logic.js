@@ -1350,6 +1350,23 @@ function createAddNodeForm(featureGroup, markers, mymap, pathToIcon, oldMarkers)
 
     doneBtn.addEventListener("click", e => {
         var nodeData;
+        nodeData = onSubmitForm(inputParams.paramValues, inputParams.paramNames);
+        nodeData["RegenCap"] = document.getElementById("RegenCap").value;
+        temp = document.getElementById("NodeType").value;
+        if(temp=="OXC(Colored-Directionless)"){
+            nodeData["NodeType"] = "Directionless"
+        }
+        else if(temp=="OXC(Colorless-Directionless)"){
+            nodeData["NodeType"] = "Colorless"
+        }
+        else if(temp=="OXC(CDC)"){
+            nodeData["NodeType"] = "CDC"
+        }
+
+        // hard coded
+        nodeData["wa_type"] ="identical"
+        
+        console.log(nodeData)
         var marker;
 
         //check for input param validity:
@@ -1369,7 +1386,6 @@ function createAddNodeForm(featureGroup, markers, mymap, pathToIcon, oldMarkers)
 
         markerName = document.getElementById(inputParams.paramNames[0]).value;
 
-        nodeData = onSubmitForm(inputParams.paramValues, inputParams.paramNames);
         marker = L.marker(mymap.getCenter(), {
             draggable: true,
             icon: createCustomIcon(pathToIcon)
@@ -1476,7 +1492,7 @@ function createAddLinkForm(featureGroup, links, mymap, linksGroup) {
 
         var linkData;
 
-        linkData = onSubmitFormLink(inputParams.paramValues, inputParams.paramNames);
+        linkData = onSubmitForm(inputParams.paramValues, inputParams.paramNames);
         var temp = document.getElementById("FiberType").value;
         linkData["FiberType"] = temp
         var temp = document.getElementById("Spec").value;
@@ -1608,7 +1624,7 @@ function createAddLinkForm(featureGroup, links, mymap, linksGroup) {
 }
 
 
-function onSubmitFormLink(paramValues, paramNames) {
+function onSubmitForm(paramValues, paramNames) {
 
     params = {};
 
@@ -1847,14 +1863,34 @@ function createParamsInputsNode(paramNames, paramValues) {
 
     var Typeselect = document.createElement("select");
     var option1 = document.createElement("option"),
-        text = document.createTextNode("Add/Drop");
+        text = document.createTextNode("OXC(Colored-Directionless)");
     var option2 = document.createElement("option"),
-    text2 = document.createTextNode("OLA");
+    text2 = document.createTextNode("OXC(Colorless-Directionless)");
+    var option3 = document.createElement("option"),
+    text3 = document.createTextNode("OXC(CDC)");
+    var option4 = document.createElement("option"),
+    text4 = document.createTextNode("OLA");
     option1.appendChild(text);
     option2.appendChild(text2);
+    option3.appendChild(text3);
+    option4.appendChild(text4);
+
     Typeselect.appendChild(option1);
     Typeselect.appendChild(option2);
+    Typeselect.appendChild(option3);
+    Typeselect.appendChild(option4);
+    Typeselect.setAttribute("id","NodeType")
 
+    Typeselect.addEventListener("change", () => {
+        if(Typeselect.value == "OLA"){
+            // console.log("ola")
+            document.getElementById("Number of Channels for Expansion").disabled = true;
+            document.getElementById("Number of Channels for Expansion").value = null;
+        }
+        else{
+            document.getElementById("Number of Channels for Expansion").disabled = false;
+        }
+    })
     
     var NodeTypeLbl = document.createElement("label");
     NodeTypeLbl.setAttribute("class", "mainmap-util-label");
@@ -1869,6 +1905,7 @@ function createParamsInputsNode(paramNames, paramValues) {
     option2.appendChild(text2);
     Regen.appendChild(option1);
     Regen.appendChild(option2);
+    Regen.setAttribute("id","RegenCap")
 
 
 
