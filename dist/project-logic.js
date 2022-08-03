@@ -301,7 +301,26 @@ function createOrUpdate(elementPath, mode, data, id = null) {
         console.log(id)
         console.log(data, "pyhsycal topologies")
         localStorage.removeItem("physical_topologies")
+        // localStorage.setItem("physical_topologies", JSON.stringify(data.data))
+    }
+    if (elementPath == "physical_topologies/"){
+        // hard code
+        for (const link of physicalTopologyData.data.links){
+            link["fiber"] = {
+                "fiber_type": link.fiber_type,
+                "attenuation": link.attenuation,
+                "nonlinearity": link.nonlinearity,
+                "dispersion": link.dispersion
+            }
+            delete link.fiber_type
+            delete link.attenuation
+            delete link.nonlinearity
+            delete link.dispersion
+        }
+        delete physicalTopologyData.data.fiber
+        // hard code
         localStorage.setItem("physical_topologies", JSON.stringify(data.data))
+
     }
 
     console.log(serverAddr + elementPath + (id != null ? "?id=" + id : ""))
@@ -1424,15 +1443,21 @@ function pt_show_errors() {
         '0': 'name',
         '1': 'lat',
         '2': 'lng',
-        '3': 'roadm_type'
+        '3': 'node_type',
+        '4': 'wa_type',
+        '5': 'no_extra_wavelength__for_expansion'
     }
 
     let linksKeyNames = {
         '0': 'source',
         '1': 'destination',
         '2': 'length',
-        '3': 'fiber_type'
+        '3': 'fiber_type',
+        '4': "attenuation",
+        '5': "dispersion",
+        '6': "nonlinearity"
     }
+    
 
     var nodesChanged = function (instance, cell, x, y, value) {
         // console.log(cell)
@@ -1564,9 +1589,23 @@ function pt_show_errors() {
                 {
                     type: 'dropdown',
                     width: '150px',
-                    source: ['Directionless', 'CDC'],
-                    title: 'roadm type',
-                    name: 'roadm_type'
+                    source: ['Directionless', 'Colorless', 'CDC', 'OLA'],
+                    title: 'Node Type',
+                    name: 'node_type'
+                },
+                {
+                    type: 'dropdown',
+                    width: '150px',
+                    source: ['Identical'],
+                    title: 'WA Type',
+                    name: 'wa_type'
+                },
+                {
+                    type: 'number',
+                    decimal: '.',
+                    width: '200px',
+                    title: 'Number of Channels for Expansion',
+                    name: 'no_extra_wavelength__for_expansion'
                 },
             ],
             allowComments: true,
@@ -1637,7 +1676,7 @@ function pt_show_errors() {
                     type: 'numeric',
                     width: '100px',
                     title: 'Loss Coefficient(dB/Km)',
-                    name: 'loss_coefficient'
+                    name: 'attenuation'
                 },
                 {
                     type: 'numeric',
@@ -1646,11 +1685,10 @@ function pt_show_errors() {
                     name: 'dispersion'
                 },
                 {
-                    type: 'dropdown',
+                    type: 'numeric',
                     width: '100px',
-                    source: ['Default', 'Customized'],
-                    title: 'Specifications',
-                    name: 'specifications'
+                    title: 'nonlinearity',
+                    name: 'nonlinearity'
                 },
             ],
             allowComments: true,

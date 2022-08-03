@@ -99,14 +99,19 @@ async function initPtTableView()
         '0': 'name',
         '1': 'lat',
         '2': 'lng',
-        '3': 'roadm_type'
+        '3': 'node_type',
+        '4': 'wa_type',
+        '5': 'no_extra_wavelength__for_expansion'
     }
 
     let linksKeyNames = {
         '0': 'source',
         '1': 'destination',
         '2': 'length',
-        '3': 'fiber_type'
+        '3': 'fiber_type',
+        '4': "attenuation",
+        '5': "dispersion",
+        '6': "nonlinearity"
     }
 
     var nodesChanged = function (instance, cell, x, y, value) {
@@ -249,9 +254,23 @@ async function initPtTableView()
                 {
                     type: 'dropdown',
                     width: '150px',
-                    source: ['Directionless', 'CDC'],
-                    title: 'roadm type',
-                    name: 'roadm_type'
+                    source: ['Directionless', 'Colorless', 'CDC', 'OLA'],
+                    title: 'Node Type',
+                    name: 'node_type'
+                },
+                {
+                    type: 'dropdown',
+                    width: '150px',
+                    source: ['Identical'],
+                    title: 'WA Type',
+                    name: 'wa_type'
+                },
+                {
+                    type: 'number',
+                    decimal: '.',
+                    width: '200px',
+                    title: 'Number of Channels for Expansion',
+                    name: 'no_extra_wavelength__for_expansion'
                 },
             ],
             allowComments: true,
@@ -323,7 +342,7 @@ async function initPtTableView()
                     type: 'numeric',
                     width: '100px',
                     title: 'Loss Coefficient(dB/Km)',
-                    name: 'loss_coefficient'
+                    name: 'attenuation'
                 },
                 {
                     type: 'numeric',
@@ -332,11 +351,10 @@ async function initPtTableView()
                     name: 'dispersion'
                 },
                 {
-                    type: 'dropdown',
+                    type: 'numeric',
                     width: '100px',
-                    source: ['Default', 'Customized'],
-                    title: 'Specifications',
-                    name: 'specifications'
+                    title: 'nonlinearity',
+                    name: 'nonlinearity'
                 },
             ],
             allowComments: true,

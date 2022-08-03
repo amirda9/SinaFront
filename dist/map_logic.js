@@ -283,21 +283,25 @@ async function storeLocallyDrawModeDataChanges(drawData)
             "name": "",
             "lat": "",
             "lng": "",
-            "roadm_type": "",
+            "node_type": "",
+            "wa_type": "Identical",
+            "no_extra_wavelength__for_expansion": ""
         }
 
         if ((elementIndex = drawData.nodes.findIndex(el => el.name === node.name)) != -1) {
             newNode.name = drawData.nodes[elementIndex].name;
             newNode.lat = Number(node.location.lat);
             newNode.lng = Number(node.location.lng);
-            newNode.roadm_type = drawData.nodes[elementIndex].roadm_type
+            newNode.node_type = drawData.nodes[elementIndex].node_type
+            newNode.no_extra_wavelength__for_expansion = node.data.no_extra_wavelength__for_expansion
             drawData.nodes[drawData.nodes.findIndex(el => el.name === newNode.name)] = newNode;
         }
         else {
             newNode.name = node.name;
             newNode.lat = Number(node.location.lat);
             newNode.lng = Number(node.location.lng);
-            newNode.roadm_type = node.data.roadm_type
+            newNode.node_type = node.data.node_type
+            newNode.no_extra_wavelength__for_expansion = node.data.no_extra_wavelength__for_expansion
             drawData.nodes.push(newNode);
         }
     }
@@ -306,12 +310,22 @@ async function storeLocallyDrawModeDataChanges(drawData)
             let newLink = {
                 "destination": "",
                 "length": '',
-                "fiber_type": "sm",
-                "source": ""
+                "fiber_type": "SMF (G.652)",
+                "source": "",
+                "attenuation": "",
+                "dispersion": "",
+                "nonlinearity": ""
             }
             newLink.source = link.start;
             newLink.destination = link.end;
-            newLink.length = Number(link.data.Length);
+            newLink.length = Number(link.data["Length (Km)"]);
+            newLink.fiber_type = link.data.FiberType
+            newLink.attenuation = link.data["Loss_Coefficient (dB/Km)"]
+            newLink.nonlinearity = link.data["Non-Linear Parameter Ɣ"]
+            newLink.dispersion = link.data["Dispersion (ps/Km-nm)"]
+            console.log(link, "new link")
+            console.log(newLink, "this is new link data")
+            // newLink.length = document.getElementById("Length (Km)").value
             drawData.links.push(newLink);
         }
     }
@@ -328,8 +342,25 @@ async function storeLocallyDrawModeDataChanges(drawData)
 }
 
 async function submitDrawModeDataChanges(physicalTopologyData) {
-    console.log(physicalTopologyData.data, "this is physical topology data")
     // localStorage.setItem("physical_topologies", physicalTopologyData.data)
+    
+
+    // hard code
+    for (const link of physicalTopologyData.data.links){
+        link["fiber"] = {
+            "fiber_type": link.fiber_type,
+            "attenuation": link.attenuation,
+            "nonlinearity": link.nonlinearity,
+            "dispersion": link.dispersion
+        }
+        delete link.fiber_type
+        delete link.attenuation
+        delete link.nonlinearity
+        delete link.dispersion
+    }
+    // hard code
+    delete physicalTopologyData.data.fiber
+    console.log(physicalTopologyData.data, "this is physical topology data")
 
     const actionMode = physicalTopologyData.id == 0 ? "POST" : "PUT"
     // physicalTopologyData["comment"] = "nocomment";
@@ -427,12 +458,12 @@ async function submitDrawModeDataChanges(physicalTopologyData) {
     //             "Name": "Tehran",
     //             "lat": 6.7,
     //             "lng": 7.4,
-    //             "ROADM_type": "CDC"
-    //         }, {"Name": "Qom", "lat": 4.5, "lng": 8.5, "ROADM_type": "CDC"}],
+    //             "NodeType": "CDC"
+    //         }, {"Name": "Qom", "lat": 4.5, "lng": 8.5, "NodeType": "CDC"}],
     //         "Links": [{"Source": "Tehran", "Destination": "Qom", "Distance": 10.1, "FiberType": "sm"}]
     //     }),
     // };
-    //
+    //R
     // $.ajax(settings).done(function (response) {
     //     console.log(response);
     // });
@@ -1351,38 +1382,34 @@ function createAddNodeForm(featureGroup, markers, mymap, pathToIcon, oldMarkers)
     doneBtn.addEventListener("click", e => {
         var nodeData;
         nodeData = onSubmitForm(inputParams.paramValues, inputParams.paramNames);
-        nodeData["RegenCap"] = document.getElementById("RegenCap").value;
-        temp = document.getElementById("NodeType").value;
+        nodeData[""] = document.getElementById("RegenCap").value;
+        temp = document.getElementById("node_type").value;
         if(temp=="OXC(Colored-Directionless)"){
-            nodeData["NodeType"] = "Directionless"
+            nodeData["node_type"] = "Directionless"
         }
         else if(temp=="OXC(Colorless-Directionless)"){
-            nodeData["NodeType"] = "Colorless"
+            nodeData["node_type"] = "Colorless"
         }
         else if(temp=="OXC(CDC)"){
-            nodeData["NodeType"] = "CDC"
+            nodeData["node_type"] = "CDC"
         }
-
         // hard coded
-        nodeData["wa_type"] ="identical"
-        
+        nodeData["no_extra_wavelength__for_expansion"] = document.getElementById("Number of Channels for Expansion").value;
+
         console.log(nodeData)
         var marker;
 
         //check for input param validity:
         if (!isNameValid(inputParams.paramNames[0], markers) || !isNameValid(inputParams.paramNames[0], oldMarkers)) {
             toastr.error("Invalid Node name")
-            // popupAlert("Invalid Node name", mymap);
             return;
         }
 
-        if (!areNodeParamsValid(inputParams.paramNames[1], inputParams.paramAllValues[1])) {
-            toastr.error("Invalid parameter. \n" +
-                "ROADM TYPE can have a value of \"Directionless\" or \"CDC\".")
-            // popupAlert("Invalid parameter. \n" +
-            //     "ROADM TYPE can have a value of \"Directionless\" or \"CDC\".", mymap);
-            return;
-        }
+        // if (!areNodeParamsValid(inputParams.paramNames[1], inputParams.paramAllValues[1])) {
+        //     toastr.error("Invalid parameter. \n" +
+        //         "Node Type can have a value of \"Directionless\" or \"CDC\".")
+        //     return;
+        // }
 
         markerName = document.getElementById(inputParams.paramNames[0]).value;
 
@@ -1879,7 +1906,7 @@ function createParamsInputsNode(paramNames, paramValues) {
     Typeselect.appendChild(option2);
     Typeselect.appendChild(option3);
     Typeselect.appendChild(option4);
-    Typeselect.setAttribute("id","NodeType")
+    Typeselect.setAttribute("id","node_type")
 
     Typeselect.addEventListener("change", () => {
         if(Typeselect.value == "OLA"){
