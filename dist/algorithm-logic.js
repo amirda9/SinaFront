@@ -1001,11 +1001,13 @@ function SelectAlgorithm() {
     document.getElementById("MP1H_bool").disabled = false;
     document.getElementById("MP1HTresh").disabled = false;
     document.getElementById("MPBDTresh").disabled = false;
+    document.getElementById("MultiTresh").disabled = true;
     // $(':input[type="submit"]').prop("disabled", false);
   } else if (document.getElementById("Advanced").checked == true) {
     document.getElementById("MP1H_bool").disabled = true;
     document.getElementById("MP1HTresh").disabled = true;
     document.getElementById("MPBDTresh").disabled = true;
+    document.getElementById("MultiTresh").disabled = false;
     // document.getElementById("grooming-lineRate-threshold").disabled = false;
     // $("input[name='chkClusters']").attr("disabled", false);
     $(':input[type="submit"]').prop("disabled", false);
@@ -1147,15 +1149,13 @@ $("form#grooming-form").submit(async function (e) {
 function SubmitGroomingEndToEnd(project_id) {
   console.log(localStorage.getItem(project_id));
 
-  let mp1h_threshold = document.getElementById("MP1HTresh").value;
   let mpbd_threshold = document.getElementById("MPBDTresh").value;
-  let mp1h_boolean = document.getElementById("MP1H_bool").value;
-  let grooming_linerate = 100;
+  let mp1h_boolean = document.getElementById("MP1H_bool").value == "true" ? true : false;
+  let grooming_linerate = document.getElementById("lineRate1").checked == true ? 100 : 200;
   let grooming_comment = document.getElementById("grooming-comment").value;
-
+  let mp1h_threshold = mp1h_boolean == true ? document.getElementById("MP1HTresh").value : 0 ;
 
   // mehdi console log
-  console.log(grooming_linerate,mp1h_threshold,mpbd_threshold,mp1h_boolean,grooming_comment)
 
   //Call Service
   var myHeaders = new Headers();
@@ -1166,9 +1166,16 @@ function SubmitGroomingEndToEnd(project_id) {
   myHeaders.append("Content-Type", "application/json");
 
   var raw = JSON.stringify({
+    clusters_id: [],
     mp1h_threshold: Number(mp1h_threshold),
+    mpbd_thereshold: Number(mpbd_threshold),
+    line_rate : Number(grooming_linerate),
+    mp1h_utilize: mp1h_boolean,
     comment: grooming_comment,
   });
+
+  // console.log(raw)
+
 
   var requestOptions = {
     method: "POST",
@@ -1193,7 +1200,7 @@ function SubmitGroomingEndToEnd(project_id) {
 // send data to algorithms/grooming/automatic/Advanced --> Grooming option/Automatic
 function SubmitGroomingAdvanced(project_id) {
   let multi_threshold = document.getElementById("MultiTresh").value;
-  let grooming_linerate = 100;
+  let grooming_linerate = document.getElementById("lineRate1").checked == true ? 100 : 200;
   let grooming_comment = document.getElementById("grooming-comment").value;
 
   let clusters_id_Array = [];
@@ -1223,8 +1230,8 @@ function SubmitGroomingAdvanced(project_id) {
   myHeaders.append("Content-Type", "application/json");
   var raw = JSON.stringify({
     clusters_id: clusters_id_Array,
-    multiplex_threshold: mp1h_threshold,
-    line_rate: grooming_lineRate_threshold,
+    multiplex_threshold: Number(multi_threshold),
+    line_rate: Number(grooming_linerate),
     comment: grooming_comment,
   });
   console.log("var", raw);
