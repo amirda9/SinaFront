@@ -3,7 +3,34 @@ function onchange_modulation_type() {
   console.log(modulation_type);
 }
 
-
+function onchange_algorithm_spec() {
+  let algorithm_spec = document.getElementById("algorithm_spec").value;
+  if (algorithm_spec == "Default"){
+    document.getElementById("restoration_k").disabled = true;
+    document.getElementById("restoration_k").value = null;
+    document.getElementById("iterations").disabled = true;
+    document.getElementById("iterations").value = null;
+    document.getElementById("group_size").disabled = true;
+    document.getElementById("group_size").value = null;
+    document.getElementById("history_window").disabled = true;
+    document.getElementById("history_window").value = null;
+    document.getElementById("shortest_path_k").disabled = true;
+    document.getElementById("shortest_path_k").value = null;
+    document.getElementById("noise_margin").disabled = true;
+    document.getElementById("noise_margin").value = null;
+    document.getElementById("trade_off").disabled = true;
+    document.getElementById("trade_off").value = null;
+  }
+  else{
+    document.getElementById("restoration_k").disabled = false;
+    document.getElementById("iterations").disabled = false;
+    document.getElementById("group_size").disabled = false;
+    document.getElementById("history_window").disabled = false;
+    document.getElementById("shortest_path_k").disabled = false;
+    document.getElementById("noise_margin").disabled = false;
+    document.getElementById("trade_off").disabled = false;
+  }
+}
 
 function onchange_algorithm() {
   let algorithm = document.getElementById("algorithm").value;
@@ -27,22 +54,6 @@ function onchange_algorithm() {
     document.getElementById("noise_margin").disabled = false;
     document.getElementById("trade_off").disabled = false;
     // document.getElementById("history_window").placeholder = null;
-  }
-  else if (algorithm == "Default"){
-    document.getElementById("restoration_k").disabled = true;
-    document.getElementById("restoration_k").value = null;
-    document.getElementById("iterations").disabled = true;
-    document.getElementById("iterations").value = null;
-    document.getElementById("group_size").disabled = true;
-    document.getElementById("group_size").value = null;
-    document.getElementById("history_window").disabled = true;
-    document.getElementById("history_window").value = null;
-    document.getElementById("shortest_path_k").disabled = true;
-    document.getElementById("shortest_path_k").value = null;
-    document.getElementById("noise_margin").disabled = true;
-    document.getElementById("noise_margin").value = null;
-    document.getElementById("trade_off").disabled = true;
-    document.getElementById("trade_off").value = null;
   }
   else if (algorithm == "Greedy"){
     console.log(algorithm);
@@ -210,6 +221,7 @@ async function running_rwa() {
     let QPSK_SNR = document.getElementById("QPSK_SNR").value;
     let QAM_SNR = document.getElementById("8QAM_SNR").value;
     let algorithm = document.getElementById("algorithm").value;
+    let algorithm_spec = document.getElementById("algorithm").value;
     let shortest_path_k = document.getElementById("shortest_path_k").value;
     let restoration_k = document.getElementById("restoration_k").value;
     let noise_margin = document.getElementById("noise_margin").value;

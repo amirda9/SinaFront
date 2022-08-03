@@ -1272,13 +1272,23 @@
                                             <select onchange="onchange_algorithm()" name="algorithm" id="algorithm"
                                                     class="form-control">
                                                 <option value="">--Please choose --</option>
-                                                <option value="Default">Default</option>
                                                 <option value="Greedy">Greedy</option>
                                                 <option value="GroupILP">GroupILP</option>
                                                 <option value="ILP">ILP</option>
                                             </select>
                                         </div>
                                     </div>
+                                    <div class="form-row">
+                                    <div class="form-group col-md-12">
+                                        <label>algorithm Specifications</label>
+                                        <select onchange="onchange_algorithm_spec()" name="algorithm_spec" id="algorithm_spec"
+                                                class="form-control">
+                                            <option value="">--Please choose --</option>
+                                            <option value="Default">Default</option>
+                                            <option value="Greedy">Customized</option>
+                                        </select>
+                                    </div>
+                                </div>
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <label for="shortest_path_k">shortest_path_k <div></div></label>
