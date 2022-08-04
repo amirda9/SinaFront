@@ -1316,6 +1316,8 @@ function deleteOnRightClickLayer(layer, list, featureGroup) {
 }
 
 function deleteOnRightClickOld(event, markersGroup, linksGroup, mymap, featureGroup) {
+    temp = confirm("Do you want to delete this Marker?")
+    console.log(temp)
     closeAllPopups();
     tempMarkerlist = [];
     if (event.layer instanceof L.Marker) {
