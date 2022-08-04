@@ -323,8 +323,6 @@ async function storeLocallyDrawModeDataChanges(drawData)
             newLink.attenuation = link.data["Loss_Coefficient (dB/Km)"]
             newLink.nonlinearity = link.data["Non-Linear Parameter Ɣ"]
             newLink.dispersion = link.data["Dispersion (ps/Km-nm)"]
-            console.log(link, "new link")
-            console.log(newLink, "this is new link data")
             // newLink.length = document.getElementById("Length (Km)").value
             drawData.links.push(newLink);
         }

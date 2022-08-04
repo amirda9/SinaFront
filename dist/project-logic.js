@@ -305,7 +305,7 @@ function createOrUpdate(elementPath, mode, data, id = null) {
     }
     if (elementPath == "physical_topologies/"){
         // hard code
-        for (const link of physicalTopologyData.data.links){
+        for (const link of data.data.links){
             link["fiber"] = {
                 "fiber_type": link.fiber_type,
                 "attenuation": link.attenuation,
@@ -317,7 +317,7 @@ function createOrUpdate(elementPath, mode, data, id = null) {
             delete link.nonlinearity
             delete link.dispersion
         }
-        delete physicalTopologyData.data.fiber
+        delete data.data.fiber
         // hard code
         localStorage.setItem("physical_topologies", JSON.stringify(data.data))
 
@@ -1913,7 +1913,7 @@ function tm_show_errors() {
             type: 'checkbox',
             width: '100px',
             title: 'card protection',
-            name: 'card protection'
+            name: 'card_protection'
         },
         {
             type: 'text',
