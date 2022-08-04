@@ -505,7 +505,7 @@ async function initTmTableView(){
         {
             type: 'dropdown',
             width: '150px',
-            source: ['NoProtection', '1+1_NodeDisjoint', 'Restoration', 'PRC'],
+            source: ['NoProtection', '1+1_NodeDisjoint'],
             title: 'protection type',
             name: 'protection_type'
         },

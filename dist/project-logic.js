@@ -305,17 +305,31 @@ function createOrUpdate(elementPath, mode, data, id = null) {
     }
     if (elementPath == "physical_topologies/"){
         // hard code
-        for (const link of data.data.links){
-            link["fiber"] = {
-                "fiber_type": link.fiber_type,
-                "attenuation": link.attenuation,
-                "nonlinearity": link.nonlinearity,
-                "dispersion": link.dispersion
-            }
-            delete link.fiber_type
-            delete link.attenuation
-            delete link.nonlinearity
-            delete link.dispersion
+            for (const link of data.data.links){
+                if (link.fiber.fiber_type === undefined){
+                    link["fiber"] = {
+                        "fiber_type": link.fiber_type,
+                        "attenuation": link.attenuation,
+                        "nonlinearity": link.nonlinearity,
+                        "dispersion": link.dispersion
+                    }
+                    delete link.fiber_type
+                    delete link.attenuation
+                    delete link.nonlinearity
+                    delete link.dispersion
+                }
+                else {
+                    link["fiber"] = {
+                        "fiber_type": link.fiber.fiber_type,
+                        "attenuation": link.fiber.attenuation,
+                        "nonlinearity": link.fiber.nonlinearity,
+                        "dispersion": link.fiber.dispersion
+                    }
+                    delete link.fiber_type
+                    delete link.attenuation
+                    delete link.nonlinearity
+                    
+                }
         }
         delete data.data.fiber
         // hard code
@@ -557,6 +571,15 @@ function getPtData(ptId, version = null, caller) {
                         physical.project = project[0].name
                         await addElement("physical", physical);
                         tableviewPtData["data"] = response.body[0].data;
+                        // hard code
+                        // for (const link of tableviewPtData){
+
+                        // }
+                        tableviewPtData["data"]["fiber_type"] = response.body[0].data["fiber"]["fiber_type"]
+                        tableviewPtData["data"]["attenuation"] = response.body[0].data["fiber"]["attenuation"]
+                        tableviewPtData["data"]["nonlinearity"] = response.body[0].data["fiber"]["nonlinearity"]
+                        tableviewPtData["data"]["dispersion"] = response.body[0].data["fiber"]["dispersion"]
+                        // hard code
                         initPtTableView();
                         initTmTableView();
                     } else if (callerMethod == "history") {
@@ -1452,6 +1475,7 @@ function pt_show_errors() {
         '0': 'source',
         '1': 'destination',
         '2': 'length',
+        '4': "fiber",
         '3': 'fiber_type',
         '4': "attenuation",
         '5': "dispersion",
@@ -1905,7 +1929,7 @@ function tm_show_errors() {
         {
             type: 'dropdown',
             width: '150px',
-            source: ['NoProtection', '1+1_NodeDisjoint', 'Restoration', 'PRC'],
+            source: ['NoProtection', '1+1_NodeDisjoint'],
             title: 'protection type',
             name: 'protection_type'
         },

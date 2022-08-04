@@ -310,8 +310,9 @@ async function storeLocallyDrawModeDataChanges(drawData)
             let newLink = {
                 "destination": "",
                 "length": '',
-                "fiber_type": "SMF (G.652)",
                 "source": "",
+                "fiber": {},
+                "fiber_type": "SMF (G.652)",
                 "attenuation": "",
                 "dispersion": "",
                 "nonlinearity": ""
@@ -344,17 +345,31 @@ async function submitDrawModeDataChanges(physicalTopologyData) {
     
 
     // hard code
-    for (const link of physicalTopologyData.data.links){
-        link["fiber"] = {
-            "fiber_type": link.fiber_type,
-            "attenuation": link.attenuation,
-            "nonlinearity": link.nonlinearity,
-            "dispersion": link.dispersion
+    for (const link of data.data.links){
+        if (link.fiber.fiber_type === undefined){
+            link["fiber"] = {
+                "fiber_type": link.fiber_type,
+                "attenuation": link.attenuation,
+                "nonlinearity": link.nonlinearity,
+                "dispersion": link.dispersion
+            }
+            delete link.fiber_type
+            delete link.attenuation
+            delete link.nonlinearity
+            delete link.dispersion
         }
-        delete link.fiber_type
-        delete link.attenuation
-        delete link.nonlinearity
-        delete link.dispersion
+        else {
+            link["fiber"] = {
+                "fiber_type": link.fiber.fiber_type,
+                "attenuation": link.fiber.attenuation,
+                "nonlinearity": link.fiber.nonlinearity,
+                "dispersion": link.fiber.dispersion
+            }
+            delete link.fiber_type
+            delete link.attenuation
+            delete link.nonlinearity
+            
+        }
     }
     // hard code
     delete physicalTopologyData.data.fiber
