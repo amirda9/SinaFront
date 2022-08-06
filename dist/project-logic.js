@@ -305,8 +305,9 @@ function createOrUpdate(elementPath, mode, data, id = null) {
     }
     if (elementPath == "physical_topologies/"){
         // hard code
-            for (const link of data.data.links){
-                if (link.fiber.fiber_type === undefined){
+        for (const link of data.data.links){
+            try{
+                if (link["fiber"]["fiber_type"] === undefined){
                     link["fiber"] = {
                         "fiber_type": link.fiber_type,
                         "attenuation": link.attenuation,
@@ -330,6 +331,17 @@ function createOrUpdate(elementPath, mode, data, id = null) {
                     delete link.nonlinearity
                     
                 }
+            } catch {
+                link["fiber"] = {
+                    "fiber_type": link.fiber_type,
+                    "attenuation": link.attenuation,
+                    "nonlinearity": link.nonlinearity,
+                    "dispersion": link.dispersion
+                }
+                delete link.fiber_type
+                delete link.attenuation
+                delete link.nonlinearity
+            }
         }
         delete data.data.fiber
         // hard code
@@ -571,15 +583,13 @@ function getPtData(ptId, version = null, caller) {
                         physical.project = project[0].name
                         await addElement("physical", physical);
                         tableviewPtData["data"] = response.body[0].data;
-                        // hard code
-                        // for (const link of tableviewPtData){
-
-                        // }
-                        tableviewPtData["data"]["fiber_type"] = response.body[0].data["fiber"]["fiber_type"]
-                        tableviewPtData["data"]["attenuation"] = response.body[0].data["fiber"]["attenuation"]
-                        tableviewPtData["data"]["nonlinearity"] = response.body[0].data["fiber"]["nonlinearity"]
-                        tableviewPtData["data"]["dispersion"] = response.body[0].data["fiber"]["dispersion"]
-                        // hard code
+                        tableviewPtData["data"]["links"].forEach(element => {
+                            element["fiber_type"] = element.fiber.fiber_type
+                            element["attenuation"] = element.fiber.attenuation
+                            element["nonlinearity"] = element.fiber.nonlinearity
+                            element["dispersion"] = element.fiber.dispersion
+                            delete element.fiber
+                        });
                         initPtTableView();
                         initTmTableView();
                     } else if (callerMethod == "history") {
