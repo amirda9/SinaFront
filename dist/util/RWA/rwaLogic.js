@@ -7,19 +7,12 @@ function onchange_algorithm_spec() {
   let algorithm_spec = document.getElementById("algorithm_spec").value;
   if (algorithm_spec == "Default"){
     document.getElementById("restoration_k").disabled = true;
-    document.getElementById("restoration_k").value = null;
     document.getElementById("iterations").disabled = true;
-    document.getElementById("iterations").value = null;
     document.getElementById("group_size").disabled = true;
-    document.getElementById("group_size").value = null;
     document.getElementById("history_window").disabled = true;
-    document.getElementById("history_window").value = null;
     document.getElementById("shortest_path_k").disabled = true;
-    document.getElementById("shortest_path_k").value = null;
     document.getElementById("noise_margin").disabled = true;
-    document.getElementById("noise_margin").value = null;
     document.getElementById("trade_off").disabled = true;
-    document.getElementById("trade_off").value = null;
   }
   else{
     document.getElementById("restoration_k").disabled = false;
@@ -40,16 +33,12 @@ function onchange_algorithm() {
   if(algorithm == "ILP"){
     console.log("ILP");
     document.getElementById("restoration_k").disabled = true;
-    document.getElementById("restoration_k").value = null;
     // document.getElementById("restoration_k").placeholder = null;
     document.getElementById("iterations").disabled = true;
-    document.getElementById("iterations").value = null;
     // document.getElementById("iterations").placeholder = null;
     document.getElementById("group_size").disabled = true;
-    document.getElementById("group_size").value = null;
     // document.getElementById("group_size").placeholder = null;
     document.getElementById("history_window").disabled = true;
-    document.getElementById("history_window").value = null;
     document.getElementById("shortest_path_k").disabled = false;
     document.getElementById("noise_margin").disabled = false;
     document.getElementById("trade_off").disabled = false;
@@ -62,10 +51,8 @@ function onchange_algorithm() {
     document.getElementById("iterations").disabled = false;
     // document.getElementById("iterations").value = null;
     document.getElementById("group_size").disabled = true;
-    document.getElementById("group_size").value = null;
     // document.getElementById("group_size").placeholder = null;
     document.getElementById("history_window").disabled = true;
-    document.getElementById("history_window").value = null;
     document.getElementById("shortest_path_k").disabled = false;
     document.getElementById("noise_margin").disabled = false;
     document.getElementById("trade_off").disabled = false;
@@ -73,7 +60,6 @@ function onchange_algorithm() {
   else if (algorithm=="GroupILP"){
     console.log(algorithm);
     document.getElementById("restoration_k").disabled = true;
-    document.getElementById("restoration_k").value = null;
     // document.getElementById("restoration_k").placeholder = null;
     document.getElementById("iterations").disabled = false;
     // document.getElementById("iterations").value = null;
@@ -90,11 +76,8 @@ function onchange_raman() {
   let raman = document.getElementById("raman").value;
   if(raman=="Default"){
     document.getElementById("ramanThresh").disabled = true;
-    document.getElementById("ramanThresh").value = null;
     document.getElementById("NF_raman").disabled = true;
-    document.getElementById("NF_raman").value = null;
     document.getElementById("Gain_R").disabled = true;
-    document.getElementById("Gain_R").value = null;
   }
   else{
     document.getElementById("ramanThresh").disabled = false;
@@ -107,9 +90,7 @@ function onchange_dwdm() {
   let dwdm = document.getElementById("raman").value;
   if(dwdm=="Default"){
     document.getElementById("ChannelSpacing").disabled = true;
-    document.getElementById("ChannelSpacing").value = null;
     document.getElementById("ChannelsNO").disabled = true;
-    document.getElementById("ChannelsNO").value = null;
   }
   else{
     document.getElementById("ChannelSpacing").disabled = false;
@@ -121,9 +102,7 @@ function onchange_baudrate() {
   let baudrate = document.getElementById("baudrate").value;
   if(baudrate=="Default"){
     document.getElementById("QPSK_baudrate").disabled = true;
-    document.getElementById("QPSK_baudrate").value = null;
     document.getElementById("8QAM_baudrate").disabled = true;
-    document.getElementById("8QAM_baudrate").value = null;
   }
   else{
     document.getElementById("QPSK_baudrate").disabled = false;
@@ -221,7 +200,7 @@ async function running_rwa() {
     let QPSK_SNR = document.getElementById("QPSK_SNR").value;
     let QAM_SNR = document.getElementById("8QAM_SNR").value;
     let algorithm = document.getElementById("algorithm").value;
-    let algorithm_spec = document.getElementById("algorithm").value;
+    let algorithm_spec = document.getElementById("algorithm_spec").value;
     let shortest_path_k = document.getElementById("shortest_path_k").value;
     let restoration_k = document.getElementById("restoration_k").value;
     let noise_margin = document.getElementById("noise_margin").value;
@@ -230,68 +209,55 @@ async function running_rwa() {
     let group_size = document.getElementById("group_size").value;
     let history_window = document.getElementById("history_window").value;
     let comment = document.getElementById("comment").value;
-    //  rwa run
-  console.log(edfa,Gain_min,Gain_max,NF_edfa,Psat_edfa,raman,Gain_R,NF_raman,ramanThresh,dwdm,ChannelSpacing,ChannelsNO,baudrate,QPSK_baudrate,QPSK_baudrate,QAM_baudrate,
+
+    //  rwa run console log
+    console.log(algorithm_spec,edfa,Gain_min,Gain_max,NF_edfa,Psat_edfa,raman,Gain_R,NF_raman,ramanThresh,dwdm,ChannelSpacing,ChannelsNO,baudrate,QPSK_baudrate,QPSK_baudrate,QAM_baudrate,
     PowerOptimization,P_fixed,SNR_Thresh,QPSK_SNR,QAM_SNR,algorithm,shortest_path_k,restoration_k,noise_margin,trade_off,iterations,group_size,history_window,comment)
 
 
-
-  if (validationRWA() == 1) {
-    // document.getElementsByClassName("btn-send-rwa").style.visibility = "hidden"
-    // $(':input[type="submit"]').prop('disabled', false);
-
-    
-
-    // let token = await getTokn("amir", "1234");
-    if (
-      modulation_type == "" &&
-      algorithm == "" &&
-      shortest_path_k == "" &&
-      restoration_k == "" &&
-      noise_margin == "" &&
-      trade_off == "" &&
-      enable_merge == "" &&
-      enable_merge == "" &&
-      iterations == "" &&
-      group_size == "" &&
-      history_window == ""
-    ) {
-      modulation_type = "QPSK";
-      algorithm = "Greedy";
-      shortest_path_k = 3;
-      restoration_k = 2;
-      noise_margin = 4;
-      trade_off = 0.1;
-      enable_merge = false;
-      iterations = 4;
-      group_size = 4;
-      history_window = 30;
-      comment = document.getElementById("comment").value;
-      console.log(
-        "modulation_type : ",
-        modulation_type,
-        "algorithm : ",
-        algorithm,
-        "shortest_path_k : ",
-        shortest_path_k,
-        "restoration_k : ",
-        restoration_k,
-        "noise_margin : ",
-        noise_margin,
-        "trade_off : ",
-        trade_off,
-        "enable_merge : ",
-        enable_merge,
-        "iterations : ",
-        iterations,
-        "group_size : ",
-        group_size,
-        "history_window : ",
-        history_window,
-        "comment :",
-        comment
-      );
+    // replacing every step default values 
+    if(edfa=="Default"){
+      Gain_min =10;
+      Gain_max = 23;
+      NF_edfa = -1;
     }
+    
+    if(raman=="Default"){
+      ramanThresh = 120;
+      Gain_R = 10;
+      NF_raman = -1;
+    }
+
+    if(dwdm=="Default"){
+      ChannelSpacing = 100;
+      ChannelsNO = 96;
+    }
+
+    if(baudrate=="Default"){
+      QPSK_baudrate =32;
+      QAM_baudrate = 42.5;
+    }
+
+    if(SNR_Thresh=="Default"){
+      QPSK_SNR = 12;
+      QAM_SNR = 16;
+    }
+
+    if(PowerOptimization=="Optimized"){
+      P_fixed = 0;
+    }
+
+    if(algorithm_spec =="Default"){
+      shortest_path_k = 1;
+      restoration_k = 1;
+      noise_margin = 1;
+      trade_off = 0.01;
+      iterations = 1;
+      group_size = 1;
+      history_window = 30;
+      console.log("its default specs")
+    }
+
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append(
@@ -299,20 +265,37 @@ async function running_rwa() {
       `${userData.token_type} ${userData.access_token}`
     );
 
+
+
+
+
     var raw = JSON.stringify({
-      modulation_type: modulation_type,
       algorithm: algorithm,
-      shortest_path_k: shortest_path_k,
-      restoration_k: restoration_k,
-      noise_margin: noise_margin,
-      trade_off: trade_off,
-      enable_merge: enable_merge,
-      iterations: iterations,
-      group_size: group_size,
-      history_window: history_window,
-      comment: comment,
+      shortest_path_k: Number(shortest_path_k),
+      restoration_k: Number(restoration_k),
+      noise_margin: Number(noise_margin),
+      trade_off: Number(trade_off),
+      iterations: Number(iterations),
+      group_size: Number(group_size),
+      history_window: Number(history_window),
+      physical_layer: {
+          launch_power: P_fixed,
+          baud_rate:     {QPSK: QPSK_baudrate,   '8QAM': QAM_baudrate},
+          threshold_snr: {QPSK: QPSK_SNR,     '8QAM': QAM_SNR},
+          num_channels: ChannelsNO,
+          channel_spacing: ChannelSpacing,
+      },
+      OLA_specification: {
+          raman_placement_threshold: ramanThresh,
+          max_EDFA_gain: Gain_max,
+          min_EDFA_gain: Gain_min,
+          raman_gain: Gain_R,
+          NF_EDFA: NF_edfa,
+          NF_Raman: NF_raman,
+      }
     });
 
+    console.log(raw)
     var requestOptions = {
       method: "POST",
       headers: myHeaders,
@@ -342,7 +325,7 @@ async function running_rwa() {
       // alert('RWA is starting successfully... ', result.rwa_id);
     }
   }
-}
+
 
 function RWACheck(rwa_id) {
   let progress = 0;
@@ -399,79 +382,79 @@ function RWACheck(rwa_id) {
   }
 }
 function validationRWA() {
-  algorithm = $("#algorithm").val();
-  if (algorithm == "Greedy") {
-    let shortest_path_k = Number($("#shortest_path_k").val());
-    let restoration_k = Number($("#restoration_k").val());
-    let noise_margin = Number($("#noise_margin").val());
-    let trade_off = Number($("#trade_off").val());
-    let iterations = Number($("#iterations").val());
-    if (!Number.isInteger(shortest_path_k) || shortest_path_k < 1) {
-      alert("عدد shortest_path_k باید عدد صحیح بزرگتر از یک باشد");
-      return 0;
-    } else if (!Number.isInteger(restoration_k) || restoration_k < 1) {
-      alert("عدد restoration_k باید عدد صحیح بزرگتر از یک باشد");
-      return 0;
-    } else if (!Number.isInteger(noise_margin) || noise_margin < 1) {
-      alert("عدد noise_margin باید عدد صحیح بزرگتر از یک باشد");
-      return 0;
-    } else if (!Number.isInteger(iterations) || iterations < 1) {
-      alert("عدد iterations باید عدد صحیح بزرگتر از یک باشد");
-      return 0;
-    } else if (trade_off < 0 && trade_off > 1) {
-      alert("عدد trade_off باید بین صفر و یک باشد");
-    } else {
-      return 1;
-      // code with rwa start
-    }
-  } else if (algorithm == "GroupILP") {
-    let shortest_path_k = Number($("#shortest_path_k").val());
-    let noise_margin = Number($("#noise_margin").val());
-    let trade_off = Number($("#trade_off").val());
-    let iterations = Number($("#iterations").val());
-    let group_size = Number($("#group_size").val());
-    let history_window = Number($("#history_window").val());
-    if (!Number.isInteger(shortest_path_k) || shortest_path_k < 1) {
-      alert("عدد shortest_path_k باید عدد صحیح بزرگتر از یک باشد");
-      return 0;
-    } else if (!Number.isInteger(noise_margin) || noise_margin < 1) {
-      alert("عدد noise_margin باید عدد صحیح بزرگتر از یک باشد");
-      return 0;
-    } else if (!Number.isInteger(iterations) || iterations < 1) {
-      alert("عدد iterations باید عدد صحیح بزرگتر از یک باشد");
-      return 0;
-    } else if (trade_off < 0 || trade_off > 1) {
-      alert("عدد trade_off باید بین یک و یک باشد");
-      return 0;
-    } else if (!Number.isInteger(history_window) || history_window < 1) {
-      alert("عدد history_window باید بین یک و یک باشد");
-      return 0;
-    } else if (!Number.isInteger(group_size) || group_size < 1) {
-      alert("عدد group_size باید بین صفر و یک باشد");
-      return 0;
-    } else {
-      return 1;
-      // code with rwa start
-    }
-  } else if (algorithm == "ILP") {
-    let shortest_path_k = Number($("#shortest_path_k").val());
-    let noise_margin = Number($("#noise_margin").val());
-    let trade_off = Number($("#trade_off").val());
-    if (!Number.isInteger(shortest_path_k) || shortest_path_k < 1) {
-      alert("عدد shortest_path_k باید عدد صحیح بزرگتر از یک باشد");
-      return 0;
-    } else if (trade_off < 0 || trade_off > 1) {
-      alert("عدد trade_off باید بین صفر و یک باشد");
-      return 0;
-    } else if (!Number.isInteger(noise_margin) || noise_margin < 1) {
-      alert("عدد noise_margin باید عدد صحیح بزرگتر از یک باشد");
-      return 0;
-    } else {
-      // code with rwa start
-      return 1;
-    }
-  } else {
-    alert("الگوریتم انتخاب نشده است");
-    return 0;
-  }
+  // algorithm = $("#algorithm").val();
+  // if (algorithm == "Greedy") {
+  //   let shortest_path_k = Number($("#shortest_path_k").val());
+  //   let restoration_k = Number($("#restoration_k").val());
+  //   let noise_margin = Number($("#noise_margin").val());
+  //   let trade_off = Number($("#trade_off").val());
+  //   let iterations = Number($("#iterations").val());
+  //   if (!Number.isInteger(shortest_path_k) || shortest_path_k < 1) {
+  //     alert("عدد shortest_path_k باید عدد صحیح بزرگتر از یک باشد");
+  //     return 0;
+  //   } else if (!Number.isInteger(restoration_k) || restoration_k < 1) {
+  //     alert("عدد restoration_k باید عدد صحیح بزرگتر از یک باشد");
+  //     return 0;
+  //   } else if (!Number.isInteger(noise_margin) || noise_margin < 1) {
+  //     alert("عدد noise_margin باید عدد صحیح بزرگتر از یک باشد");
+  //     return 0;
+  //   } else if (!Number.isInteger(iterations) || iterations < 1) {
+  //     alert("عدد iterations باید عدد صحیح بزرگتر از یک باشد");
+  //     return 0;
+  //   } else if (trade_off < 0 && trade_off > 1) {
+  //     alert("عدد trade_off باید بین صفر و یک باشد");
+  //   } else {
+  //     return 1;
+  //     // code with rwa start
+  //   }
+  // } else if (algorithm == "GroupILP") {
+  //   let shortest_path_k = Number($("#shortest_path_k").val());
+  //   let noise_margin = Number($("#noise_margin").val());
+  //   let trade_off = Number($("#trade_off").val());
+  //   let iterations = Number($("#iterations").val());
+  //   let group_size = Number($("#group_size").val());
+  //   let history_window = Number($("#history_window").val());
+  //   if (!Number.isInteger(shortest_path_k) || shortest_path_k < 1) {
+  //     alert("عدد shortest_path_k باید عدد صحیح بزرگتر از یک باشد");
+  //     return 0;
+  //   } else if (!Number.isInteger(noise_margin) || noise_margin < 1) {
+  //     alert("عدد noise_margin باید عدد صحیح بزرگتر از یک باشد");
+  //     return 0;
+  //   } else if (!Number.isInteger(iterations) || iterations < 1) {
+  //     alert("عدد iterations باید عدد صحیح بزرگتر از یک باشد");
+  //     return 0;
+  //   } else if (trade_off < 0 || trade_off > 1) {
+  //     alert("عدد trade_off باید بین یک و یک باشد");
+  //     return 0;
+  //   } else if (!Number.isInteger(history_window) || history_window < 1) {
+  //     alert("عدد history_window باید بین یک و یک باشد");
+  //     return 0;
+  //   } else if (!Number.isInteger(group_size) || group_size < 1) {
+  //     alert("عدد group_size باید بین صفر و یک باشد");
+  //     return 0;
+  //   } else {
+  //     return 1;
+  //     // code with rwa start
+  //   }
+  // } else if (algorithm == "ILP") {
+  //   let shortest_path_k = Number($("#shortest_path_k").val());
+  //   let noise_margin = Number($("#noise_margin").val());
+  //   let trade_off = Number($("#trade_off").val());
+  //   if (!Number.isInteger(shortest_path_k) || shortest_path_k < 1) {
+  //     alert("عدد shortest_path_k باید عدد صحیح بزرگتر از یک باشد");
+  //     return 0;
+  //   } else if (trade_off < 0 || trade_off > 1) {
+  //     alert("عدد trade_off باید بین صفر و یک باشد");
+  //     return 0;
+  //   } else if (!Number.isInteger(noise_margin) || noise_margin < 1) {
+  //     alert("عدد noise_margin باید عدد صحیح بزرگتر از یک باشد");
+  //     return 0;
+  //   } else {
+  //     // code with rwa start
+  //     return 1;
+  //   }
+  // } else {
+  //   alert("الگوریتم انتخاب نشده است");
+  //   return 0;
+  // }
 }
