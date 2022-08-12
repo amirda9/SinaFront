@@ -1005,13 +1005,13 @@ function SelectAlgorithm() {
     document.getElementById("MP1H_bool").disabled = false;
     document.getElementById("MP1HTresh").disabled = false;
     document.getElementById("MPBDTresh").disabled = false;
-    document.getElementById("MultiTresh").disabled = true;
+    // document.getElementById("MultiTresh").disabled = true;
     // $(':input[type="submit"]').prop("disabled", false);
   } else if (document.getElementById("Advanced").checked == true) {
     document.getElementById("MP1H_bool").disabled = true;
     document.getElementById("MP1HTresh").disabled = true;
     document.getElementById("MPBDTresh").disabled = true;
-    document.getElementById("MultiTresh").disabled = false;
+    // document.getElementById("MultiTresh").disabled = false;
     // document.getElementById("grooming-lineRate-threshold").disabled = false;
     // $("input[name='chkClusters']").attr("disabled", false);
     $(':input[type="submit"]').prop("disabled", false);
@@ -1203,7 +1203,8 @@ function SubmitGroomingEndToEnd(project_id) {
 
 // send data to algorithms/grooming/automatic/Advanced --> Grooming option/Automatic
 function SubmitGroomingAdvanced(project_id) {
-  let multi_threshold = document.getElementById("MultiTresh").value;
+  // let multi_threshold = document.getElementById("MultiTresh").value;
+  let multi_threshold = 10;
   let grooming_linerate = document.getElementById("lineRate1").checked == true ? 100 : 200;
   let grooming_comment = document.getElementById("grooming-comment").value;
 
