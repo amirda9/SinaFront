@@ -474,7 +474,11 @@ async function getAllRWA(grooming_id) {
             ']"><i class="fas fa-poll"></i></button>\n' +
 
 
-            '                            <button type="button" disabled class="btn btn-warning" title="Lom_excel" id="downloadlink" onClick=" Call_Lom_excel(\'' +
+            '                            <button type="button" class="btn btn-warning" title="Lom_excel" id="downloadlink" onClick=" Call_Lom_excel(\'' +
+            RWA_Id +
+            '\')"><i class="fa fa-download"></i></button> \n' +
+
+                '                            <button type="button" class="btn btn-warning" title="Bpm_excel" id="downloadlink" onClick=" Call_Bpm_excel(\'' +
             RWA_Id +
             '\')"><i class="fa fa-download"></i></button> \n' +
 
@@ -1588,7 +1592,7 @@ async function Call_Lom_excel(RWA_Id) {
 
   // lom_excel ### 
 
-  let url = `http://185.211.88.140:80/api/v2.0.0/algorithms/grooming/Lom_excel?rwa_id=${RWA_Id}`;
+  let url = `http://185.211.88.140:80/api/v2.0.1/algorithms/rwa/lom_excel?rwa_id=${RWA_Id}`;
 
   return fetch(url, {
     method: "GET",
@@ -1600,7 +1604,30 @@ async function Call_Lom_excel(RWA_Id) {
     return response.blob().then((b) => {
       var a = document.createElement("a");
       a.href = URL.createObjectURL(b);
-      a.setAttribute("download", "kerman_End to end.xlsx");
+      a.setAttribute("download", "lom_output.xlsx");
+      a.click();
+    });
+  });
+}
+
+
+async function Call_Bpm_excel(RWA_Id) {
+
+  // lom_excel ### 
+
+  let url = `http://185.211.88.140:80/api/v2.0.1/algorithms/rwa/bpm_excel?rwa_id=${RWA_Id}`;
+
+  return fetch(url, {
+    method: "GET",
+    headers: {
+      Authorization: `${userData.token_type} ${userData.access_token}`,
+    },
+    responseType: "blob",
+  }).then(function (response) {
+    return response.blob().then((b) => {
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(b);
+      a.setAttribute("download", "bpm_output.xlsx");
       a.click();
     });
   });
