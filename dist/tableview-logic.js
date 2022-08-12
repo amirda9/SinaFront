@@ -54,6 +54,7 @@ async function initPtTableView()
     $("#pt-nodes-errors").html("")
     $("#pt-links-errors").html("")
     var ptNodesData = [];
+
     if (tableviewPtData.data != undefined && tableviewPtData.data.nodes != undefined && tableviewPtData.data.nodes.length > 0) {
         for (const data of tableviewPtData.data.nodes) {
             const newDataObj = Object.keys(data).reduce((object, key) => {
@@ -98,18 +99,22 @@ async function initPtTableView()
         '0': 'name',
         '1': 'lat',
         '2': 'lng',
-        '3': 'roadm_type'
+        '3': 'node_type',
+        '4': 'wa_type',
+        '5': 'no_extra_wavelength__for_expansion'
     }
 
     let linksKeyNames = {
         '0': 'source',
         '1': 'destination',
         '2': 'length',
-        '3': 'fiber_type'
+        '3': 'fiber_type',
+        '4': "attenuation",
+        '5': "dispersion",
+        '6': "nonlinearity"
     }
 
     var nodesChanged = function (instance, cell, x, y, value) {
-        // console.log(cell)
         if ((errorData = cell.getAttribute("error_value")) !== undefined) {
             let cellName = jexcel.getColumnNameFromId([x, y]);
             let worksheet = document.getElementById('tableview-pt-spreadsheet').children[0].querySelector('.selected').getAttribute('data-spreadsheet');
@@ -158,7 +163,6 @@ async function initPtTableView()
     }
 
     var linksChanged = function (instance, cell, x, y, value) {
-        // console.log(cell)
 
         if ((errorData = cell.getAttribute("error_value")) !== undefined) {
             let cellName = jexcel.getColumnNameFromId([x, y]);
@@ -250,9 +254,23 @@ async function initPtTableView()
                 {
                     type: 'dropdown',
                     width: '150px',
-                    source: ['Directionless', 'CDC'],
-                    title: 'roadm type',
-                    name: 'roadm_type'
+                    source: ['Directionless', 'Colorless', 'CDC', 'OLA'],
+                    title: 'Node Type',
+                    name: 'node_type'
+                },
+                {
+                    type: 'dropdown',
+                    width: '150px',
+                    source: ['Identical'],
+                    title: 'WA Type',
+                    name: 'wa_type'
+                },
+                {
+                    type: 'number',
+                    decimal: '.',
+                    width: '200px',
+                    title: 'Number of Channels for Expansion',
+                    name: 'no_extra_wavelength__for_expansion'
                 },
             ],
             allowComments: true,
@@ -314,12 +332,29 @@ async function initPtTableView()
                     name: 'length'
                 },
                 {
-                    type: 'text',
-                    // type: 'dropdown',
+                    type: 'dropdown',
                     width: '100px',
-                    // source: ['sm'],
+                    source: ['SMF (G.652)', 'NZDSF (G.655)'],
                     title: 'fiber type',
                     name: 'fiber_type'
+                },
+                {
+                    type: 'numeric',
+                    width: '100px',
+                    title: 'Loss Coefficient(dB/Km)',
+                    name: 'attenuation'
+                },
+                {
+                    type: 'numeric',
+                    width: '100px',
+                    title: 'Dispersion (ps/Km-nm)',
+                    name: 'dispersion'
+                },
+                {
+                    type: 'numeric',
+                    width: '100px',
+                    title: 'nonlinearity',
+                    name: 'nonlinearity'
                 },
             ],
             allowComments: true,
@@ -382,6 +417,35 @@ async function initPtTableView()
 var tmSheet;
 var servicesType = ["E1", "STM1 Electrical", "STM1 Optical", "STM4", "STM16", "STM64", "FE", "GE", "10GE", "100GE"]
 async function initTmTableView(){
+
+    // code to update nodes name 
+    ptNodeNames = [];
+    // if (tableviewPtData.data != undefined && tableviewPtData.data.nodes != undefined && tableviewPtData.data.nodes.length > 0) {
+    //     for (const data of tableviewPtData.data.nodes) {
+    //         const newDataObj = Object.keys(data).reduce((object, key) => {
+    //             if (!key.includes("error")) {
+    //                 object[key] = data[key]
+    //             }
+    //             return object
+    //         }, {})
+    //         ptNodesData.push(newDataObj);
+    //     }
+    // }
+
+    if (tableviewPtData.data != undefined && tableviewPtData.data.nodes != undefined && tableviewPtData.data.nodes.length > 0) {
+        for (const data of tableviewPtData.data.nodes) {
+            const newDataObj = Object.keys(data).reduce((object, key) => {
+                if (key === "name") {
+                    object[key] = data[key]
+                }
+                return object
+            }, {})
+            ptNodeNames.push(newDataObj.name);
+        }
+        var ptNodesDataArray = Object.entries(tableviewPtData.data.nodes);
+    }
+    // ###
+
     $("#tableview-tm-spreadsheet").html("")
     $("#tm-errors").html("")
 
@@ -409,7 +473,6 @@ async function initTmTableView(){
     if(tableviewTmData.data != undefined && tableviewTmData.data.demands != undefined ) {
         tmNodesDataArray =  Object.entries(tableviewTmData.data.demands);
     }
-
     let tmKeyNames = {
         '0': 'source',
         '1': 'destination',
@@ -422,14 +485,14 @@ async function initTmTableView(){
             type: 'autocomplete',
             width: '100px',
             title: 'source node',
-            source: ptNodeNames,
+            source: await ptNodeNames,
             name: 'source'
         },
         {
             type: 'autocomplete',
             width: '100px',
             title: 'destination node',
-            source: ptNodeNames,
+            source: await ptNodeNames,
             name: 'destination'
         },
         {
@@ -442,9 +505,15 @@ async function initTmTableView(){
         {
             type: 'dropdown',
             width: '150px',
-            source: ['NoProtection', '1+1_NodeDisjoint', 'Restoration', 'PRC'],
+            source: ['NoProtection', '1+1_NodeDisjoint'],
             title: 'protection type',
             name: 'protection_type'
+        },
+        {
+            type: 'checkbox',
+            width: '100px',
+            title: 'card protection',
+            name: 'card_protection'
         },
         {
             type: 'text',

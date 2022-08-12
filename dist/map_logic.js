@@ -283,21 +283,25 @@ async function storeLocallyDrawModeDataChanges(drawData)
             "name": "",
             "lat": "",
             "lng": "",
-            "roadm_type": "",
+            "node_type": "",
+            "wa_type": "Identical",
+            "no_extra_wavelength__for_expansion": ""
         }
 
         if ((elementIndex = drawData.nodes.findIndex(el => el.name === node.name)) != -1) {
             newNode.name = drawData.nodes[elementIndex].name;
             newNode.lat = Number(node.location.lat);
             newNode.lng = Number(node.location.lng);
-            newNode.roadm_type = drawData.nodes[elementIndex].roadm_type
+            newNode.node_type = drawData.nodes[elementIndex].node_type
+            newNode.no_extra_wavelength__for_expansion = node.data.no_extra_wavelength__for_expansion
             drawData.nodes[drawData.nodes.findIndex(el => el.name === newNode.name)] = newNode;
         }
         else {
             newNode.name = node.name;
             newNode.lat = Number(node.location.lat);
             newNode.lng = Number(node.location.lng);
-            newNode.roadm_type = node.data.roadm_type
+            newNode.node_type = node.data.node_type
+            newNode.no_extra_wavelength__for_expansion = node.data.no_extra_wavelength__for_expansion
             drawData.nodes.push(newNode);
         }
     }
@@ -306,12 +310,21 @@ async function storeLocallyDrawModeDataChanges(drawData)
             let newLink = {
                 "destination": "",
                 "length": '',
-                "fiber_type": "sm",
-                "source": ""
+                "source": "",
+                "fiber": {},
+                "fiber_type": "SMF (G.652)",
+                "attenuation": "",
+                "dispersion": "",
+                "nonlinearity": ""
             }
             newLink.source = link.start;
             newLink.destination = link.end;
-            newLink.length = Number(link.data.Length);
+            newLink.length = Number(link.data["Length (Km)"]);
+            newLink.fiber_type = link.data.FiberType
+            newLink.attenuation = link.data["Loss_Coefficient (dB/Km)"]
+            newLink.nonlinearity = link.data["Non-Linear Parameter Ɣ"]
+            newLink.dispersion = link.data["Dispersion (ps/Km-nm)"]
+            // newLink.length = document.getElementById("Length (Km)").value
             drawData.links.push(newLink);
         }
     }
@@ -328,6 +341,39 @@ async function storeLocallyDrawModeDataChanges(drawData)
 }
 
 async function submitDrawModeDataChanges(physicalTopologyData) {
+    // localStorage.setItem("physical_topologies", physicalTopologyData.data)
+    
+
+    // hard code
+    for (const link of data.data.links){
+        if (link.fiber.fiber_type === undefined){
+            link["fiber"] = {
+                "fiber_type": link.fiber_type,
+                "attenuation": link.attenuation,
+                "nonlinearity": link.nonlinearity,
+                "dispersion": link.dispersion
+            }
+            delete link.fiber_type
+            delete link.attenuation
+            delete link.nonlinearity
+            delete link.dispersion
+        }
+        else {
+            link["fiber"] = {
+                "fiber_type": link.fiber.fiber_type,
+                "attenuation": link.fiber.attenuation,
+                "nonlinearity": link.fiber.nonlinearity,
+                "dispersion": link.fiber.dispersion
+            }
+            delete link.fiber_type
+            delete link.attenuation
+            delete link.nonlinearity
+            
+        }
+    }
+    // hard code
+    delete physicalTopologyData.data.fiber
+    console.log(physicalTopologyData.data, "this is physical topology data")
 
     const actionMode = physicalTopologyData.id == 0 ? "POST" : "PUT"
     // physicalTopologyData["comment"] = "nocomment";
@@ -425,12 +471,12 @@ async function submitDrawModeDataChanges(physicalTopologyData) {
     //             "Name": "Tehran",
     //             "lat": 6.7,
     //             "lng": 7.4,
-    //             "ROADM_type": "CDC"
-    //         }, {"Name": "Qom", "lat": 4.5, "lng": 8.5, "ROADM_type": "CDC"}],
+    //             "NodeType": "CDC"
+    //         }, {"Name": "Qom", "lat": 4.5, "lng": 8.5, "NodeType": "CDC"}],
     //         "Links": [{"Source": "Tehran", "Destination": "Qom", "Distance": 10.1, "FiberType": "sm"}]
     //     }),
     // };
-    //
+    //R
     // $.ajax(settings).done(function (response) {
     //     console.log(response);
     // });
@@ -1203,6 +1249,7 @@ async function drawDoneBtnConfirmed(comment, markersGroup, featureGroup, linksGr
         if (updateElement("physical", physical[0])) {
             tableviewPtData.data = drawData;
             initPtTableView();
+            initTmTableView();
             toastr.success("successfully save draw data locally");
             div.remove();
         }
@@ -1228,6 +1275,7 @@ async function drawDoneBtnConfirmed(comment, markersGroup, featureGroup, linksGr
         if (updateElement("physical", physical[0])) {
             tableviewPtData.data = drawData;
             await initPtTableView();
+            await initTmTableView();
             toastr.success("successfully save draw data locally");
         }
         $('#back-step-4').hide();
@@ -1248,6 +1296,8 @@ async function drawDoneBtnConfirmed(comment, markersGroup, featureGroup, linksGr
 // check for links connected to marker, also delete the data. - params? - only works for new nodes now
 function deleteOnRightClick(event, featureGroup, markers, links, mymap) {
     closeAllPopups();
+    temp = confirm("Are you sure you want to delete this?")
+    if(temp==true){
     tempMarkerlist = [];
     if (event.layer instanceof L.Marker) {
         //delete data, connected links;
@@ -1265,6 +1315,7 @@ function deleteOnRightClick(event, featureGroup, markers, links, mymap) {
         deleteOnRightClickLayer(link, links, featureGroup);
     }
 }
+}
 
 function deleteOnRightClickLayer(layer, list, featureGroup) {
     var name = getLayerName(layer);
@@ -1280,6 +1331,8 @@ function deleteOnRightClickLayer(layer, list, featureGroup) {
 }
 
 function deleteOnRightClickOld(event, markersGroup, linksGroup, mymap, featureGroup) {
+    temp = confirm("Do you want to delete this Marker?")
+    console.log(temp)
     closeAllPopups();
     tempMarkerlist = [];
     if (event.layer instanceof L.Marker) {
@@ -1318,12 +1371,13 @@ function createAddNodeForm(featureGroup, markers, mymap, pathToIcon, oldMarkers)
     div.setAttribute("class", "vertical");
 
     var inputParams = {
-        "paramNames": ["Node_Name", "roadm_type"],
-        "paramValues": ["", "Directionless"],
-        "paramAllValues": ["", ["Directionless", "CDC"]]
+        "paramNames": ["Node_Name", "Number of Channels for Expansion"],
+        "paramValues": ["", "0"],
+        "paramAllValues": ["", ["0"]]
     }
 
-    var nodeParams = createParamsInputs(inputParams.paramNames, inputParams.paramValues);
+    var nodeParams = createParamsInputsNode(inputParams.paramNames, inputParams.paramValues);
+
 
     var doneBtn = document.createElement("button");
     doneBtn.setAttribute("id", "submitNodeForm");
@@ -1342,26 +1396,38 @@ function createAddNodeForm(featureGroup, markers, mymap, pathToIcon, oldMarkers)
 
     doneBtn.addEventListener("click", e => {
         var nodeData;
+        nodeData = onSubmitForm(inputParams.paramValues, inputParams.paramNames);
+        nodeData[""] = document.getElementById("RegenCap").value;
+        temp = document.getElementById("node_type").value;
+        if(temp=="OXC(Colored-Directionless)"){
+            nodeData["node_type"] = "Directionless"
+        }
+        else if(temp=="OXC(Colorless-Directionless)"){
+            nodeData["node_type"] = "Colorless"
+        }
+        else if(temp=="OXC(CDC)"){
+            nodeData["node_type"] = "CDC"
+        }
+        // hard coded
+        nodeData["no_extra_wavelength__for_expansion"] = document.getElementById("Number of Channels for Expansion").value;
+
+        console.log(nodeData)
         var marker;
 
         //check for input param validity:
         if (!isNameValid(inputParams.paramNames[0], markers) || !isNameValid(inputParams.paramNames[0], oldMarkers)) {
             toastr.error("Invalid Node name")
-            // popupAlert("Invalid Node name", mymap);
             return;
         }
 
-        if (!areNodeParamsValid(inputParams.paramNames[1], inputParams.paramAllValues[1])) {
-            toastr.error("Invalid parameter. \n" +
-                "ROADM TYPE can have a value of \"Directionless\" or \"CDC\".")
-            // popupAlert("Invalid parameter. \n" +
-            //     "ROADM TYPE can have a value of \"Directionless\" or \"CDC\".", mymap);
-            return;
-        }
+        // if (!areNodeParamsValid(inputParams.paramNames[1], inputParams.paramAllValues[1])) {
+        //     toastr.error("Invalid parameter. \n" +
+        //         "Node Type can have a value of \"Directionless\" or \"CDC\".")
+        //     return;
+        // }
 
         markerName = document.getElementById(inputParams.paramNames[0]).value;
 
-        nodeData = onSubmitForm(inputParams.paramValues, inputParams.paramNames);
         marker = L.marker(mymap.getCenter(), {
             draggable: true,
             icon: createCustomIcon(pathToIcon)
@@ -1442,12 +1508,12 @@ function createAddLinkForm(featureGroup, links, mymap, linksGroup) {
     div.setAttribute("class", "vertical");
 
     var inputParams = {
-        "paramValues": ["0.0", "0", "0.2", "0", "1.40E-03", "3.16914E-19"],
-        "paramNames": ["Length", "Fiber_Type", "Loss_Coefficient", "Beta", "Gamma", "Dispersion"]
+        "paramValues": ["0.0", "0.0","0.0","0.0"],
+        "paramNames": ["Length (Km)", "Loss_Coefficient (dB/Km)", "Dispersion (ps/Km-nm)","Non-Linear Parameter Ɣ"]
     };
 
     //create link Params
-    linkParams = createParamsInputs(inputParams.paramNames, inputParams.paramValues);
+    linkParams = createParamsInputsForm(inputParams.paramNames, inputParams.paramValues);
 
     var doneBtn = document.createElement("button");
     doneBtn.setAttribute("id", "submitLinkForm");
@@ -1468,6 +1534,12 @@ function createAddLinkForm(featureGroup, links, mymap, linksGroup) {
 
         var linkData;
 
+        linkData = onSubmitForm(inputParams.paramValues, inputParams.paramNames);
+        var temp = document.getElementById("FiberType").value;
+        linkData["FiberType"] = temp
+        var temp = document.getElementById("Spec").value;
+        linkData["Spec"] = temp
+        console.log(linkData)
         // will uncomment this once I fixed the method
         // var linkValidity = checkLinkValidity(tempMarkerlist, featureGroup);
 
@@ -1564,7 +1636,8 @@ function createAddLinkForm(featureGroup, links, mymap, linksGroup) {
         link.bindTooltip("<h3>" + linkName + "</h3>");
         featureGroup.addLayer(link);
 
-        linkData = onSubmitForm(inputParams.paramValues, inputParams.paramNames);
+        // linkData = onSubmitForm(inputParams.paramValues, inputParams.paramNames);
+        // console.log(linkData)
 
         links.push({
             "name": linkName,
@@ -1591,6 +1664,7 @@ function createAddLinkForm(featureGroup, links, mymap, linksGroup) {
     return div;
 
 }
+
 
 function onSubmitForm(paramValues, paramNames) {
 
@@ -1793,6 +1867,192 @@ function createParamsInputs(paramNames, paramValues) {
     return paramElements;
 }
 
+
+function createLblTxtFromParamName(paramNames) {
+
+    var lblTxts = [];
+    for (var i = 0; i < paramNames.length; i++) {
+        var txt = paramNames[i].replace(/_/g, " ");
+        txt = txt.concat(": ");
+        lblTxts.push(txt);
+    }
+
+    return lblTxts;
+}
+
+function createParamsInputsNode(paramNames, paramValues) {
+
+    var paramLblTxts = createLblTxtFromParamName(paramNames);
+
+    var paramElements = [];
+
+    for (var i = 0; i < paramNames.length; i++) {
+        var param = document.createElement("input");
+        param.setAttribute("id", paramNames[i]);
+        param.setAttribute("class", "mainmap-util-input");
+        param.setAttribute("type", "text");
+        param.placeholder = paramValues[i];
+
+        var paramLbl = document.createElement("label");
+        paramLbl.setAttribute("class", "mainmap-util-label");
+        paramLbl.innerHTML = paramLblTxts[i];
+
+        paramElements.push({
+            "param": param,
+            "label": paramLbl
+        });
+    }
+
+    var Typeselect = document.createElement("select");
+    var option1 = document.createElement("option"),
+        text = document.createTextNode("OXC(Colored-Directionless)");
+    var option2 = document.createElement("option"),
+    text2 = document.createTextNode("OXC(Colorless-Directionless)");
+    var option3 = document.createElement("option"),
+    text3 = document.createTextNode("OXC(CDC)");
+    var option4 = document.createElement("option"),
+    text4 = document.createTextNode("OLA");
+    option1.appendChild(text);
+    option2.appendChild(text2);
+    option3.appendChild(text3);
+    option4.appendChild(text4);
+
+    Typeselect.appendChild(option1);
+    Typeselect.appendChild(option2);
+    Typeselect.appendChild(option3);
+    Typeselect.appendChild(option4);
+    Typeselect.setAttribute("id","node_type")
+
+    Typeselect.addEventListener("change", () => {
+        if(Typeselect.value == "OLA"){
+            // console.log("ola")
+            document.getElementById("Number of Channels for Expansion").disabled = true;
+            document.getElementById("Number of Channels for Expansion").value = null;
+        }
+        else{
+            document.getElementById("Number of Channels for Expansion").disabled = false;
+        }
+    })
+    
+    var NodeTypeLbl = document.createElement("label");
+    NodeTypeLbl.setAttribute("class", "mainmap-util-label");
+    NodeTypeLbl.innerHTML = "Node Type";
+
+    var Regen = document.createElement("select");
+    var option1 = document.createElement("option"),
+        text = document.createTextNode("True");
+    var option2 = document.createElement("option"),
+    text2 = document.createTextNode("False");
+    option1.appendChild(text);
+    option2.appendChild(text2);
+    Regen.appendChild(option1);
+    Regen.appendChild(option2);
+    Regen.setAttribute("id","RegenCap")
+
+
+
+    var RegenLbl = document.createElement("label");
+        RegenLbl.setAttribute("class", "mainmap-util-label");
+        RegenLbl.innerHTML = "Regeneration Capability";
+    
+    paramElements.push({
+        "param": Typeselect,
+        "label": NodeTypeLbl
+    });
+
+    paramElements.push({
+        "param": Regen,
+        "label": RegenLbl
+    });
+    
+    return paramElements;
+}
+
+
+function createParamsInputsForm(paramNames, paramValues) {
+
+    var paramLblTxts = createLblTxtFromParamName(paramNames);
+
+    var paramElements = [];
+
+    var Typeselect = document.createElement("select");
+    var option1 = document.createElement("option"),
+        text = document.createTextNode("SMF (G.652)");
+    var option2 = document.createElement("option"),
+    text2 = document.createTextNode("NZDSF (G.655)");
+    option1.appendChild(text);
+    option2.appendChild(text2);
+    Typeselect.appendChild(option1);
+    Typeselect.appendChild(option2);
+    Typeselect.setAttribute("id", "FiberType");
+
+    
+    var TypeLbl = document.createElement("label");
+    TypeLbl.setAttribute("class", "mainmap-util-label");
+    TypeLbl.innerHTML = "Fiber Type";
+
+    var Spec = document.createElement("select");
+    var option1 = document.createElement("option"),
+        text = document.createTextNode("Default");
+    var option2 = document.createElement("option"),
+    text2 = document.createTextNode("Customized");
+    option1.appendChild(text);
+    option2.appendChild(text2);
+    Spec.appendChild(option1);
+    Spec.appendChild(option2);
+    Spec.setAttribute("id", "Spec");
+    Spec.addEventListener("change", () => {
+        if(Spec.value == "Default"){
+            document.getElementById("Loss_Coefficient (dB/Km)").setAttribute('disabled', '');
+            document.getElementById("Dispersion (ps/Km-nm)").setAttribute('disabled', '');
+            document.getElementById("Non-Linear Parameter Ɣ").setAttribute('disabled', '');
+            document.getElementById("Loss_Coefficient (dB/Km)").value = 0;
+            document.getElementById("Dispersion (ps/Km-nm)").value = 0;
+            document.getElementById("Non-Linear Parameter Ɣ").value = 0;
+        }
+        if(Spec.value == "Customized"){
+            document.getElementById("Loss_Coefficient (dB/Km)").removeAttribute('disabled');
+            document.getElementById("Dispersion (ps/Km-nm)").removeAttribute('disabled');
+            document.getElementById("Non-Linear Parameter Ɣ").removeAttribute('disabled');
+        }
+    })
+
+
+    var SpecLbl = document.createElement("label");
+    SpecLbl.setAttribute("class", "mainmap-util-label");
+    SpecLbl.innerHTML = "Specifications";
+    
+    paramElements.push({
+        "param": Typeselect,
+        "label": TypeLbl
+    });
+
+    paramElements.push({
+        "param": Spec,
+        "label": SpecLbl
+    });
+
+    for (var i = 0; i < paramNames.length; i++) {
+        var param = document.createElement("input");
+        param.setAttribute("id", paramNames[i]);
+        param.setAttribute("class", "mainmap-util-input");
+        param.setAttribute("type", "text");
+        param.placeholder = paramValues[i];
+
+        var paramLbl = document.createElement("label");
+        paramLbl.setAttribute("class", "mainmap-util-label");
+        paramLbl.innerHTML = paramLblTxts[i];
+
+        paramElements.push({
+            "param": param,
+            "label": paramLbl
+        });
+    }
+
+
+    
+    return paramElements;
+}
 
 // not using this now - codes's acting strange
 function checkLinkValidity(featureGroup) {

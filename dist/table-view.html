@@ -229,14 +229,19 @@ function initTableView() {
         '0': 'name',
         '1': 'lat',
         '2': 'lng',
-        '3': 'roadm_type'
+        '3': 'node_type',
+        '4': 'wa_type',
+        '5': 'no_extra_wavelength__for_expansion'
     }
 
     let linksKeyNames = {
         '0': 'source',
         '1': 'destination',
         '2': 'distance',
-        '3': 'fiber_type'
+        '3': 'fiber_type',
+        '4': "attenuation",
+        '5': "dispersion",
+        '6': "nonlinearity"
     }
 
 
@@ -374,9 +379,23 @@ function initTableView() {
                 {
                     type: 'dropdown',
                     width: '150px',
-                    source: ['Directionless', 'CDC'],
-                    title: 'roadm type',
-                    name: 'roadm_type'
+                    source: ['Directionless', 'Colorless', 'CDC', 'OLA'],
+                    title: 'Node Type',
+                    name: 'node_type'
+                },
+                {
+                    type: 'dropdown',
+                    width: '150px',
+                    source: ['Identical'],
+                    title: 'WA Type',
+                    name: 'wa_type'
+                },
+                {
+                    type: 'number',
+                    decimal: '.',
+                    width: '200px',
+                    title: 'Number of Channels for Expansion',
+                    name: 'no_extra_wavelength__for_expansion'
                 },
             ],
             allowComments: true,
@@ -437,13 +456,31 @@ function initTableView() {
                     name: 'distance'
                 },
                 {
-                    type: 'text',
-                    // type: 'dropdown',
+                    type: 'dropdown',
                     width: '100px',
-                    // source: ['sm'],
+                    source: ['SMF (G.652)', 'NZDSF (G.655)'],
                     title: 'fiber type',
                     name: 'fiber_type'
                 },
+                {
+                    type: 'numeric',
+                    width: '100px',
+                    title: 'Loss Coefficient(dB/Km)',
+                    name: 'attenuation'
+                },
+                {
+                    type: 'numeric',
+                    width: '100px',
+                    title: 'Dispersion (ps/Km-nm)',
+                    name: 'dispersion'
+                },
+                {
+                    type: 'numeric',
+                    width: '100px',
+                    title: 'nonlinearity',
+                    name: 'nonlinearity'
+                },
+
             ],
             allowComments: true,
             // persistance: '/jexcel/v4/save',
@@ -532,9 +569,15 @@ function initTableView() {
         {
             type: 'dropdown',
             width: '150px',
-            source: ['NoProtection', '1+1_NodeDisjoint', 'Restoration', 'PRC'],
+            source: ['NoProtection', '1+1_NodeDisjoint'],
             title: 'protection type',
             name: 'protection_type'
+        },
+        {
+            type: 'checkbox',
+            width: '100px',
+            title: 'card protection',
+            name: 'card_protection'
         },
         {
             type: 'text',
@@ -740,6 +783,7 @@ async function submitPtExcelFixed(){
 async function submitTmExcelFixed(){
     let ptDataForSubmit = {}
     ptDataForSubmit = createTmForSubmit();
+    console.log(ptDataForSubmit, "this is traffic matrix 2")
     await createOrUpdate("traffic_matrices/","update", ptDataForSubmit)
         .then(function(result){
             // sendEvent('#create-project-modal-5', 5,"Continue",true)

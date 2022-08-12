@@ -474,7 +474,11 @@ async function getAllRWA(grooming_id) {
             ']"><i class="fas fa-poll"></i></button>\n' +
 
 
-            '                            <button type="button" disabled class="btn btn-warning" title="Lom_excel" id="downloadlink" onClick=" Call_Lom_excel(\'' +
+            '                            <button type="button" class="btn btn-warning" title="Lom_excel" id="downloadlink" onClick=" Call_Lom_excel(\'' +
+            RWA_Id +
+            '\')"><i class="fa fa-download"></i></button> \n' +
+
+                '                            <button type="button" class="btn btn-warning" title="Bpm_excel" id="downloadlink" onClick=" Call_Bpm_excel(\'' +
             RWA_Id +
             '\')"><i class="fa fa-download"></i></button> \n' +
 
@@ -988,16 +992,28 @@ async function ShowClustrsOnMap(Clusters) {
   }
 }
 
+function mp1hbooleanToggle() {
+  document.getElementById("MP1HTresh").disabled = !document.getElementById("MP1HTresh").disabled;
+  document.getElementById("MP1HTresh").value = ''
+}
 //function for select type of algorithm for show LineRate & checked of ClusterLists in Grooming Settings/Automatic
 function SelectAlgorithm() {
   // If the radio:Advanced is checked, display the LineRate & checked of ClusterLists
   if (document.getElementById("end_To_end").checked == true) {
-    document.getElementById("grooming-lineRate-threshold").disabled = true;
-    $("input[name='chkClusters']").attr("disabled", true);
-    $(':input[type="submit"]').prop("disabled", false);
+    // document.getElementById("grooming-lineRate-threshold").disabled = true;
+    // $("input[name='chkClusters']").attr("disabled", true);
+    document.getElementById("MP1H_bool").disabled = false;
+    document.getElementById("MP1HTresh").disabled = false;
+    document.getElementById("MPBDTresh").disabled = false;
+    document.getElementById("MultiTresh").disabled = true;
+    // $(':input[type="submit"]').prop("disabled", false);
   } else if (document.getElementById("Advanced").checked == true) {
-    document.getElementById("grooming-lineRate-threshold").disabled = false;
-    $("input[name='chkClusters']").attr("disabled", false);
+    document.getElementById("MP1H_bool").disabled = true;
+    document.getElementById("MP1HTresh").disabled = true;
+    document.getElementById("MPBDTresh").disabled = true;
+    document.getElementById("MultiTresh").disabled = false;
+    // document.getElementById("grooming-lineRate-threshold").disabled = false;
+    // $("input[name='chkClusters']").attr("disabled", false);
     $(':input[type="submit"]').prop("disabled", false);
   }
 }
@@ -1058,7 +1074,7 @@ async function showClusterList() {
 }
 
 async function startEnd2EndGrooming() {
-  console.log("dsakfjgh;lksdfhg;fdhsl");
+  // console.log("dsakfjgh;lksdfhg;fdhsl");
   let project_id = "";
   let result = [];
   var myHeaders = new Headers();
@@ -1106,7 +1122,7 @@ $().ready(function () {
   let advanced = document.getElementById("Advanced");
 
   if (endToEnd.checked == false && advanced.checked == false) {
-    $(':input[type="submit"]').prop("disabled", true);
+    // $(':input[type="submit"]').prop("disabled", true);
   }
 });
 
@@ -1137,8 +1153,13 @@ $("form#grooming-form").submit(async function (e) {
 function SubmitGroomingEndToEnd(project_id) {
   console.log(localStorage.getItem(project_id));
 
-  let mp1h_threshold = document.getElementById("grooming-mp1h-threshold").value;
+  let mpbd_threshold = document.getElementById("MPBDTresh").value;
+  let mp1h_boolean = document.getElementById("MP1H_bool").value == "true" ? true : false;
+  let grooming_linerate = document.getElementById("lineRate1").checked == true ? 100 : 200;
   let grooming_comment = document.getElementById("grooming-comment").value;
+  let mp1h_threshold = mp1h_boolean == true ? document.getElementById("MP1HTresh").value : 0 ;
+
+  // mehdi console log
 
   //Call Service
   var myHeaders = new Headers();
@@ -1149,9 +1170,16 @@ function SubmitGroomingEndToEnd(project_id) {
   myHeaders.append("Content-Type", "application/json");
 
   var raw = JSON.stringify({
+    clusters_id: [],
     mp1h_threshold: Number(mp1h_threshold),
+    mpbd_thereshold: Number(mpbd_threshold),
+    line_rate : Number(grooming_linerate),
+    mp1h_utilize: mp1h_boolean,
     comment: grooming_comment,
   });
+
+  // console.log(raw)
+
 
   var requestOptions = {
     method: "POST",
@@ -1175,10 +1203,8 @@ function SubmitGroomingEndToEnd(project_id) {
 
 // send data to algorithms/grooming/automatic/Advanced --> Grooming option/Automatic
 function SubmitGroomingAdvanced(project_id) {
-  let mp1h_threshold = document.getElementById("grooming-mp1h-threshold").value;
-  let grooming_lineRate_threshold = document.getElementById(
-    "grooming-lineRate-threshold"
-  ).value;
+  let multi_threshold = document.getElementById("MultiTresh").value;
+  let grooming_linerate = document.getElementById("lineRate1").checked == true ? 100 : 200;
   let grooming_comment = document.getElementById("grooming-comment").value;
 
   let clusters_id_Array = [];
@@ -1191,11 +1217,12 @@ function SubmitGroomingAdvanced(project_id) {
     clusters_id_Array.push(checkbox.value);
   });
 
+  // mehdi console log
   console.log(
     "clusters_id_Array",
     clusters_id_Array,
-    mp1h_threshold,
-    grooming_lineRate_threshold,
+    multi_threshold,
+    grooming_linerate,
     grooming_comment
   );
   //Call Service
@@ -1207,8 +1234,8 @@ function SubmitGroomingAdvanced(project_id) {
   myHeaders.append("Content-Type", "application/json");
   var raw = JSON.stringify({
     clusters_id: clusters_id_Array,
-    multiplex_threshold: mp1h_threshold,
-    line_rate: grooming_lineRate_threshold,
+    multiplex_threshold: Number(multi_threshold),
+    line_rate: Number(grooming_linerate),
     comment: grooming_comment,
   });
   console.log("var", raw);
@@ -1565,7 +1592,7 @@ async function Call_Lom_excel(RWA_Id) {
 
   // lom_excel ### 
 
-  let url = `http://45.139.10.150:80/api/v2.0.0/algorithms/grooming/Lom_excel?rwa_id=${RWA_Id}`;
+  let url = `http://185.211.88.140:80/api/v2.0.1/algorithms/rwa/lom_excel?rwa_id=${RWA_Id}`;
 
   return fetch(url, {
     method: "GET",
@@ -1577,7 +1604,30 @@ async function Call_Lom_excel(RWA_Id) {
     return response.blob().then((b) => {
       var a = document.createElement("a");
       a.href = URL.createObjectURL(b);
-      a.setAttribute("download", "kerman_End to end.xlsx");
+      a.setAttribute("download", "lom_output.xlsx");
+      a.click();
+    });
+  });
+}
+
+
+async function Call_Bpm_excel(RWA_Id) {
+
+  // lom_excel ### 
+
+  let url = `http://185.211.88.140:80/api/v2.0.1/algorithms/rwa/bpm_excel?rwa_id=${RWA_Id}`;
+
+  return fetch(url, {
+    method: "GET",
+    headers: {
+      Authorization: `${userData.token_type} ${userData.access_token}`,
+    },
+    responseType: "blob",
+  }).then(function (response) {
+    return response.blob().then((b) => {
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(b);
+      a.setAttribute("download", "bpm_output.xlsx");
       a.click();
     });
   });

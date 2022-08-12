@@ -17,7 +17,7 @@ $(window).on('load', function () {
                             }
                             document.getElementById("project-info-box").innerHTML = project[0].name;
                             let physical = await getAllRecords("physical")
-                            console.log('physical = ',physical)
+                            console.log('physical = ', physical)
                             if (physical[0].data !== undefined && physical[0].data.nodes.length > 0)
                                 drawPhysicalTopology(physical[0].data);
                             if (physical[0].id != 0) {
@@ -208,7 +208,6 @@ $("form#submit-project-form").submit(async function (e) {
         await createOrUpdate("projects/", project[0].id == 0 ? "create" : "update", project[0], project[0].id == 0 ? null : project[0].id)
             .then(async function (result) {
                 let operation = project[0].id == 0 ? "create" : "update";
-                console.log("Kiiiiiiiiiiiiiiiiiiiiir", project[0].id , operation)
                 if (project[0].id == 0) {
                     project[0].id = result.body.id;
                 }
@@ -270,8 +269,8 @@ async function saveProject() {
         await createOrUpdate("projects/", "create", project[0])
             .then(async function (result) {
                 project[0].id = result.body.id;
-                console.log("IDDD:",project[0].id);
-                localStorage.setItem("project_id",JSON.stringify(project[0].id));
+                console.log("IDDD:", project[0].id);
+                localStorage.setItem("project_id", JSON.stringify(project[0].id));
                 console.log("saved:");
                 //localStorage.setItem("project_id",JSON.stringify(project[0].id));
                 project[0].version = 1
@@ -298,7 +297,58 @@ async function saveProject() {
 }
 
 function createOrUpdate(elementPath, mode, data, id = null) {
-    console.log(id)
+    if (id == null && elementPath == "physical_topologies/"){
+        console.log(id)
+        console.log(data, "pyhsycal topologies")
+        localStorage.removeItem("physical_topologies")
+        // localStorage.setItem("physical_topologies", JSON.stringify(data.data))
+    }
+    if (elementPath == "physical_topologies/"){
+        // hard code
+        for (const link of data.data.links){
+            try{
+                if (link["fiber"]["fiber_type"] === undefined){
+                    link["fiber"] = {
+                        "fiber_type": link.fiber_type,
+                        "attenuation": link.attenuation,
+                        "nonlinearity": link.nonlinearity,
+                        "dispersion": link.dispersion
+                    }
+                    delete link.fiber_type
+                    delete link.attenuation
+                    delete link.nonlinearity
+                    delete link.dispersion
+                }
+                else {
+                    link["fiber"] = {
+                        "fiber_type": link.fiber.fiber_type,
+                        "attenuation": link.fiber.attenuation,
+                        "nonlinearity": link.fiber.nonlinearity,
+                        "dispersion": link.fiber.dispersion
+                    }
+                    delete link.fiber_type
+                    delete link.attenuation
+                    delete link.nonlinearity
+                    
+                }
+            } catch {
+                link["fiber"] = {
+                    "fiber_type": link.fiber_type,
+                    "attenuation": link.attenuation,
+                    "nonlinearity": link.nonlinearity,
+                    "dispersion": link.dispersion
+                }
+                delete link.fiber_type
+                delete link.attenuation
+                delete link.nonlinearity
+            }
+        }
+        delete data.data.fiber
+        // hard code
+        localStorage.setItem("physical_topologies", JSON.stringify(data.data))
+
+    }
+
     console.log(serverAddr + elementPath + (id != null ? "?id=" + id : ""))
     return new Promise(function (resolve, reject) {
         const request = {
@@ -453,7 +503,7 @@ function checkForExcel(elementPath, form) {
                 if (error.statusCode === 401) {
                     await refreshToken();
                     await checkForExcel(elementPath, form);
-                } else if(error.statusCode === 404){
+                } else if (error.statusCode === 404) {
                     toastr.error("there is problem in excel format")
                 } else
                     reject(error);
@@ -519,12 +569,12 @@ function getPtData(ptId, version = null, caller) {
             await SwaggerClient.http(request).then(async response => {
                 if (response.status === 200) {
                     if (callerMethod == "project") {
-                        console.log('physical_topologies service is start...',response.body[0].data)
+                        console.log('physical_topologies service is start...', response.body[0].data)
                         drawPhysicalTopology(response.body[0].data);
-                        
+
                         //save location of nodes in a localstorage when project is loading
-                        localStorage.setItem('physical_topologies',JSON.stringify(response.body[0].data));
-                        
+                        localStorage.setItem('physical_topologies', JSON.stringify(response.body[0].data));
+
 
                         let project = await getAllRecords("project")
                         let physical = new Object();
@@ -533,7 +583,15 @@ function getPtData(ptId, version = null, caller) {
                         physical.project = project[0].name
                         await addElement("physical", physical);
                         tableviewPtData["data"] = response.body[0].data;
+                        tableviewPtData["data"]["links"].forEach(element => {
+                            element["fiber_type"] = element.fiber.fiber_type
+                            element["attenuation"] = element.fiber.attenuation
+                            element["nonlinearity"] = element.fiber.nonlinearity
+                            element["dispersion"] = element.fiber.dispersion
+                            delete element.fiber
+                        });
                         initPtTableView();
+                        initTmTableView();
                     } else if (callerMethod == "history") {
                         let i = 1
                         localStorage.setItem("physicalHistory", JSON.stringify(response.body))
@@ -870,7 +928,7 @@ function createProject(e) {
             await SwaggerClient.http(request).then(response => {
                 if (response.status === 201) {
                     loadProject(response.body.project_id);
-                    localStorage.setItem("project_id",JSON.stringify(response.body.project_id));
+                    localStorage.setItem("project_id", JSON.stringify(response.body.project_id));
                     toastr.success("successfully create project");
                     // alert("successfully create project");
                     $('#create-project').modal('hide');
@@ -1118,7 +1176,7 @@ function delProjectList() {
                     for (const key of response.body) {
                         projectRowsTag += '<div class="row" >\n' +
                             `                    <div class="col-md-6">${key.name}</div>\n` +
-                            `                    <div class="col-md-6"><button type="submit" class="btn btn-primary btn-sm mb-2 " id="btn_${key.id}" onmousedown="loadProject('${key.id}');">load this</button> </div>\n` +
+                            `                    <div class="col-md-6"><button type="submit" class="btn btn-primary btn-sm mb-2 " id="btn_${key.id}" onmousedown="DelProject('${key.id}');">Delete</button> </div>\n` +
                             '                </div>'
                         // var value = response.data()[key];
 
@@ -1147,6 +1205,51 @@ function delProjectList() {
 }
 
 
+async function DelProject(projectId) {
+    // console.log('Delete project is start...')
+    temp = confirm("Are you sure you want to delete this project ?")
+    const request = {
+        url: serverAddr + "projects/",
+        method: 'DELETE',
+        query: {
+            id: {
+                value: projectId
+            }
+        },
+        headers: {
+            'accept': 'application/json',
+            'Authorization': `${userData.token_type} ${userData.access_token}`
+        },
+    };
+    if (temp == true){
+    await (async () => {
+        try {
+            await SwaggerClient.http(request).then(async response => {
+                if (response.status === 200) {
+                    toastr.success("project deleted successfully");
+                    $('#load-project').modal('toggle');
+                }
+            });
+        } catch (error) {
+            if (error.statusCode === 409)
+                toastr.error(error.response.body.detail);
+            // alert("name is duplicate, please choose another name")
+            if (error.statusCode === 400)
+                toastr.error(error.response.body.detail)
+            if (error.statusCode === 401) {
+                await refreshToken();
+            }
+            // console.log(error.response);
+        } finally {
+            // clearTimeout(timeout);
+        }
+    })();
+}
+else{
+    $('#load-project').modal('toggle');
+}
+}
+
 async function loadProject(projectId) {
     console.log('load project is start...')
     let project = await getAllRecords("project")
@@ -1174,7 +1277,7 @@ async function loadProject(projectId) {
                 await SwaggerClient.http(request).then(async response => {
                     if (response.status === 200) {
                         //get Project ID
-                        localStorage.setItem("project_id",JSON.stringify(projectId));
+                        localStorage.setItem("project_id", JSON.stringify(projectId));
                         console.log('loadProject in project-logic : ', response.body)
                         let recivedProject = response.body
                         await addElement("project", recivedProject);
@@ -1373,15 +1476,22 @@ function pt_show_errors() {
         '0': 'name',
         '1': 'lat',
         '2': 'lng',
-        '3': 'roadm_type'
+        '3': 'node_type',
+        '4': 'wa_type',
+        '5': 'no_extra_wavelength__for_expansion'
     }
 
     let linksKeyNames = {
         '0': 'source',
         '1': 'destination',
         '2': 'length',
-        '3': 'fiber_type'
+        '4': "fiber",
+        '3': 'fiber_type',
+        '4': "attenuation",
+        '5': "dispersion",
+        '6': "nonlinearity"
     }
+    
 
     var nodesChanged = function (instance, cell, x, y, value) {
         // console.log(cell)
@@ -1513,9 +1623,23 @@ function pt_show_errors() {
                 {
                     type: 'dropdown',
                     width: '150px',
-                    source: ['Directionless', 'CDC'],
-                    title: 'roadm type',
-                    name: 'roadm_type'
+                    source: ['Directionless', 'Colorless', 'CDC', 'OLA'],
+                    title: 'Node Type',
+                    name: 'node_type'
+                },
+                {
+                    type: 'dropdown',
+                    width: '150px',
+                    source: ['Identical'],
+                    title: 'WA Type',
+                    name: 'wa_type'
+                },
+                {
+                    type: 'number',
+                    decimal: '.',
+                    width: '200px',
+                    title: 'Number of Channels for Expansion',
+                    name: 'no_extra_wavelength__for_expansion'
                 },
             ],
             allowComments: true,
@@ -1576,12 +1700,29 @@ function pt_show_errors() {
                     name: 'length'
                 },
                 {
-                    type: 'text',
-                    // type: 'dropdown',
+                    type: 'dropdown',
                     width: '100px',
-                    // source: ['sm'],
+                    source: ['SMF (G.652)', 'NZDSF (G.655)'],
                     title: 'fiber type',
                     name: 'fiber_type'
+                },
+                {
+                    type: 'numeric',
+                    width: '100px',
+                    title: 'Loss Coefficient(dB/Km)',
+                    name: 'attenuation'
+                },
+                {
+                    type: 'numeric',
+                    width: '100px',
+                    title: 'Dispersion (ps/Km-nm)',
+                    name: 'dispersion'
+                },
+                {
+                    type: 'numeric',
+                    width: '100px',
+                    title: 'nonlinearity',
+                    name: 'nonlinearity'
                 },
             ],
             allowComments: true,
@@ -1701,6 +1842,7 @@ async function submitTmExcelFixed() {
         }
     }
     tmDataForSubmit = createTmForSubmit();
+    console.log(tmDataForSubmit, "this is traffic matrix 1")
     await createOrUpdate("traffic_matrices/", "create", tmDataForSubmit)
         .then(function (result) {
             // sendEvent('#create-project-modal-5', 6,"Continue",true)
@@ -1797,9 +1939,15 @@ function tm_show_errors() {
         {
             type: 'dropdown',
             width: '150px',
-            source: ['NoProtection', '1+1_NodeDisjoint', 'Restoration', 'PRC'],
+            source: ['NoProtection', '1+1_NodeDisjoint'],
             title: 'protection type',
             name: 'protection_type'
+        },
+        {
+            type: 'checkbox',
+            width: '100px',
+            title: 'card protection',
+            name: 'card_protection'
         },
         {
             type: 'text',
@@ -2449,7 +2597,7 @@ async function viewTrafficHistory(id, version, rownumber) {
 function logoutUser() {
     localStorage.removeItem("userData");
     localStorage.removeItem("userName");
-    window.location.href = "/login.html"
+    window.location.href = "/"
 }
 
 function refreshToken() {
