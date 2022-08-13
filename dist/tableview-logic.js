@@ -268,7 +268,7 @@ async function initPtTableView()
                 {
                     type: 'number',
                     decimal: '.',
-                    width: '200px',
+                    width: '350px',
                     title: 'Number of Channels for Expansion',
                     name: 'no_extra_wavelength__for_expansion'
                 },
@@ -505,7 +505,7 @@ async function initTmTableView(){
         {
             type: 'dropdown',
             width: '150px',
-            source: ['NoProtection', '1+1_NodeDisjoint'],
+            source: ['NoProtection', '1+1_NodeDisjoint', 'Restored', 'PRC'],
             title: 'protection type',
             name: 'protection_type'
         },
