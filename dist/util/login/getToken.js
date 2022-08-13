@@ -19,6 +19,6 @@ async function getTokn(username,password) {
         body: urlencoded,
         redirect: 'follow'
     };
-    let token = await callService('http://45.139.10.150:80/api/v2.0.0/users/login', requestOptions);
+    let token = await callService('http://185.211.88.140:80/api/v2.0.0/users/login', requestOptions);
     return token;
 }
