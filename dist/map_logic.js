@@ -62,11 +62,11 @@ function drawPhysicalTopology(data) {
         //     add_link1(srcLocal, destLocal, link.source, link.destination)
         // }
         try {
-            link["attenuation"] = link.fiber.attenuation,
-            link["nonlinearity"] = link.fiber.nonlinearity,
+            link["attenuation"] = link.fiber.attenuation
+            link["nonlinearity"] = link.fiber.nonlinearity
             link["dispersion"] = link.fiber.dispersion
-            link["fiber_type"] = link.fiber.fiber_type,
-            delete link["fiber"]
+            link["fiber_type"] = link.fiber.fiber_type
+            // delete link["fiber"]
         }
         catch {} 
         console.log(link)
