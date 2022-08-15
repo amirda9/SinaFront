@@ -101,7 +101,8 @@ async function initPtTableView()
         '2': 'lng',
         '3': 'node_type',
         '4': 'wa_type',
-        '5': 'no_extra_wavelength__for_expansion'
+        '5': 'no_extra_wavelength__for_expansion',
+        '6': 'no_add_drop_reg_wl'
     }
 
     let linksKeyNames = {
@@ -268,9 +269,16 @@ async function initPtTableView()
                 {
                     type: 'number',
                     decimal: '.',
-                    width: '350px',
+                    width: '200px',
                     title: 'Number of Channels for Expansion',
                     name: 'no_extra_wavelength__for_expansion'
+                },
+                {
+                    type: 'number',
+                    decimal: '.',
+                    width: '200px',
+                    title: 'Number of add drop',
+                    name: 'no_add_drop_reg_wl'
                 },
             ],
             allowComments: true,

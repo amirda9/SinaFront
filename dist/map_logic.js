@@ -41,27 +41,36 @@ function drawPhysicalTopology(data) {
         nodeLocal.push(node.lat);
         nodeLocal.push(node.lng);
         add_node1(node.name, nodeLocal)
-        console.log("add_node1:",add_node1);
     }
     for (let link of data.links) {
         let srcLocal = [];
         let destLocal = [];
         //*****/
         let src = data.nodes.find(o => o.name === link.source);
-         console.log("SRC",src,link.source, link.destination,link);
+        //  console.log("SRC",src,link.source, link.destination,link);
         let dest = data.nodes.find(o => o.name === link.destination);
-        console.log("dest",dest);
+        // console.log("dest",dest);
         srcLocal.push(src.lat);
         srcLocal.push(src.lng);
         destLocal.push(dest.lat);
         destLocal.push(dest.lng);
-        console.log('*******',srcLocal, destLocal, link.source, link.destination)
+        // console.log('*******',srcLocal, destLocal, link.source, link.destination)
         // if (link.source === 'ZAR') {
         //     // console.log('99999999')
         //     // add_link2([30.810333, 56.586627], [30.399309, 56.001607], 'ZAR', 'RE');
         // } else {
         //     add_link1(srcLocal, destLocal, link.source, link.destination)
         // }
+        try {
+            link["attenuation"] = link.fiber.attenuation,
+            link["nonlinearity"] = link.fiber.nonlinearity,
+            link["dispersion"] = link.fiber.dispersion
+            link["fiber_type"] = link.fiber.fiber_type,
+            delete link["fiber"]
+        }
+        catch {} 
+        console.log(link)
+
         add_link1(srcLocal, destLocal, link.source, link.destination)
 
     }
@@ -345,8 +354,36 @@ async function submitDrawModeDataChanges(physicalTopologyData) {
     
 
     // hard code
-    for (const link of data.data.links){
-        if (link.fiber.fiber_type === undefined){
+    for (const link of physicalTopologyData.data.links){
+        console.log("linkg", link)
+        try{
+            if (link.fiber.fiber_type === undefined){
+                link["fiber"] = {
+                    "fiber_type": link.fiber_type,
+                    "attenuation": link.attenuation,
+                    "nonlinearity": link.nonlinearity,
+                    "dispersion": link.dispersion
+                }
+                delete link.fiber_type
+                delete link.attenuation
+                delete link.nonlinearity
+                delete link.dispersion
+            }
+            else {
+                link["fiber"] = {
+                    "fiber_type": link.fiber.fiber_type,
+                    "attenuation": link.fiber.attenuation,
+                    "nonlinearity": link.fiber.nonlinearity,
+                    "dispersion": link.fiber.dispersion
+                }
+                delete link.fiber_type
+                delete link.attenuation
+                delete link.nonlinearity
+                delete link.dispersion
+            }
+        }
+        catch {
+            console.log(link)
             link["fiber"] = {
                 "fiber_type": link.fiber_type,
                 "attenuation": link.attenuation,
@@ -357,18 +394,6 @@ async function submitDrawModeDataChanges(physicalTopologyData) {
             delete link.attenuation
             delete link.nonlinearity
             delete link.dispersion
-        }
-        else {
-            link["fiber"] = {
-                "fiber_type": link.fiber.fiber_type,
-                "attenuation": link.fiber.attenuation,
-                "nonlinearity": link.fiber.nonlinearity,
-                "dispersion": link.fiber.dispersion
-            }
-            delete link.fiber_type
-            delete link.attenuation
-            delete link.nonlinearity
-            
         }
     }
     // hard code
@@ -1410,6 +1435,7 @@ function createAddNodeForm(featureGroup, markers, mymap, pathToIcon, oldMarkers)
         }
         // hard coded
         nodeData["no_extra_wavelength__for_expansion"] = document.getElementById("Number of Channels for Expansion").value;
+        nodeData["no_add_drop_reg_wl"] = 0;
 
         console.log(nodeData)
         var marker;
@@ -1462,6 +1488,7 @@ function createAddNodeForm(featureGroup, markers, mymap, pathToIcon, oldMarkers)
             "data": nodeData,
             "isNew": true
         });
+
         div.style.display = "none";
     });
 

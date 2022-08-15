@@ -1628,7 +1628,7 @@ async function Call_Bpm_excel(RWA_Id) {
     return response.blob().then((b) => {
       var a = document.createElement("a");
       a.href = URL.createObjectURL(b);
-      a.setAttribute("download", "bpm_output.xlsx");
+      a.setAttribute("download", "bpm_output.zip");
       a.click();
     });
   });
