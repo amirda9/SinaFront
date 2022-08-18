@@ -493,6 +493,10 @@ async function getAllRWA(grooming_id) {
             RWA_Id +
             '\')"><i class="fa fa-trash"></i></button> \n' +
 
+            '                            <button type="button" class="btn btn-warning" title="project_json" id="downloadlink" onClick=" Call_project_json(\'' +
+            RWA_Id +
+            '\')"><i class="fa fa-download"></i></button> \n' +
+
             "                        </td>" +
 
             "</tr>"
@@ -1640,6 +1644,45 @@ async function Call_rwa_excel(RWA_Id) {
   // // clean up Url
   window.URL.revokeObjectURL(blobUrl);
 }
+
+
+async function Call_project_json(RWA_Id) {
+  var myHeaders = new Headers();
+  myHeaders.append(
+    "Authorization",
+    `${userData.token_type} ${userData.access_token}`
+  );
+
+  var requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  let result = await fetch(`http://185.211.88.140:80/api/v2.0.1/algorithms/rwa/project_json?rwa_id=${RWA_Id}`, requestOptions)
+    .then(response => {
+      return response.blob();
+    })
+    .then(result => {
+      console.log(result)
+      return result
+    })
+    .catch(error => toastr.error(error));
+    const newBlob = new Blob([result]);
+
+    const blobUrl = window.URL.createObjectURL(newBlob);
+
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.setAttribute('download', `project.json`);
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode.removeChild(link);
+
+    // // clean up Url
+    window.URL.revokeObjectURL(blobUrl);
+}
+
 
 async function Call_Lom_excel(RWA_Id) {
 
