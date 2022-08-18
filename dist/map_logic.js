@@ -1435,6 +1435,9 @@ function createAddNodeForm(featureGroup, markers, mymap, pathToIcon, oldMarkers)
         }
         // hard coded
         nodeData["no_extra_wavelength__for_expansion"] = document.getElementById("Number of Channels for Expansion").value;
+        if (nodeData["no_extra_wavelength__for_expansion"] == ""){
+            nodeData["no_extra_wavelength__for_expansion"] = 0;
+        }
         nodeData["no_add_drop_reg_wl"] = 0;
 
         console.log(nodeData)

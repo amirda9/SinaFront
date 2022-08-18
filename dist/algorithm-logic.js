@@ -478,7 +478,7 @@ async function getAllRWA(grooming_id) {
             RWA_Id +
             '\')"><i class="fa fa-download"></i></button> \n' +
 
-                '                            <button type="button" class="btn btn-warning" title="Bpm_excel" id="downloadlink" onClick=" Call_Bpm_excel(\'' +
+                '                            <button type="button" class="btn btn-warning" title="Bpm_zip" id="downloadlink" onClick=" Call_Bpm_zip(\'' +
             RWA_Id +
             '\')"><i class="fa fa-download"></i></button> \n' +
 
@@ -1612,11 +1612,11 @@ async function Call_Lom_excel(RWA_Id) {
 }
 
 
-async function Call_Bpm_excel(RWA_Id) {
+async function Call_Bpm_zip(RWA_Id) {
 
   // lom_excel ### 
 
-  let url = `http://185.211.88.140:80/api/v2.0.1/algorithms/rwa/bpm_excel?rwa_id=${RWA_Id}`;
+  let url = `http://185.211.88.140:80/api/v2.0.1/algorithms/rwa/bpm_zip?rwa_id=${RWA_Id}`;
 
   return fetch(url, {
     method: "GET",
