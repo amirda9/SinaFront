@@ -189,6 +189,9 @@ async function getAllGrooming() {
               '" type="button" class="btn btn-primary" title="Grooming Table"  onclick="viewgroomingTable(\'' +
               data.id +
               '\')"><i class="fas fa-border-all"></i></button>\n' +
+              '<button type="button" class="btn btn-danger" title="Delete Grooming" onclick="DeleteGrooming(\'' +
+              data.id +
+              '\')"><i class="fas fa-trash"></i></button>\n' +
               "                        </td>" +
               "</tr>"
             );
@@ -485,6 +488,10 @@ async function getAllRWA(grooming_id) {
             '                            <button type="button" class="btn btn-info" title="rwa_excel" id="downloadlink" onClick=" Call_rwa_excel(\'' +
             RWA_Id +
             '\')"><i class="fa fa-download"></i></button> \n' +
+
+            '                            <button type="button" class="btn btn-danger" title="Delete Excel" id="DeleteRWA" onClick=" DeleteRWA(\'' +
+            RWA_Id +
+            '\')"><i class="fa fa-trash"></i></button> \n' +
 
             "                        </td>" +
 
@@ -1337,6 +1344,51 @@ async function getStatisticalResult(groomingId) {
   statistical_result.push(statistical.tp1h_no);
   console.log("statistical_result", statistical_result);
   return statistical_result;
+}
+
+
+async function DeleteGrooming(groomingId) {
+  var myHeaders = new Headers();
+  myHeaders.append(
+    "Authorization",
+    `${userData.token_type} ${userData.access_token}`
+  );
+
+  var requestOptions = {
+    method: "DELETE",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  result = await callService(
+    `http://185.211.88.140:80/api/v2.0.1/algorithms/grooming/result?grooming_id=${groomingId}`,
+    requestOptions
+  );
+
+  close_modal('grooming-list-modal')
+
+}
+
+async function DeleteRWA(rwaId) {
+  var myHeaders = new Headers();
+  myHeaders.append(
+    "Authorization",
+    `${userData.token_type} ${userData.access_token}`
+  );
+
+  var requestOptions = {
+    method: "DELETE",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  result = await callService(
+    `http://185.211.88.140:80/api/v2.0.1/algorithms/rwa/result?rwa_id=${rwaId}`,
+    requestOptions
+  );
+
+  close_modal('rwa-list-modal')
+
 }
 
 async function viewgroomingTable(groomingId) {
