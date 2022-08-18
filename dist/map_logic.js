@@ -68,7 +68,14 @@ function drawPhysicalTopology(data) {
             link["fiber_type"] = link.fiber.fiber_type
             // delete link["fiber"]
         }
-        catch {} 
+        catch {
+            link["fiber"] = {
+                "fiber_type": link.fiber_type,
+                "attenuation": link.attenuation,
+                "nonlinearity": link.nonlinearity,
+                "dispersion": link.dispersion
+            }
+        } 
         console.log(link)
 
         add_link1(srcLocal, destLocal, link.source, link.destination)
@@ -357,43 +364,18 @@ async function submitDrawModeDataChanges(physicalTopologyData) {
     for (const link of physicalTopologyData.data.links){
         console.log("linkg", link)
         try{
-            if (link.fiber.fiber_type === undefined){
-                link["fiber"] = {
-                    "fiber_type": link.fiber_type,
-                    "attenuation": link.attenuation,
-                    "nonlinearity": link.nonlinearity,
-                    "dispersion": link.dispersion
-                }
-                delete link.fiber_type
-                delete link.attenuation
-                delete link.nonlinearity
-                delete link.dispersion
-            }
-            else {
-                link["fiber"] = {
-                    "fiber_type": link.fiber.fiber_type,
-                    "attenuation": link.fiber.attenuation,
-                    "nonlinearity": link.fiber.nonlinearity,
-                    "dispersion": link.fiber.dispersion
-                }
-                delete link.fiber_type
-                delete link.attenuation
-                delete link.nonlinearity
-                delete link.dispersion
-            }
-        }
-        catch {
-            console.log(link)
             link["fiber"] = {
                 "fiber_type": link.fiber_type,
                 "attenuation": link.attenuation,
                 "nonlinearity": link.nonlinearity,
                 "dispersion": link.dispersion
             }
-            delete link.fiber_type
-            delete link.attenuation
-            delete link.nonlinearity
-            delete link.dispersion
+        }
+        catch {
+            link["fiber_type"] =  link.fiber.fiber_type;
+            link["attenuation"] =  link.fiber.attenuation;
+            link["nonlinearity"] =  link.fiber.nonlinearity;
+            link["dispersion"] =  link.fiber.dispersion;
         }
     }
     // hard code
