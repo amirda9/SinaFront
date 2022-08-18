@@ -362,7 +362,7 @@ async function submitDrawModeDataChanges(physicalTopologyData) {
 
     // hard code
     for (const link of physicalTopologyData.data.links){
-        console.log("linkg", link)
+        // console.log("linkg", link)
         try{
             link["fiber"] = {
                 "fiber_type": link.fiber_type,
@@ -1414,6 +1414,9 @@ function createAddNodeForm(featureGroup, markers, mymap, pathToIcon, oldMarkers)
         }
         else if(temp=="OXC(CDC)"){
             nodeData["node_type"] = "CDC"
+        }
+        else {
+            nodeData["node_type"] = temp;
         }
         // hard coded
         nodeData["no_extra_wavelength__for_expansion"] = document.getElementById("Number of Channels for Expansion").value;
