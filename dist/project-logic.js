@@ -307,44 +307,31 @@ function createOrUpdate(elementPath, mode, data, id = null) {
         // hard code
         for (const link of data.data.links){
             try{
-                if (link["fiber"]["fiber_type"] === undefined){
-                    link["fiber"] = {
-                        "fiber_type": link.fiber_type,
-                        "attenuation": link.attenuation,
-                        "nonlinearity": link.nonlinearity,
-                        "dispersion": link.dispersion
-                    }
-                    delete link.fiber_type
-                    delete link.attenuation
-                    delete link.nonlinearity
-                    delete link.dispersion
-                }
-                else {
-                    link["fiber"] = {
-                        "fiber_type": link.fiber.fiber_type,
-                        "attenuation": link.fiber.attenuation,
-                        "nonlinearity": link.fiber.nonlinearity,
-                        "dispersion": link.fiber.dispersion
-                    }
-                    delete link.fiber_type
-                    delete link.attenuation
-                    delete link.nonlinearity
-                    
-                }
-            } catch {
                 link["fiber"] = {
                     "fiber_type": link.fiber_type,
                     "attenuation": link.attenuation,
                     "nonlinearity": link.nonlinearity,
                     "dispersion": link.dispersion
                 }
-                delete link.fiber_type
-                delete link.attenuation
-                delete link.nonlinearity
+            }
+            catch {
+                link["fiber_type"] =  link.fiber.fiber_type;
+                link["attenuation"] =  link.fiber.attenuation;
+                link["nonlinearity"] =  link.fiber.nonlinearity;
+                link["dispersion"] =  link.fiber.dispersion;
             }
         }
-        delete data.data.fiber
+        // delete data.data.fiber
         // hard code
+        // updateElement("physical", JSON.stringify(data.data));
+        
+        for (const node of data.data.nodes){
+            console.log(node)
+            if (node["no_add_drop_reg_wl"] == ""){
+                node["no_add_drop_reg_wl"] = 0;
+            }
+        }
+        console.log(data.data)
         localStorage.setItem("physical_topologies", JSON.stringify(data.data))
 
     }
@@ -588,7 +575,7 @@ function getPtData(ptId, version = null, caller) {
                             element["attenuation"] = element.fiber.attenuation
                             element["nonlinearity"] = element.fiber.nonlinearity
                             element["dispersion"] = element.fiber.dispersion
-                            delete element.fiber
+                            // delete element.fiber
                         });
                         initPtTableView();
                         initTmTableView();

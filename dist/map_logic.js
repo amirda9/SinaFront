@@ -362,7 +362,7 @@ async function submitDrawModeDataChanges(physicalTopologyData) {
 
     // hard code
     for (const link of physicalTopologyData.data.links){
-        // console.log("linkg", link)
+        console.log("linkg", link)
         try{
             link["fiber"] = {
                 "fiber_type": link.fiber_type,
@@ -378,8 +378,9 @@ async function submitDrawModeDataChanges(physicalTopologyData) {
             link["dispersion"] =  link.fiber.dispersion;
         }
     }
+
     // hard code
-    delete physicalTopologyData.data.fiber
+    // delete physicalTopologyData.data.fiber
     console.log(physicalTopologyData.data, "this is physical topology data")
 
     const actionMode = physicalTopologyData.id == 0 ? "POST" : "PUT"
@@ -423,6 +424,7 @@ async function submitDrawModeDataChanges(physicalTopologyData) {
                 toastr.error(error.response.body.detail.detail)
             if (error.statusCode === 401) {
                 await refreshToken();
+                console.log("error for authenticate and update links")
                 await submitDrawModeDataChanges(drawData);
             }
             // alert(error.response.body.detail)
@@ -1260,6 +1262,7 @@ async function drawDoneBtnConfirmed(comment, markersGroup, featureGroup, linksGr
             toastr.success("successfully save draw data locally");
             div.remove();
         }
+        console.log('draw done button confirmed')
         await submitDrawModeDataChanges(physical[0]);
     } else if (localStorage.getItem("projectState") == 'creating') {
         if (physical == null) {
