@@ -460,7 +460,7 @@ async function getAllRWA(grooming_id) {
             data.form.comment +
             "</td>\n" +
             "                        <td>\n" +
-            '                            <button type="button" class="btn btn-success" title="viewGrooming" onclick="viewGrooming(this, \'' +
+            '                            <button type="button" class="btn btn-success" title="RackLayout" onclick="RackLayoutStart(\'' +
             data.grooming_id +
             '\')"><i class="far fa-eye"></i></button> \n' +
             '                            <button type="button" class="btn btn-info" title="Show lightPath"  id="show-light-path" onclick="getLightPathList(\'' +
@@ -481,7 +481,7 @@ async function getAllRWA(grooming_id) {
             RWA_Id +
             '\')"><i class="fa fa-download"></i></button> \n' +
 
-                '                            <button type="button" class="btn btn-warning" title="Bpm_zip" id="downloadlink" onClick=" Call_Bpm_zip(\'' +
+                '                            <button type="button" class="btn btn-dark" style="background-color: #4A5D23!important;" title="Bpm_zip" id="downloadlink" onClick=" Call_Bpm_zip(\'' +
             RWA_Id +
             '\')"><i class="fa fa-download"></i></button> \n' +
 
@@ -493,7 +493,7 @@ async function getAllRWA(grooming_id) {
             RWA_Id +
             '\')"><i class="fa fa-trash"></i></button> \n' +
 
-            '                            <button type="button" class="btn btn-warning" title="project_json" id="downloadlink" onClick=" Call_project_json(\'' +
+            '                            <button type="button" class="btn btn-dark" title="project_json" id="downloadlink" onClick=" Call_project_json(\'' +
             RWA_Id +
             '\')"><i class="fa fa-download"></i></button> \n' +
 
@@ -847,6 +847,18 @@ function changePathColor(path, color) {
   }
 }
 
+
+async function RackLayoutStart(Id){
+  console.log(Id)
+  window
+  .open(
+    "http://" +
+    window.location.hostname +
+    ":8090" +'?RWA_ID='+
+    Id
+  )
+  .focus();
+}
 async function viewGrooming(element, groomingId) {
   let project = await getAllRecords("project");
   console.log("project is : ", project, groomingId);
@@ -1352,6 +1364,8 @@ async function getStatisticalResult(groomingId) {
 
 
 async function DeleteGrooming(groomingId) {
+  var temp = confirm("Are you sure you want to delete this?")
+  if(temp == true){
   var myHeaders = new Headers();
   myHeaders.append(
     "Authorization",
@@ -1371,9 +1385,14 @@ async function DeleteGrooming(groomingId) {
 
   close_modal('grooming-list-modal')
 
+  }
+
+
 }
 
 async function DeleteRWA(rwaId) {
+  var temp = confirm("Are you sure you want to delete this?")
+  if (temp == true){
   var myHeaders = new Headers();
   myHeaders.append(
     "Authorization",
@@ -1392,6 +1411,8 @@ async function DeleteRWA(rwaId) {
   );
 
   close_modal('rwa-list-modal')
+
+  }
 
 }
 
