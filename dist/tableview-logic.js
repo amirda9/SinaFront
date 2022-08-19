@@ -448,7 +448,10 @@ async function initTmTableView(){
                 }
                 return object
             }, {})
-            ptNodeNames.push(newDataObj.name);
+            console.log(newDataObj, "this is node_type node data")
+            if (data.node_type != "OLA"){
+                ptNodeNames.push(newDataObj.name);
+            }
         }
         var ptNodesDataArray = Object.entries(tableviewPtData.data.nodes);
     }
