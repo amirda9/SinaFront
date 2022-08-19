@@ -428,6 +428,7 @@ async function initTmTableView(){
 
     // code to update nodes name 
     ptNodeNames = [];
+    filteredNodeNames = [];
     // if (tableviewPtData.data != undefined && tableviewPtData.data.nodes != undefined && tableviewPtData.data.nodes.length > 0) {
     //     for (const data of tableviewPtData.data.nodes) {
     //         const newDataObj = Object.keys(data).reduce((object, key) => {
@@ -449,8 +450,9 @@ async function initTmTableView(){
                 return object
             }, {})
             console.log(newDataObj, "this is node_type node data")
+            ptNodeNames.push(newDataObj.name);
             if (data.node_type != "OLA"){
-                ptNodeNames.push(newDataObj.name);
+                filteredNodeNames.push(newDataObj.name);
             }
         }
         var ptNodesDataArray = Object.entries(tableviewPtData.data.nodes);
@@ -496,14 +498,14 @@ async function initTmTableView(){
             type: 'autocomplete',
             width: '100px',
             title: 'source node',
-            source: await ptNodeNames,
+            source: await filteredNodeNames,
             name: 'source'
         },
         {
             type: 'autocomplete',
             width: '100px',
             title: 'destination node',
-            source: await ptNodeNames,
+            source: await filteredNodeNames,
             name: 'destination'
         },
         {
