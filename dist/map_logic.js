@@ -1409,6 +1409,7 @@ function createAddNodeForm(featureGroup, markers, mymap, pathToIcon, oldMarkers)
         nodeData = onSubmitForm(inputParams.paramValues, inputParams.paramNames);
         nodeData[""] = document.getElementById("RegenCap").value;
         temp = document.getElementById("node_type").value;
+        console.log("node type = ", temp)
         if(temp=="OXC(Colored-Directionless)"){
             nodeData["node_type"] = "Directionless"
         }
