@@ -461,7 +461,7 @@ async function getAllRWA(grooming_id) {
             "</td>\n" +
             "                        <td>\n" +
             '                            <button type="button" class="btn btn-success" title="RackLayout" onclick="RackLayoutStart(\'' +
-            data.grooming_id +
+            RWA_Id +
             '\')"><i class="far fa-eye"></i></button> \n' +
             '                            <button type="button" class="btn btn-info" title="Show lightPath"  id="show-light-path" onclick="getLightPathList(\'' +
             data.id +
