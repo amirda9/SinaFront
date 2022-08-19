@@ -277,6 +277,7 @@ async function running_rwa() {
       trade_off: Number(trade_off),
       iterations: Number(iterations),
       group_size: Number(group_size),
+      comment: String(comment),
       history_window: Number(history_window),
       physical_layer: {
           launch_power: P_fixed,
