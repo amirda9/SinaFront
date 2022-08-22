@@ -86,7 +86,7 @@ async function getAllGrooming() {
   };
   console.log(`${userData.token_type} ${userData.access_token}`);
   const request = {
-    url: "http://185.211.88.140:80/api/v2.0.1/algorithms/grooming/all",
+    url: "http://45.139.10.150:80/api/v2.0.1/algorithms/grooming/all",
     method: "GET",
     query: loadQuery,
     headers: {
@@ -299,7 +299,7 @@ async function getAllClustring() {
   }
 
   result = await callService(
-    `http://185.211.88.140:80/api/v2.0.0/clustering/manual/read_all?project_id=${project_id}`,
+    `http://45.139.10.150:80/api/v2.0.0/clustering/manual/read_all?project_id=${project_id}`,
     requestOptions
   );
   $("#clustring-list-table>tbody").html("");
@@ -583,7 +583,7 @@ async function getRWA_general_info(rwa_id) {
   };
 
   result = await callService(
-    `http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/result?rwa_id=${rwa_id}`,
+    `http://45.139.10.150:80/api/v2.0.0/algorithms/rwa/result?rwa_id=${rwa_id}`,
     requestOptions
   );
   // .then(response => response.text())
@@ -645,7 +645,7 @@ async function getLightPathList(RWA_Id) {
 
   let lightPaths;
   let data_result = callService(
-    `http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/result?rwa_id=${RWA_Id}`,
+    `http://45.139.10.150:80/api/v2.0.0/algorithms/rwa/result?rwa_id=${RWA_Id}`,
     requestOptions
   );
 
@@ -907,7 +907,7 @@ async function deleteClustring(Clusters) {
     if (willDelete) {
       //Call remove from RestApi
       fetch(
-        `http://185.211.88.140:80/api/v2.0.0/clustering/?cluster_id=${ClusterId}`,
+        `http://45.139.10.150:80/api/v2.0.0/clustering/?cluster_id=${ClusterId}`,
         requestOptions
       )
         .then((response) => response.text())
@@ -1065,7 +1065,7 @@ async function showClusterList() {
   }
 
   result = await callService(
-    `http://185.211.88.140:80/api/v2.0.0/clustering/manual/read_all?project_id=${project_id}`,
+    `http://45.139.10.150:80/api/v2.0.0/clustering/manual/read_all?project_id=${project_id}`,
     requestOptions
   );
 
@@ -1120,7 +1120,7 @@ async function startEnd2EndGrooming() {
   }
 
   result = await callService(
-    `http://185.211.88.140:80/api/v2.0.1/algorithms/automatic/end_to_end/read_all?project_id=${project_id}`,
+    `http://45.139.10.150:80/api/v2.0.1/algorithms/automatic/end_to_end/read_all?project_id=${project_id}`,
     requestOptions
   );
 
@@ -1212,7 +1212,7 @@ function SubmitGroomingEndToEnd(project_id) {
   };
 
   callService(
-    `http://185.211.88.140:80/api/v2.0.1/algorithms/grooming/automatic/end_to_end?project_id=${project_id}`,
+    `http://45.139.10.150:80/api/v2.0.1/algorithms/grooming/automatic/end_to_end?project_id=${project_id}`,
     requestOptions
   );
 
@@ -1272,7 +1272,7 @@ function SubmitGroomingAdvanced(project_id) {
   };
 
   callService(
-    `http://185.211.88.140:80/api/v2.0.1/algorithms/grooming/automatic/advanced?project_id=${project_id}`,
+    `http://45.139.10.150:80/api/v2.0.1/algorithms/grooming/automatic/advanced?project_id=${project_id}`,
     requestOptions
   );
   // fetch(`http://192.168.7.22/api/v2.0.1/algorithms/grooming/automatic/advanced?project_id=${project_id}`, requestOptions)
@@ -1346,7 +1346,7 @@ async function getStatisticalResult(groomingId) {
   };
 
   result = await callService(
-    `http://185.211.88.140:80/api/v2.0.0/algorithms/grooming/result?grooming_id=${groomingId}`,
+    `http://45.139.10.150:80/api/v2.0.0/algorithms/grooming/result?grooming_id=${groomingId}`,
     requestOptions
   );
   // use for Show Satical Result Show
@@ -1379,7 +1379,7 @@ async function DeleteGrooming(groomingId) {
   };
 
   result = await callService(
-    `http://185.211.88.140:80/api/v2.0.1/algorithms/grooming/result?grooming_id=${groomingId}`,
+    `http://45.139.10.150:80/api/v2.0.1/algorithms/grooming/result?grooming_id=${groomingId}`,
     requestOptions
   );
 
@@ -1406,7 +1406,7 @@ async function DeleteRWA(rwaId) {
   };
 
   result = await callService(
-    `http://185.211.88.140:80/api/v2.0.1/algorithms/rwa/result?rwa_id=${rwaId}`,
+    `http://45.139.10.150:80/api/v2.0.1/algorithms/rwa/result?rwa_id=${rwaId}`,
     requestOptions
   );
 
@@ -1440,7 +1440,7 @@ async function viewgroomingTable(groomingId) {
   };
 
   result = await callService(
-    `http://185.211.88.140:80/api/v2.0.0/algorithms/grooming/result?grooming_id=${groomingId}`,
+    `http://45.139.10.150:80/api/v2.0.0/algorithms/grooming/result?grooming_id=${groomingId}`,
     requestOptions
   );
   let Table = result.grooming_table.demands;
@@ -1641,7 +1641,7 @@ async function Call_rwa_excel(RWA_Id) {
     redirect: "follow",
   };
 
-  let result = await fetch(`http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/result/excel?rwa_id=${RWA_Id}`, requestOptions)
+  let result = await fetch(`http://45.139.10.150:80/api/v2.0.0/algorithms/rwa/result/excel?rwa_id=${RWA_Id}`, requestOptions)
     .then(response => {
       return response.blob();
     })
@@ -1680,7 +1680,7 @@ async function Call_project_json(RWA_Id) {
     redirect: "follow",
   };
 
-  let result = await fetch(`http://185.211.88.140:80/api/v2.0.1/algorithms/rwa/project_json?rwa_id=${RWA_Id}`, requestOptions)
+  let result = await fetch(`http://45.139.10.150:80/api/v2.0.1/algorithms/rwa/project_json?rwa_id=${RWA_Id}`, requestOptions)
     .then(response => {
       return response.blob();
     })
@@ -1709,7 +1709,7 @@ async function Call_Lom_excel(RWA_Id) {
 
   // lom_excel ### 
 
-  let url = `http://185.211.88.140:80/api/v2.0.1/algorithms/rwa/lom_excel?rwa_id=${RWA_Id}`;
+  let url = `http://45.139.10.150:80/api/v2.0.1/algorithms/rwa/lom_excel?rwa_id=${RWA_Id}`;
 
   return fetch(url, {
     method: "GET",
@@ -1732,7 +1732,7 @@ async function Call_Bpm_zip(RWA_Id) {
 
   // lom_excel ### 
 
-  let url = `http://185.211.88.140:80/api/v2.0.1/algorithms/rwa/bpm_zip?rwa_id=${RWA_Id}`;
+  let url = `http://45.139.10.150:80/api/v2.0.1/algorithms/rwa/bpm_zip?rwa_id=${RWA_Id}`;
 
   return fetch(url, {
     method: "GET",
@@ -1770,7 +1770,7 @@ async function export_grooming_results() {
       redirect: "follow",
     };
     result = await callService(
-      `http://185.211.88.140:80/api/v2.0.0/algorithms/grooming/result?grooming_id=${grooming_id}`,
+      `http://45.139.10.150:80/api/v2.0.0/algorithms/grooming/result?grooming_id=${grooming_id}`,
       requestOptions
     );
     // console.log(result)
@@ -1800,7 +1800,7 @@ async function export_rwa_results() {
       redirect: "follow",
     };
     result = await callService(
-      `http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/result?rwa_id=${rwa_id}`,
+      `http://45.139.10.150:80/api/v2.0.0/algorithms/rwa/result?rwa_id=${rwa_id}`,
       requestOptions
     );
 
@@ -1809,7 +1809,7 @@ async function export_rwa_results() {
       JSON.stringify(result, undefined, 2)
     );
 
-    // let result = await fetch(`http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/result/excel?rwa_id=${rwa_id}`, requestOptions)
+    // let result = await fetch(`http://45.139.10.150:80/api/v2.0.0/algorithms/rwa/result/excel?rwa_id=${rwa_id}`, requestOptions)
     //   .then(response => {
     //     return response.blob();
     //   })
@@ -1863,7 +1863,7 @@ async function export_full_details_xlsx() {
       redirect: "follow",
     };
     grooming_result = await callService(
-      `http://185.211.88.140:80/api/v2.0.0/algorithms/grooming/result?grooming_id=${grooming_id}`,
+      `http://45.139.10.150:80/api/v2.0.0/algorithms/grooming/result?grooming_id=${grooming_id}`,
       requestOptions
     );
     // console.log(result)
@@ -1887,9 +1887,9 @@ async function export_full_details_xlsx() {
       headers: myHeaders,
       redirect: "follow",
     };
-    // result = await callService(`http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/result?rwa_id=b48a8220-a594-40ce-b83d-60795b3ca046`, requestOptions);
+    // result = await callService(`http://45.139.10.150:80/api/v2.0.0/algorithms/rwa/result?rwa_id=b48a8220-a594-40ce-b83d-60795b3ca046`, requestOptions);
     rwa_result = await callService(
-      `http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/result?rwa_id=${rwa_id}`,
+      `http://45.139.10.150:80/api/v2.0.0/algorithms/rwa/result?rwa_id=${rwa_id}`,
       requestOptions
     );
   }
@@ -1945,8 +1945,8 @@ async function export_full_details_xlsx() {
   //         headers: myHeaders,
   //         redirect: 'follow'
   //     };
-  //     // result = await callService(`http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/result?rwa_id=b48a8220-a594-40ce-b83d-60795b3ca046`, requestOptions);
-  //     result = await callService(`http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/result?rwa_id=${rwa_id}`, requestOptions);
+  //     // result = await callService(`http://45.139.10.150:80/api/v2.0.0/algorithms/rwa/result?rwa_id=b48a8220-a594-40ce-b83d-60795b3ca046`, requestOptions);
+  //     result = await callService(`http://45.139.10.150:80/api/v2.0.0/algorithms/rwa/result?rwa_id=${rwa_id}`, requestOptions);
   //     console.log(rwa_id);
   //     download("rwa_result_" + new Date().toLocaleString() + ".json", JSON.stringify(result, undefined, 2))
   // }
@@ -1984,7 +1984,7 @@ function GroomingCheck(projectId) {
         grooming_id_list: projectId,
       };
       let grooming_result = await callService(
-        `http://185.211.88.140:80/api/v2.0.0/algorithms/grooming/check`,
+        `http://45.139.10.150:80/api/v2.0.0/algorithms/grooming/check`,
         requestOptions
       );
       let div = document.getElementById("myBar");
