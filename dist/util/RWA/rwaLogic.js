@@ -219,7 +219,7 @@ async function running_rwa() {
     if(edfa=="Default"){
       Gain_min =10;
       Gain_max = 23;
-      NF_edfa = -1;
+      NF_edfa = 5.5;
     }
     
     if(raman=="Default"){

@@ -2046,11 +2046,7 @@ function createParamsInputsForm(paramNames, paramValues) {
         "label": TypeLbl
     });
 
-    paramElements.push({
-        "param": Spec,
-        "label": SpecLbl
-    });
-
+   
     for (var i = 0; i < paramNames.length; i++) {
         var param = document.createElement("input");
         param.setAttribute("id", paramNames[i]);
@@ -2061,11 +2057,18 @@ function createParamsInputsForm(paramNames, paramValues) {
         var paramLbl = document.createElement("label");
         paramLbl.setAttribute("class", "mainmap-util-label");
         paramLbl.innerHTML = paramLblTxts[i];
-
+        if (i==1){
+            paramElements.push({
+                "param": Spec,
+                "label": SpecLbl
+            });
+        
+        }
         paramElements.push({
             "param": param,
             "label": paramLbl
         });
+        
     }
 
 
