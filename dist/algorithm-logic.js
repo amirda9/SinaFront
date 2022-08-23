@@ -854,7 +854,7 @@ async function RackLayoutStart(Id){
   .open(
     "http://" +
     window.location.hostname +
-    ":8090" +'?RWA_ID='+
+    ":8070" +'?RWA_ID='+
     Id
   )
   .focus();
