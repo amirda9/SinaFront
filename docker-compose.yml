@@ -1,11 +1,11 @@
 version: '3.7'
 
 services:
-  nginx-stage:
+  nginx-prod:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: nginx-stage
+    container_name: nginx-prod
     restart: always
     volumes:
       - ./dist:/usr/share/nginx/html
