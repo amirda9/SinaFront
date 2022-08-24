@@ -849,13 +849,20 @@ function changePathColor(path, color) {
 
 
 async function RackLayoutStart(Id){
-  console.log(Id)
+  let token = userData.access_token;
+  let userName = localStorage.getItem("userName");
+  console.log(token)
   window
   .open(
     "http://" +
     window.location.hostname +
-    ":8070" +'?RWA_ID='+
-    Id
+    ":8090" +'?RWA_ID='+
+    Id + 
+    '&token=' + 
+    token + 
+    "&username=" +
+    userName
+    
   )
   .focus();
 }
