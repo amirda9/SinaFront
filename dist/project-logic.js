@@ -133,7 +133,7 @@ function closeProject() {
 }
 
 async function prepareDataForSubmit(dataTable, comment) {
-    let dataObj = await getAllRecords(dataTable)
+    var dataObj = await getAllRecords(dataTable)
     const action = dataObj[0].id == 0 ? "create" : "update";
     dataObj[0].comment = "-"
     if (action == "create")
@@ -153,6 +153,12 @@ async function prepareDataForSubmit(dataTable, comment) {
             break;
         }
     }
+    const a = dataObj[0]
+    console.log(a, "kja;elkfjae;lkfj")
+    console.log(a, "kja;elkfjae;lkfj")
+    console.log(a, "kja;elkfjae;lkfj")
+    console.log(a, "kja;elkfjae;lkfj")
+    // var data_obj = dataObj
     return new Promise(async function (resolve, reject) {
         await createOrUpdate(target, action, dataObj[0])
             .then(async function (result) {
@@ -185,6 +191,7 @@ $("form#submit-project-form").submit(async function (e) {
         var item = this.elements.item(0);
         const comment = item.value;
         let project = await getAllRecords("project")
+        console.log("prepare Data for submit by comment")
         physicalData = await prepareDataForSubmit("physical", comment);
         if (physicalData[0]) {
             project[0].pt_id = physicalData[1].id;
@@ -246,6 +253,10 @@ $("form#submit-project-form").submit(async function (e) {
 async function saveProject() {
     if (Offline.state == "up") {
         let project = await getAllRecords("project")
+        console.log("prepare Data for submit by id")
+        const data = await getAllRecords("physical")
+        console.log(await getAllRecords("physical"), "physicalData")
+        console.log(data, "physicalData")
         physicalData = await prepareDataForSubmit("physical", $('#project-draw-comment').val() != "" ? $('#project-draw-comment').val() : null);
         if (physicalData[0]) {
             project[0].pt_id = physicalData[1].id;
@@ -265,7 +276,7 @@ async function saveProject() {
             toastr.error(trafficData[1]);
             return;
         }
-
+        console.log("save project")
         await createOrUpdate("projects/", "create", project[0])
             .then(async function (result) {
                 project[0].id = result.body.id;
@@ -303,6 +314,7 @@ function createOrUpdate(elementPath, mode, data, id = null) {
         localStorage.removeItem("physical_topologies")
         // localStorage.setItem("physical_topologies", JSON.stringify(data.data))
     }
+    console.log(data)
     if (elementPath == "physical_topologies/"){
         // hard code
         for (const link of data.data.links){
@@ -326,7 +338,6 @@ function createOrUpdate(elementPath, mode, data, id = null) {
         // updateElement("physical", JSON.stringify(data.data));
         
         for (const node of data.data.nodes){
-            console.log(node)
             if (node["no_add_drop_reg_wl"] == ""){
                 node["no_add_drop_reg_wl"] = 0;
             }
@@ -358,6 +369,7 @@ function createOrUpdate(elementPath, mode, data, id = null) {
             } catch (error) {
                 if (error.statusCode === 401) {
                     await refreshToken();
+                    console.log(data)
                     await createOrUpdate(elementPath, modal, data);
                 }
                 else
@@ -568,6 +580,8 @@ function getPtData(ptId, version = null, caller) {
                         $('#history-btn').show();
                         physical = response.body[0];
                         physical.project = project[0].name
+
+                        console.log(physical, "get route")
                         await addElement("physical", physical);
                         tableviewPtData["data"] = response.body[0].data;
                         tableviewPtData["data"]["links"].forEach(element => {
@@ -1068,6 +1082,7 @@ async function updateProjectPtOrTmVersion(elementType, newVersion) {
         project[0].current_tm_version = newVersion;
         updateElement("project", project[0])
     }
+    console.log("update project")
     await createOrUpdate("projects/", "update", project[0], project[0].id)
         .then(async function (result) {
             // alert("project successfully created");
@@ -1268,20 +1283,10 @@ async function loadProject(projectId) {
                         console.log('loadProject in project-logic : ', response.body)
                         let recivedProject = response.body
                         await addElement("project", recivedProject);
-                        // myFeatureGroup.eachLayer(function (layer) {
-                        //     myFeatureGroup.removeLayer(layer);
-                        // });
-                        // links_groupfeature.eachLayer(function (layer) {
-                        //     links_groupfeature.removeLayer(layer);
-                        // });
-                        // MapVar = null;
                         console.log('getPtData is start...');
-                        // console.log(localStorage.getItem("physical_topologies"))
-                        // localStorage.removeItem("physical_topologies")
                         await getPtData(response.body.pt_id, response.body.current_pt_version, "project");
                         console.log('getTmData is start...');
                         await getTmData(response.body.tm_id, response.body.current_tm_version, "project");
-                        // console.log(localStorage.getItem("physical_topologies"))
 
                         $('#top-navbar').show();
                         $('#draw-topology-toggler').show();
@@ -1775,6 +1780,7 @@ async function submitPtExcelFixed() {
             "nodes": document.getElementById('tableview-pt-spreadsheet').jexcel[0].getJson()
         }
     }
+    console.log(ptDataForSubmit)
     await createOrUpdate("physical_topologies/", "create", ptDataForSubmit)
         .then(function (result) {
             sendEvent('#create-project-modal-5', 4, "Continue", true)
@@ -2223,9 +2229,28 @@ sendEvent = async function (sel, step, stepType, skip = false) {
                         ptRecord.name = $('#project-topology-name').val();
                         ptRecord.project = project[0].name
                         ptRecord.data = result.body
-                        tableviewPtData["data"] = result.body
+                        console.log(ptRecord)
                         await addElement('physical', ptRecord);
+                        data = await getAllRecords("physical")
+                        console.log(data)
+                        
+                        console.log(ptRecord, "excel route")
+
+                        tableviewPtData["data"] = result.body
+                        tableviewPtData["data"]["links"].forEach(element => {
+                            element["fiber_type"] = element.fiber.fiber_type
+                            element["attenuation"] = element.fiber.attenuation
+                            element["nonlinearity"] = element.fiber.nonlinearity
+                            element["dispersion"] = element.fiber.dispersion
+                            // delete element.fiber
+                        });
+                        initPtTableView();
+                        initTmTableView();
+
+                        localStorage.setItem('physical_topologies', JSON.stringify(result.body));
                         localStorage.setItem("createProjectStep", step);
+                        console.log(result.body, "physical_topologies")
+                        console.log(tableviewPtData)
                         // localStorage.setItem('oncreate-pt-id',result.body.id);
                         // console.log(ptDrawValues)
                     })

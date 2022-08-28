@@ -76,7 +76,7 @@ function drawPhysicalTopology(data) {
                 "dispersion": link.dispersion
             }
         } 
-        console.log(link)
+        // console.log(link)
 
         add_link1(srcLocal, destLocal, link.source, link.destination)
 

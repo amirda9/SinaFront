@@ -14,7 +14,7 @@ var tableviewTmData = {}
 var tmOtherData = {}
 var ptOtherData = {}
 
-function clickOnError(element,event){
+function clickOnError(element, event) {
     // Figure out element to scroll to
     var target = $(element.hash);
     target = target.length ? target : $('[name=' + element.hash.slice(1) + ']');
@@ -24,7 +24,7 @@ function clickOnError(element,event){
         event.preventDefault();
         $('html, body').animate({
             scrollTop: target.offset().top
-        }, 0, function() {
+        }, 0, function () {
             // Callback after animation
             // Must change focus!
             var $target = $(target);
@@ -32,7 +32,7 @@ function clickOnError(element,event){
             if ($target.is(":focus")) { // Checking if the target was focused
                 return false;
             } else {
-                $target.attr('tabindex','-1'); // Adding tabindex for elements not focusable
+                $target.attr('tabindex', '-1'); // Adding tabindex for elements not focusable
                 $target.focus(); // Set focus again
             };
         });
@@ -45,8 +45,7 @@ async function initTableView() {
 }
 
 var ptNodeNames = [];
-async function initPtTableView()
-{
+async function initPtTableView() {
     ptNodeNames = [];
     $("#tableview-pt-spreadsheet").html("")
     $("#tableview-pt-spreadsheet").removeClass("jexcel_tabs");
@@ -399,11 +398,11 @@ async function initPtTableView()
     ];
     var ptExcel = jexcel.tabs(document.getElementById('tableview-pt-spreadsheet'), sheets);
 
-    if(document.getElementById('tableview-pt-spreadsheet').jexcel[1].getJson() == 0){
+    if (document.getElementById('tableview-pt-spreadsheet').jexcel[1].getJson() == 0) {
         // $('#tm-spreadsheet').jexcel('insertRow');
         document.getElementById('tableview-pt-spreadsheet').jexcel[1].insertRow();
     }
-    if(document.getElementById('tableview-pt-spreadsheet').jexcel[0].getJson() == 0){
+    if (document.getElementById('tableview-pt-spreadsheet').jexcel[0].getJson() == 0) {
         // $('#tm-spreadsheet').jexcel('insertRow');
         document.getElementById('tableview-pt-spreadsheet').jexcel[0].insertRow();
     }
@@ -424,7 +423,7 @@ async function initPtTableView()
 
 var tmSheet;
 var servicesType = ["E1", "STM1 Electrical", "STM1 Optical", "STM4", "STM16", "STM64", "FE", "GE", "10GE", "100GE"]
-async function initTmTableView(){
+async function initTmTableView() {
 
     // code to update nodes name 
     ptNodeNames = [];
@@ -449,9 +448,8 @@ async function initTmTableView(){
                 }
                 return object
             }, {})
-            console.log(newDataObj, "this is node_type node data")
             ptNodeNames.push(newDataObj.name);
-            if (data.node_type != "OLA"){
+            if (data.node_type != "OLA") {
                 filteredNodeNames.push(newDataObj.name);
             }
         }
@@ -463,7 +461,7 @@ async function initTmTableView(){
     $("#tm-errors").html("")
 
     var tableviewTmDataArray = [];
-    if(tableviewTmData.data != undefined && tableviewTmData.data.demands != undefined ) {
+    if (tableviewTmData.data != undefined && tableviewTmData.data.demands != undefined) {
         for (const data in tableviewTmData.data.demands) {
             const newDataObj = Object.keys(tableviewTmData.data.demands[data]).reduce((object, key) => {
                 if (!key.includes("error") && !key.includes("id") && !key.includes("services")) {
@@ -483,8 +481,8 @@ async function initTmTableView(){
         }
     }
     var tmNodesDataArray = []
-    if(tableviewTmData.data != undefined && tableviewTmData.data.demands != undefined ) {
-        tmNodesDataArray =  Object.entries(tableviewTmData.data.demands);
+    if (tableviewTmData.data != undefined && tableviewTmData.data.demands != undefined) {
+        tmNodesDataArray = Object.entries(tableviewTmData.data.demands);
     }
     let tmKeyNames = {
         '0': 'source',
@@ -586,13 +584,13 @@ async function initTmTableView(){
                     element.remove();
                 }
             }
-            if(localStorage.getItem("projectState") == 'creating') {
+            if (localStorage.getItem("projectState") == 'creating') {
                 if ($('#tm-errors')[0].childElementCount == 0) {
                     $('#tableview-submit-excel').prop("disabled", false);
                 }
-            }else{
+            } else {
                 if ($('#pt-links-errors')[0].childElementCount == 0 &&
-                    $('#pt-nodes-errors')[0].childElementCount == 0  && $('#tm-errors')[0].childElementCount == 0) {
+                    $('#pt-nodes-errors')[0].childElementCount == 0 && $('#tm-errors')[0].childElementCount == 0) {
                     $('#tableview-submit-excel').prop("disabled", false);
                 }
             }
@@ -617,7 +615,7 @@ async function initTmTableView(){
         onload: tmLoaded,
         updateTable: function (instance, cell, col, row, val, label, cellName) {
             cell.setAttribute('id', "tm" + cellName);
-            if (tmFirstTimeLoad && col <= 4 && tmNodesDataArray.length >0 && tmNodesDataArray[row] != undefined && (value = tmNodesDataArray[row][1][tmKeyNames[col] + "_error"]) !== undefined) {
+            if (tmFirstTimeLoad && col <= 4 && tmNodesDataArray.length > 0 && tmNodesDataArray[row] != undefined && (value = tmNodesDataArray[row][1][tmKeyNames[col] + "_error"]) !== undefined) {
                 let newA = document.createElement('a');
                 newA.href = "#tm" + cellName;
                 newA.setAttribute("id", "tm" + cellName + "_a")
@@ -631,7 +629,7 @@ async function initTmTableView(){
                 cell.style.backgroundColor = 'red';
                 instance.jexcel.setComments(cellName, value);
                 $('#tableview-submit-excel').prop("disabled", true);
-            } else if (col > 4 && tmNodesDataArray.length >0) {
+            } else if (col > 4 && tmNodesDataArray.length > 0) {
                 // console.log(tmNodesDataArray[row][1])
                 if (tmFirstTimeLoad && tmNodesDataArray[row] != undefined && tmNodesDataArray[row][1]['services'] != undefined && tmNodesDataArray[row][1]['services'].length > 0) {
                     for (const service of tmNodesDataArray[row][1]['services']) {
@@ -663,7 +661,7 @@ async function initTmTableView(){
         //     console.log(arguments);
         // }
     })
-    if(tmSheet.getJson().length == 0){
+    if (tmSheet.getJson().length == 0) {
         // $('#tm-spreadsheet').jexcel('insertRow');
         tmSheet.insertRow();
     }
@@ -682,7 +680,7 @@ async function initTmTableView(){
 
 }
 
-async function updatePtNodeNames(){
+async function updatePtNodeNames() {
     ptNodeNames = []
     if (tableviewPtData.data != undefined && tableviewPtData.data.nodes != undefined && tableviewPtData.data.nodes.length > 0) {
         for (const data of tableviewPtData.data.nodes) {
@@ -697,17 +695,18 @@ async function updatePtNodeNames(){
     }
 }
 
-async function submitPtExcel(){
+async function submitPtExcel() {
     let physical = await getAllRecords("physical");
     physical[0].comment = $('#tableview-comment').val();
     physical[0].data = {
         "links": document.getElementById('tableview-pt-spreadsheet').jexcel[1].getJson(),
         "nodes": document.getElementById('tableview-pt-spreadsheet').jexcel[0].getJson()
     }
-    let  action = physical[0].id == 0 ? "create":"update";
-    await createOrUpdate("physical_topologies/",action, physical[0])
-        .then(function(result){
-            if(action == "create"){
+    let action = physical[0].id == 0 ? "create" : "update";
+    console.log("submit pt excel")
+    await createOrUpdate("physical_topologies/", action, physical[0])
+        .then(function (result) {
+            if (action == "create") {
                 physical[0].id = result.body.id
                 physical[0].version = 1
             } else
@@ -716,27 +715,28 @@ async function submitPtExcel(){
             toastr.success("successfully import Physical Topology data")
 
         })
-        .catch(function(error){
-            if(error.statusCode === 409) {
+        .catch(function (error) {
+            if (error.statusCode === 409) {
                 let element = document.getElementById('pt-name');
                 element.setCustomValidity(error.response.body.detail.detail)
                 element.reportValidity()
                 // return;
             }
-            if(error.statusCode === 400)
+            if (error.statusCode === 400)
                 toastr.error((error.response.body.detail.detail))
         });
 }
 
-async function submitTmExcel(){
+async function submitTmExcel() {
     let traffic = await getAllRecords("traffic");
     traffic[0].comment = $('#tableview-comment').val();
     let tmForsubmit = createTmForSubmit()
     traffic[0].data = tmForsubmit.data;
-    let  action = traffic[0].id == 0 ? "create":"update";
-     await createOrUpdate("traffic_matrices/", action, traffic[0])
+    let action = traffic[0].id == 0 ? "create" : "update";
+    console.log("submitTmExcel")
+    await createOrUpdate("traffic_matrices/", action, traffic[0])
         .then(function (result) {
-            if(action == "create"){
+            if (action == "create") {
                 traffic[0].id = result.body.id
                 traffic[0].version = 1
             } else
@@ -758,30 +758,30 @@ async function submitTmExcel(){
 }
 
 
-async function submitExcelData(){
-    if(localStorage.getItem("projectState") == "creating"){
-        if(localStorage.getItem("createProjectStep") == 3){
+async function submitExcelData() {
+    if (localStorage.getItem("projectState") == "creating") {
+        if (localStorage.getItem("createProjectStep") == 3) {
             await savePtFixedExcelValues();
             await updatePtNodeNames();
-            localStorage.setItem("createProjectStep",4);
-            sendEvent('#create-project-modal-5', 4,"Continue",true)
+            localStorage.setItem("createProjectStep", 4);
+            sendEvent('#create-project-modal-5', 4, "Continue", true)
             $('#create-project-modal-5').modal('show');
 
         }
-        else if(localStorage.getItem("createProjectStep") == 5){
+        else if (localStorage.getItem("createProjectStep") == 5) {
             await saveTmFixedExcelValues();
-            localStorage.setItem("createProjectStep",6);
-            sendEvent('#create-project-modal-5', 6,"Continue",true)
+            localStorage.setItem("createProjectStep", 6);
+            sendEvent('#create-project-modal-5', 6, "Continue", true)
             $('#create-project-modal-5').modal('show');
         }
     }
-    if(localStorage.getItem("projectState") == "loaded"){
-        if(Offline.state == "up") {
+    if (localStorage.getItem("projectState") == "loaded") {
+        if (Offline.state == "up") {
             await updateTmExcelValues();
             await updatePtExcelValues();
             await submitPtExcel();
             await submitTmExcel();
-        }else{
+        } else {
             await updateTmExcelValues();
             await updatePtExcelValues();
         }
@@ -801,6 +801,7 @@ async function savePtFixedExcelValues() {
         "links": document.getElementById('tableview-pt-spreadsheet').jexcel[1].getJson(),
         "nodes": document.getElementById('tableview-pt-spreadsheet').jexcel[0].getJson()
     }
+    console.log("physica33l add element 2 ")
     await addElement('physical', ptRecord);
 
 }
@@ -809,7 +810,7 @@ async function saveTmFixedExcelValues() {
     let project = await getAllRecords("project")
     let tmRecord = new Object();
     tmRecord.id = 0;
-    tmRecord.name =  (Array.from($(`[name='tmradio']`)).filter(e=>e.checked))[0].id == 'tm-enter' ? $('#project-enter-name').val():$('#project-traffic-name').val() ;
+    tmRecord.name = (Array.from($(`[name='tmradio']`)).filter(e => e.checked))[0].id == 'tm-enter' ? $('#project-enter-name').val() : $('#project-traffic-name').val();
     tmRecord.project = project[0].name
     tmRecord.comment = $('#tableview-comment').val();
     let tableData = createTmForSubmit()
@@ -841,7 +842,7 @@ async function updateTmExcelValues() {
 
 }
 
-function createTmForSubmit(){
+function createTmForSubmit() {
     let tmDataForSubmit = {
         "comment": $('#tm-comment').val(),
         "name": $('#project-traffic-name').val(),
@@ -851,29 +852,29 @@ function createTmForSubmit(){
     }
     let demandIndex = 1;
     let serviceIdList = 1;
-    for(const demand of tmSheet.getJson() ){
+    for (const demand of tmSheet.getJson()) {
         const newDataObj = Object.keys(demand).reduce((object, key) => {
-            if(new RegExp(servicesType.join("|")).test(key)) {
-                if (demand[key] != '' ) {
-                    if (('services' in object) == false){
+            if (new RegExp(servicesType.join("|")).test(key)) {
+                if (demand[key] != '') {
+                    if (('services' in object) == false) {
                         object["services"] = []
                     }
                     let serviceType = key.substring(0, key.lastIndexOf("_"))
-                    let serviceKey =  key.substring(key.lastIndexOf("_")+1, key.length)
+                    let serviceKey = key.substring(key.lastIndexOf("_") + 1, key.length)
 
-                    if(object["services"].find( p => p.type === serviceType) != undefined){
-                        object["services"].find( p => p.type === serviceType && ( p[serviceKey] = demand[key] , true ) );
+                    if (object["services"].find(p => p.type === serviceType) != undefined) {
+                        object["services"].find(p => p.type === serviceType && (p[serviceKey] = demand[key], true));
                     }
-                    else{
+                    else {
                         object["services"].push({
-                            'type' : serviceType
+                            'type': serviceType
                         })
-                        object["services"].find( p => p.type === serviceType && ( p[serviceKey] = demand[key] , true ) );
+                        object["services"].find(p => p.type === serviceType && (p[serviceKey] = demand[key], true));
                     }
                     let newObject = []
-                    for (let service of object["services"]){
-                        service["service_id_list"] =[]
-                        for(let i = 0;i<service["quantity"];i++) {
+                    for (let service of object["services"]) {
+                        service["service_id_list"] = []
+                        for (let i = 0; i < service["quantity"]; i++) {
                             service["service_id_list"][i] = serviceIdList.toString();
                             serviceIdList++;
                         }
@@ -881,7 +882,7 @@ function createTmForSubmit(){
                     }
                     // object["services"][serviceKey] = demand[key]
                 }
-            }else{
+            } else {
                 object[key] = demand[key];
             }
             return object
@@ -899,12 +900,12 @@ function createTmForSubmit(){
 }
 
 
-$(function() {
-    $('#tableview-toggle-spreadsheet').change(function() {
+$(function () {
+    $('#tableview-toggle-spreadsheet').change(function () {
         // if (localStorage.getItem('projectState') != "creating") {
-        if(document.getElementById('tableview-pt-spreadsheet').children[0] != undefined) {
+        if (document.getElementById('tableview-pt-spreadsheet').children[0] != undefined) {
             let selectedSheet = Number(document.getElementById('tableview-pt-spreadsheet').children[0].querySelector('.selected').getAttribute('data-spreadsheet'));
-            if( $(this).prop('checked')) {
+            if ($(this).prop('checked')) {
                 document.getElementById('tableview-pt-spreadsheet').style.display = "block";
                 document.getElementById('tableview-tm-spreadsheet').style.display = "none";
                 document.getElementById('tm-errors').style.display = "none";
@@ -915,21 +916,21 @@ $(function() {
                     document.getElementById('pt-nodes-errors').style.display = "none";
                     document.getElementById('pt-links-errors').style.display = "block";
                 }
-            }else{
+            } else {
                 document.getElementById('tableview-tm-spreadsheet').style.display = "block";
                 document.getElementById('tableview-pt-spreadsheet').style.display = "none";
                 document.getElementById('tm-errors').style.display = "block";
                 document.getElementById('pt-nodes-errors').style.display = "none";
                 document.getElementById('pt-links-errors').style.display = "none";
             }
-        }else if(document.getElementById('tableview-pt-spreadsheet').children[0] == undefined){
+        } else if (document.getElementById('tableview-pt-spreadsheet').children[0] == undefined) {
             document.getElementById('tableview-tm-spreadsheet').style.display = "block";
             document.getElementById('tableview-pt-spreadsheet').style.display = "none";
             document.getElementById('tm-errors').style.display = "block";
             document.getElementById('pt-nodes-errors').style.display = "none";
             document.getElementById('pt-links-errors').style.display = "none";
         }
-            // $('#console-event').html('Toggle: ' + $(this).prop('checked'))
+        // $('#console-event').html('Toggle: ' + $(this).prop('checked'))
         // }
         // else{
         //     document.getElementById('tableview-tm-spreadsheet').style.display = "block";
