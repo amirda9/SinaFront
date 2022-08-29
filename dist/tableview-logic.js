@@ -449,7 +449,6 @@ async function initTmTableView(){
                 }
                 return object
             }, {})
-            console.log(newDataObj, "this is node_type node data")
             ptNodeNames.push(newDataObj.name);
             if (data.node_type != "OLA"){
                 filteredNodeNames.push(newDataObj.name);
