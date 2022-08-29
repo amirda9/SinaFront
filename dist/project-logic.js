@@ -153,6 +153,7 @@ async function prepareDataForSubmit(dataTable, comment) {
             break;
         }
     }
+
     return new Promise(async function (resolve, reject) {
         await createOrUpdate(target, action, dataObj[0])
             .then(async function (result) {
@@ -306,19 +307,21 @@ function createOrUpdate(elementPath, mode, data, id = null) {
     if (elementPath == "physical_topologies/"){
         // hard code
         for (const link of data.data.links){
-            try{
-                link["fiber"] = {
-                    "fiber_type": link.fiber_type,
-                    "attenuation": link.attenuation,
-                    "nonlinearity": link.nonlinearity,
-                    "dispersion": link.dispersion
+            if (link.fiber.fiber_type === undefined){
+                try{
+                    link["fiber"] = {
+                        "fiber_type": link.fiber_type,
+                        "attenuation": link.attenuation,
+                        "nonlinearity": link.nonlinearity,
+                        "dispersion": link.dispersion
+                    }
                 }
-            }
-            catch {
-                link["fiber_type"] =  link.fiber.fiber_type;
-                link["attenuation"] =  link.fiber.attenuation;
-                link["nonlinearity"] =  link.fiber.nonlinearity;
-                link["dispersion"] =  link.fiber.dispersion;
+                catch {
+                    link["fiber_type"] =  link.fiber.fiber_type;
+                    link["attenuation"] =  link.fiber.attenuation;
+                    link["nonlinearity"] =  link.fiber.nonlinearity;
+                    link["dispersion"] =  link.fiber.dispersion;
+                }
             }
         }
         // delete data.data.fiber
@@ -326,7 +329,6 @@ function createOrUpdate(elementPath, mode, data, id = null) {
         // updateElement("physical", JSON.stringify(data.data));
         
         for (const node of data.data.nodes){
-            console.log(node)
             if (node["no_add_drop_reg_wl"] == ""){
                 node["no_add_drop_reg_wl"] = 0;
             }
