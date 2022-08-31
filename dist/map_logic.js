@@ -61,23 +61,20 @@ function drawPhysicalTopology(data) {
         // } else {
         //     add_link1(srcLocal, destLocal, link.source, link.destination)
         // }
-        try {
-            link["attenuation"] = link.fiber.attenuation
-            link["nonlinearity"] = link.fiber.nonlinearity
-            link["dispersion"] = link.fiber.dispersion
-            link["fiber_type"] = link.fiber.fiber_type
-            // delete link["fiber"]
-        }
-        catch {
+        console.log(link, "link")
+        if (!link.fiber.hasOwnProperty("fiber_type")){
             link["fiber"] = {
                 "fiber_type": link.fiber_type,
                 "attenuation": link.attenuation,
                 "nonlinearity": link.nonlinearity,
                 "dispersion": link.dispersion
             }
-        } 
-        console.log(link)
-
+        } else {
+            link["fiber_type"] =  link.fiber.fiber_type
+            link["attenuation"] =  link.fiber.attenuation
+            link["nonlinearity"] =  link.fiber.nonlinearity
+            link["dispersion"] =  link.fiber.dispersion
+        }
         add_link1(srcLocal, destLocal, link.source, link.destination)
 
     }
