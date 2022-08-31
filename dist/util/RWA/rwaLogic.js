@@ -171,6 +171,12 @@ function check_running_rwa() {
   }
 }
 
+
+$( document ).ready(function() {
+  document.getElementById("edfa").value = "Default";
+  onchange_edfa();
+});
+
 //if Enter Comment Enabled button and you can running_rwa(use in rwa_start)
 function Call_running_rwa() {
   $(':input[type="submit"]').prop("disabled", false);
