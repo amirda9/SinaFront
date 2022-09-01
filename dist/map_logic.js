@@ -2008,6 +2008,20 @@ function createParamsInputsForm(paramNames, paramValues) {
     Typeselect.appendChild(option1);
     Typeselect.appendChild(option2);
     Typeselect.setAttribute("id", "FiberType");
+    Typeselect.addEventListener("change", () => {
+        if(document.getElementById("Spec").value=="Default"){
+            if(document.getElementById("FiberType").value == "SMF (G.652)"){
+                document.getElementById("Loss_Coefficient (dB/Km)").value = 0.2;
+                document.getElementById("Dispersion (ps/Km-nm)").value = 17;
+                document.getElementById("Non-Linear Parameter Ɣ").value = 1.3;
+            }
+            else if(document.getElementById("FiberType").value == "NZDSF (G.655)"){
+                document.getElementById("Loss_Coefficient (dB/Km)").value = 0.22;
+                document.getElementById("Dispersion (ps/Km-nm)").value = 3.8;
+                document.getElementById("Non-Linear Parameter Ɣ").value = 1.5;
+            }
+        }
+    })
 
     
     var TypeLbl = document.createElement("label");
