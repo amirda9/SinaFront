@@ -370,7 +370,7 @@ function RWACheck(rwa_id) {
     if (finished) {
       let div = document.getElementById("myBar");
       div.style.width = 100 + "%";
-      div.innerHTML = 100 + "%";
+      // div.innerHTML = 100 + "%";
       setTimeout(() => {
         clearInterval(inter);
         elem.style.display = "none";
@@ -400,7 +400,7 @@ function RWACheck(rwa_id) {
       finished = rwa_result.current_stage_info == "Finished successfully." ? true : false;
       failed = rwa_result.failed;
       div.style.width = progress + "%";
-      div.innerHTML = progress + "%";
+      // div.innerHTML = progress + "%";
     }
   };
   setTimeout(() => {
