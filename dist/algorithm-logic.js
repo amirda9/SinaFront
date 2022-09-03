@@ -856,7 +856,7 @@ async function RackLayoutStart(Id){
   .open(
     "http://" +
     window.location.hostname +
-    ":8070" +'?RWA_ID='+
+    ":8100" +'?RWA_ID='+
     Id + 
     '&token=' + 
     token + 
