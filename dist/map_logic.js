@@ -1,4 +1,4 @@
-const serverAddr = "http://45.139.10.150:80/api/v2.0.0/";
+const serverAddr = "http://service:80/api/v2.0.0/";
 
 var MapVar = L.map("topology-map", {
     contextmenu: true,
