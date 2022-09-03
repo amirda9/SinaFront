@@ -11,3 +11,8 @@ services:
       - ./dist:/usr/share/nginx/html
     ports:
       - 80:80
+
+networks: 
+  default: 
+    external: 
+      name: netplanner-network
