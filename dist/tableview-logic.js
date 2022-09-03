@@ -46,7 +46,17 @@ async function initTableView() {
 
 var ptNodeNames = [];
 async function initPtTableView()
-{
+{   
+
+    console.log(tableviewPtData, "filter columns")
+    try {
+        tableviewPtData.data.links.forEach((link) => {
+            delete link["fiber"]
+        })
+    } catch {
+        
+    }
+
     ptNodeNames = [];
     $("#tableview-pt-spreadsheet").html("")
     $("#tableview-pt-spreadsheet").removeClass("jexcel_tabs");

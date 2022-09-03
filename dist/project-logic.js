@@ -307,21 +307,27 @@ function createOrUpdate(elementPath, mode, data, id = null) {
     if (elementPath == "physical_topologies/"){
         // hard code
         for (const link of data.data.links){
-            if (link.fiber.fiber_type === undefined){
-                try{
+            try {
+                if (!link.fiber.hasOwnProperty("fiber_type")){
                     link["fiber"] = {
                         "fiber_type": link.fiber_type,
                         "attenuation": link.attenuation,
                         "nonlinearity": link.nonlinearity,
                         "dispersion": link.dispersion
                     }
+                } else {
+                    link["fiber_type"] =  link.fiber.fiber_type
+                    link["attenuation"] =  link.fiber.attenuation
+                    link["nonlinearity"] =  link.fiber.nonlinearity
+                    link["dispersion"] =  link.fiber.dispersion
                 }
-                catch {
-                    link["fiber_type"] =  link.fiber.fiber_type;
-                    link["attenuation"] =  link.fiber.attenuation;
-                    link["nonlinearity"] =  link.fiber.nonlinearity;
-                    link["dispersion"] =  link.fiber.dispersion;
-                }
+            } catch {
+                link["fiber"] = {
+                    "fiber_type": link.fiber_type,
+                    "attenuation": link.attenuation,
+                    "nonlinearity": link.nonlinearity,
+                    "dispersion": link.dispersion
+                } 
             }
         }
         // delete data.data.fiber

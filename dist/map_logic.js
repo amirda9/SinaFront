@@ -61,22 +61,29 @@ function drawPhysicalTopology(data) {
         // } else {
         //     add_link1(srcLocal, destLocal, link.source, link.destination)
         // }
+        console.log(link, "link")
         try {
-            link["attenuation"] = link.fiber.attenuation
-            link["nonlinearity"] = link.fiber.nonlinearity
-            link["dispersion"] = link.fiber.dispersion
-            link["fiber_type"] = link.fiber.fiber_type
-            // delete link["fiber"]
-        }
-        catch {
+            if (!link.fiber.hasOwnProperty("fiber_type")){
+                link["fiber"] = {
+                    "fiber_type": link.fiber_type,
+                    "attenuation": link.attenuation,
+                    "nonlinearity": link.nonlinearity,
+                    "dispersion": link.dispersion
+                }
+            } else {
+                link["fiber_type"] =  link.fiber.fiber_type
+                link["attenuation"] =  link.fiber.attenuation
+                link["nonlinearity"] =  link.fiber.nonlinearity
+                link["dispersion"] =  link.fiber.dispersion
+            }
+        } catch {
             link["fiber"] = {
                 "fiber_type": link.fiber_type,
                 "attenuation": link.attenuation,
                 "nonlinearity": link.nonlinearity,
                 "dispersion": link.dispersion
             }
-        } 
-        console.log(link)
+        }
 
         add_link1(srcLocal, destLocal, link.source, link.destination)
 
@@ -1103,6 +1110,8 @@ function topologyMenuHandler() {
 
         div.remove();
         $('#draw-physicaltopology-btn').prop("disabled", false);
+
+
     });
 
 
@@ -1184,6 +1193,10 @@ function topologyMenuHandler() {
 
     menu.addTo(mymap);
 }
+
+// $( document ).ready(function() {
+//     document.getElementById("Spec").value = "Customized";
+// });
 
 async function drawDoneBtnConfirmed(comment, markersGroup, featureGroup, linksGroup, oldMarkers, oldLinks) {
     featureGroup.eachLayer(layer => {
@@ -1549,7 +1562,8 @@ function createAddLinkForm(featureGroup, links, mymap, linksGroup) {
         $('#draw-physicaltopology-btn').prop("disabled", false);
     });
 
-    doneBtn.addEventListener("click", () => {
+    
+    doneBtn.addEventListener("click", () => { 
 
         var linkData;
 
@@ -2004,6 +2018,20 @@ function createParamsInputsForm(paramNames, paramValues) {
     Typeselect.appendChild(option1);
     Typeselect.appendChild(option2);
     Typeselect.setAttribute("id", "FiberType");
+    Typeselect.addEventListener("change", () => {
+        if(document.getElementById("Spec").value=="Default"){
+            if(document.getElementById("FiberType").value == "SMF (G.652)"){
+                document.getElementById("Loss_Coefficient (dB/Km)").value = 0.2;
+                document.getElementById("Dispersion (ps/Km-nm)").value = 17;
+                document.getElementById("Non-Linear Parameter Ɣ").value = 1.3;
+            }
+            else if(document.getElementById("FiberType").value == "NZDSF (G.655)"){
+                document.getElementById("Loss_Coefficient (dB/Km)").value = 0.22;
+                document.getElementById("Dispersion (ps/Km-nm)").value = 3.8;
+                document.getElementById("Non-Linear Parameter Ɣ").value = 1.5;
+            }
+        }
+    })
 
     
     var TypeLbl = document.createElement("label");
@@ -2025,9 +2053,18 @@ function createParamsInputsForm(paramNames, paramValues) {
             document.getElementById("Loss_Coefficient (dB/Km)").setAttribute('disabled', '');
             document.getElementById("Dispersion (ps/Km-nm)").setAttribute('disabled', '');
             document.getElementById("Non-Linear Parameter Ɣ").setAttribute('disabled', '');
-            document.getElementById("Loss_Coefficient (dB/Km)").value = 0;
-            document.getElementById("Dispersion (ps/Km-nm)").value = 0;
-            document.getElementById("Non-Linear Parameter Ɣ").value = 0;
+            
+            if(document.getElementById("FiberType").value == "SMF (G.652)"){
+                document.getElementById("Loss_Coefficient (dB/Km)").value = 0.2;
+                document.getElementById("Dispersion (ps/Km-nm)").value = 17;
+                document.getElementById("Non-Linear Parameter Ɣ").value = 1.3;
+            }
+            else if(document.getElementById("FiberType").value == "NZDSF (G.655)"){
+                document.getElementById("Loss_Coefficient (dB/Km)").value = 0.22;
+                document.getElementById("Dispersion (ps/Km-nm)").value = 3.8;
+                document.getElementById("Non-Linear Parameter Ɣ").value = 1.5;
+            }
+            
         }
         if(Spec.value == "Customized"){
             document.getElementById("Loss_Coefficient (dB/Km)").removeAttribute('disabled');
@@ -2064,6 +2101,20 @@ function createParamsInputsForm(paramNames, paramValues) {
             });
         
         }
+        if(i != 0 ){
+            param.setAttribute('disabled', '');
+        }
+        if(i==1){
+            param.value = 0.2;
+        }
+        if(i==2){
+            param.value = 17;
+        }
+        if(i==3){
+            param.value = 1.3;
+        }
+
+
         paramElements.push({
             "param": param,
             "label": paramLbl

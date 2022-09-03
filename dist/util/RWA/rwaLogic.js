@@ -1,18 +1,20 @@
-function onchange_modulation_type() {
-  let modulation_type = document.getElementById("modulation_type").value;
-  console.log(modulation_type);
-}
-
 function onchange_algorithm_spec() {
   let algorithm_spec = document.getElementById("algorithm_spec").value;
   if (algorithm_spec == "Default"){
     document.getElementById("restoration_k").disabled = true;
+    document.getElementById("restoration_k").value = 1;
     document.getElementById("iterations").disabled = true;
+    document.getElementById("iterations").value = 1;
     document.getElementById("group_size").disabled = true;
+    document.getElementById("group_size").value = 1;
     document.getElementById("history_window").disabled = true;
+    document.getElementById("history_window").value = 30;
     document.getElementById("shortest_path_k").disabled = true;
+    document.getElementById("shortest_path_k").value = 1;
     document.getElementById("noise_margin").disabled = true;
+    document.getElementById("noise_margin").value = 1;
     document.getElementById("trade_off").disabled = true;
+    document.getElementById("trade_off").value = 0.01;
   }
   else{
     document.getElementById("restoration_k").disabled = false;
@@ -76,8 +78,11 @@ function onchange_raman() {
   let raman = document.getElementById("raman").value;
   if(raman=="Default"){
     document.getElementById("ramanThresh").disabled = true;
+    document.getElementById("ramanThresh").value = 120;
     document.getElementById("NF_raman").disabled = true;
+    document.getElementById("NF_raman").value = -1;
     document.getElementById("Gain_R").disabled = true;
+    document.getElementById("Gain_R").value = 10;
   }
   else{
     document.getElementById("ramanThresh").disabled = false;
@@ -87,10 +92,12 @@ function onchange_raman() {
 }
 
 function onchange_dwdm() {
-  let dwdm = document.getElementById("raman").value;
+  let dwdm = document.getElementById("dwdm").value;
   if(dwdm=="Default"){
     document.getElementById("ChannelSpacing").disabled = true;
+    document.getElementById("ChannelSpacing").value = 50;
     document.getElementById("ChannelsNO").disabled = true;
+    document.getElementById("ChannelsNO").value = 96;
   }
   else{
     document.getElementById("ChannelSpacing").disabled = false;
@@ -102,7 +109,9 @@ function onchange_baudrate() {
   let baudrate = document.getElementById("baudrate").value;
   if(baudrate=="Default"){
     document.getElementById("QPSK_baudrate").disabled = true;
+    document.getElementById("QPSK_baudrate").value = 32;
     document.getElementById("8QAM_baudrate").disabled = true;
+    document.getElementById("8QAM_baudrate").value = 42.5;
   }
   else{
     document.getElementById("QPSK_baudrate").disabled = false;
@@ -114,7 +123,7 @@ function onchange_powerOptimization() {
   let PowerOptimization = document.getElementById("PowerOptimization").value;
   if(PowerOptimization=="Optimized"){
     document.getElementById("P_fixed").disabled = true;
-    document.getElementById("P_fixed").value = null;
+    document.getElementById("P_fixed").value = 0;
   }
   else{
     document.getElementById("P_fixed").disabled = false;
@@ -125,9 +134,9 @@ function onchange_SNR() {
   let SNR_Thresh = document.getElementById("SNR_Thresh").value;
   if(SNR_Thresh=="Default"){
     document.getElementById("QPSK_SNR").disabled = true;
-    document.getElementById("QPSK_SNR").value = null;
+    document.getElementById("QPSK_SNR").value = 12;
     document.getElementById("8QAM_SNR").disabled = true;
-    document.getElementById("8QAM_SNR").value = null;
+    document.getElementById("8QAM_SNR").value = 16;
   }
   else{
     document.getElementById("QPSK_SNR").disabled = false;
@@ -141,13 +150,13 @@ function onchange_edfa() {
   console.log(edfa)
   if(edfa=="Default"){
     document.getElementById("Gain_min").disabled = true;
-    document.getElementById("Gain_min").value = null;
+    document.getElementById("Gain_min").value = 10;
     document.getElementById("Gain_max").disabled = true;
-    document.getElementById("Gain_max").value = null;
+    document.getElementById("Gain_max").value = 23;
     document.getElementById("NF_edfa").disabled = true;
-    document.getElementById("NF_edfa").value = null;
+    document.getElementById("NF_edfa").value = 5.5;
     document.getElementById("Psat_edfa").disabled = true;
-    document.getElementById("Psat_edfa").value = null;
+    document.getElementById("Psat_edfa").value = 0;
   }
   else{
     document.getElementById("Gain_min").disabled = false;
@@ -170,6 +179,29 @@ function check_running_rwa() {
     $(':input[type="submit"]').prop("disabled", true);
   }
 }
+
+
+$( document ).ready(function() {
+  document.getElementById("edfa").value = "Default";
+  document.getElementById("SNR_Thresh").value = "Default";
+  document.getElementById("PowerOptimization").value = "Optimized";
+  document.getElementById("baudrate").value = "Default";
+  document.getElementById("dwdm").value = "Default";
+  document.getElementById("raman").value = "Default";
+  document.getElementById("algorithm_spec").value = "Default";
+
+
+  onchange_edfa();
+  onchange_SNR();
+  onchange_powerOptimization();
+  onchange_baudrate();
+  onchange_dwdm();
+  onchange_raman();
+  onchange_algorithm_spec();
+
+
+  
+});
 
 //if Enter Comment Enabled button and you can running_rwa(use in rwa_start)
 function Call_running_rwa() {
@@ -229,7 +261,7 @@ async function running_rwa() {
     }
 
     if(dwdm=="Default"){
-      ChannelSpacing = 100;
+      ChannelSpacing = 50;
       ChannelsNO = 96;
     }
 
@@ -338,7 +370,7 @@ function RWACheck(rwa_id) {
     if (finished) {
       let div = document.getElementById("myBar");
       div.style.width = 100 + "%";
-      div.innerHTML = 100 + "%";
+      // div.innerHTML = 100 + "%";
       setTimeout(() => {
         clearInterval(inter);
         elem.style.display = "none";
@@ -368,7 +400,7 @@ function RWACheck(rwa_id) {
       finished = rwa_result.current_stage_info == "Finished successfully." ? true : false;
       failed = rwa_result.failed;
       div.style.width = progress + "%";
-      div.innerHTML = progress + "%";
+      // div.innerHTML = progress + "%";
     }
   };
   setTimeout(() => {
