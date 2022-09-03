@@ -1630,8 +1630,20 @@ function show_source_dest(source, destination, Source_prev, destination_prev) {
   ArrayOfNodesName.push(destination_prev);
   changeClusterColorToDefault(ArrayOfNodesName);
 
+  // for remove prev source dest 
+  myFeatureGroup.eachLayer(function (layer) {
+    if(layer._latlng.lat === getLatLng(Source_prev)[0] && layer._latlng.lng === getLatLng(Source_prev)[1]) {
+      myFeatureGroup.removeLayer(layer)
+    }
+    if(layer._latlng.lat === getLatLng(destination_prev)[0] && layer._latlng.lng === getLatLng(destination_prev)[1]) {
+      myFeatureGroup.removeLayer(layer)
+    }
+  });
+  
   change_icon(source, getLatLng(source), "blue", 1, "notified");
   change_icon(destination, getLatLng(destination), "blue", 1, "notified");
+  change_icon(Source_prev, getLatLng(Source_prev), "blue", 1, "normal")
+  change_icon(destination_prev, getLatLng(destination_prev), "blue", 1, "normal")
 }
 
 
