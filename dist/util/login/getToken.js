@@ -19,6 +19,6 @@ async function getTokn(username,password) {
         body: urlencoded,
         redirect: 'follow'
     };
-    let token = await callService('http://service:5020/api/v2.0.0/users/login', requestOptions);
+    let token = await callService('http://37.32.27.143:5020/api/v2.0.0/users/login', requestOptions);
     return token;
 }
