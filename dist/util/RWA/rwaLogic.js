@@ -346,7 +346,7 @@ async function running_rwa() {
     }
 
     let result = await callService(
-      `http://172.25.248.140:80/api/v2.0.0/algorithms/rwa/start?project_id=${project_id}&grooming_id=${grooming_id}`,
+      `http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/start?project_id=${project_id}&grooming_id=${grooming_id}`,
       requestOptions
     );
 
@@ -392,7 +392,7 @@ function RWACheck(rwa_id) {
         body: body,
       };
       let rwa_result = await callService(
-        `http://172.25.248.140:80/api/v2.0.0/algorithms/rwa/check`,
+        `http://185.211.88.140:80/api/v2.0.0/algorithms/rwa/check`,
         requestOptions
       );
       let div = document.getElementById("myBar");
