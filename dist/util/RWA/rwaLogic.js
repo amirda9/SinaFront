@@ -396,11 +396,11 @@ function RWACheck(rwa_id) {
         requestOptions
       );
       let div = document.getElementById("myBar");
-      progress = rwa_result.progress;
+      progress = Math.round((rwa_result.status.success / rwa_result.status.total) * 100);
       finished = rwa_result.current_stage_info == "Finished successfully." ? true : false;
       failed = rwa_result.failed;
       div.style.width = progress + "%";
-      // div.innerHTML = progress + "%";
+      div.innerHTML = progress + "%";
     }
   };
   setTimeout(() => {
