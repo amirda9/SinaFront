@@ -40,7 +40,7 @@ function drawPhysicalTopology(data) {
         let nodeLocal = [];
         nodeLocal.push(node.lat);
         nodeLocal.push(node.lng);
-        add_node1(node.name, nodeLocal)
+        add_node1(node.name, nodeLocal, node.node_type)
     }
     for (let link of data.links) {
         let srcLocal = [];
@@ -104,7 +104,7 @@ function drawPhysicalTopologyColor(data) {
         let nodeLocal = [];
         nodeLocal.push(node.lat);
         nodeLocal.push(node.lng);
-        add_node1(node.name, nodeLocal)
+        add_node1(node.name, nodeLocal, node.node_type)
     }
     for (let link of data.links) {
         let srcLocal = [];
@@ -145,12 +145,15 @@ function drawPhysicalTopologyColor(data) {
 //     }
 // }
 
-function add_node1(nodeName, latlng) {
+function add_node1(nodeName, latlng, type = "other") {
     // latlng = JSON.parse(latlng)
     //alert("start of add_node", NodeName, latlng);
-    change_icon(nodeName, latlng, "blue", 1, "normal");
+    if (type === "OLA"){
+        change_icon(nodeName, latlng, "blue", 1, "normal", type);
+    } else {
+        change_icon(nodeName, latlng, "blue", 1, "normal");
+    }
 }
-
 
 function add_link1(sourceLoc, destinationLoc, sourceName, destinationName) {
 
@@ -926,12 +929,17 @@ function createLegend(num_WL, num_RG, algorithm, worst_SNR, RWA_Runtime) {
     legend.addTo(MapVar);
 }
 
-function change_icon(NodeName, latlng, Color, Opacity, mode) {
+function change_icon(NodeName, latlng, Color, Opacity, mode, type = "other") {
+    console.log(type, "this is type")
     if (mode == "normal") {
         var url = "Icons/" + Color + "/server_" + Color + ".png"
     } else {
         var url = "Icons/" + Color + "/server_n" + Color + ".png"
     }
+    if (type === "OLA") {
+        var url = "Icons/" + "green" + "/amplifier_" + "green" + ".png"
+    }
+    
 
     // var flagIocn = L.AwesomeMarkers.icon({  // Creates a new icon
     //     icon: 'flag', // Comes from bootstrap glyphicons.
@@ -1459,6 +1467,13 @@ function createAddNodeForm(featureGroup, markers, mymap, pathToIcon, oldMarkers)
 
         markerName = document.getElementById(inputParams.paramNames[0]).value;
 
+        console.log(nodeData["node_type"], "this is node type")
+
+        if (nodeData["node_type"] === "OLA") {
+            pathToIcon = "Icons/green/amplifier_green.png"
+        } else {
+            pathToIcon = "Icons/blue/server_blue.png"
+        }
         marker = L.marker(mymap.getCenter(), {
             draggable: true,
             icon: createCustomIcon(pathToIcon)
