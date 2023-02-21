@@ -1,5 +1,5 @@
 // import './../../services/callServices/callServices'
-const serverAddr1 = "http://localhost:5020/api/v2.0.0/";
+const serverAddr1 = "http://37.32.27.143:5020/api/v2.0.0/";
 
 
 // function get_RWA_Path() {
@@ -35,7 +35,7 @@ async function get_RWA_Path() {
     };
     rwa_id = JSON.parse(localStorage.getItem("rwa_id"));
     console.log('rwa_id is : ', rwa_id);
-    let result = await callService(`http://localhost:5020/api/v2.0.0/algorithms/rwa/result?rwa_id=${rwa_id}`, requestOptions);
+    let result = await callService(`http://37.32.27.143:5020/api/v2.0.0/algorithms/rwa/result?rwa_id=${rwa_id}`, requestOptions);
     let data_path = result.lightpaths['5f8f6401ba0440e9ac6b3163916772a6'].routing_info.working.path;
 
     let physical_topologies = JSON.parse(localStorage.getItem('physical_topologies'));

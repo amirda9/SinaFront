@@ -751,7 +751,7 @@ async function getClusterInfo(ClusterId)
     redirect: 'follow'
     };
 
-    let result = await callService(`http://localhost:5020/api/v2.0.0/clustering/manual?cluster_id=${ClusterId}`, requestOptions);
+    let result = await callService(`http://37.32.27.143:5020/api/v2.0.0/clustering/manual?cluster_id=${ClusterId}`, requestOptions);
     
     return result;
 }
