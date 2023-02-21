@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: nginx-prod
+    network_mode: "host"
     restart: always
     volumes:
       - ./dist:/usr/share/nginx/html

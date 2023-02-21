@@ -1,5 +1,5 @@
-const serverAddr = "http://37.32.27.143:5020/api/v2.0.0/";
-// const serverAddr = "http://37.32.27.143:5020/api/v2.0.0/";
+const serverAddr = "http://0.0.0.0:5020/api/v2.0.0/";
+// const serverAddr = "http://0.0.0.0:5020/api/v2.0.0/";
 
 $("form#loginform").submit(function (e) {
 
